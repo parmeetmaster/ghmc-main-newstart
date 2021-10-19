@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "949185526004",
+    "project_id": "ghmc-13cd9",
+    "storage_bucket": "ghmc-13cd9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:949185526004:android:f2799b0fea7b20cedd06a1",
+        "android_client_info": {
+          "package_name": "com.iotroncs.ghmc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "949185526004-hbaplg9hnclqp00oegddcg8pceu7fdsq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLlNupCduSkKHODlOeEV-5lsDSRoE3Gx0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "949185526004-hbaplg9hnclqp00oegddcg8pceu7fdsq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
