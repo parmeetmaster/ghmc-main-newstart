@@ -18,6 +18,7 @@ import 'package:ghmc/provider/login_provider/login_provider.dart';
 import 'package:ghmc/provider/maps_provider/maps_provider.dart';
 import 'package:ghmc/provider/open_place/open_place.dart';
 import 'package:ghmc/provider/splash_provider/splash_provider.dart';
+import 'package:ghmc/provider/toilet/toilet.dart';
 import 'package:ghmc/provider/userHistory_provider/logHistory_provider.dart';
 import 'package:ghmc/screens/login/ghmc_loginpage.dart';
 import 'package:ghmc/splashScreen.dart';
@@ -98,6 +99,7 @@ void main() async {
         ChangeNotifierProvider(create: (ctx) => CreateStreetVendorProvider()),
         ChangeNotifierProvider(create: (ctx) => OpenPlaceProvider()),
         ChangeNotifierProvider(create: (ctx) => AddParkingProvider()),
+        ChangeNotifierProvider(create: (ctx) => ToiletProvider()),
       ],
       child: Phoenix(child: MyApp()),
     ),

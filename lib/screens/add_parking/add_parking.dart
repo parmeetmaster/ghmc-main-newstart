@@ -86,6 +86,10 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
   Provider.of<AddParkingProvider>(context, listen: false);
 
   Type_of_house? _selected_housetype;
+
+  var parkingName=TextEditingController();
+
+  var wastageQuantity=TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -98,7 +102,7 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: FAppBar.getCommonAppBar(title: "Add Resident"),
+        appBar: FAppBar.getCommonAppBar(title: "Parking"),
         body: Consumer2<AddParkingProvider,CommunityHallProvider>(
             builder: (context, residentSnapShot,communityHallSnapshot, child) {
               return communityHallSnapshot.dropDowns!=null && zones!=null
@@ -503,7 +507,7 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                               ),
                               width: MediaQuery.of(context).size.width * 0.80,
                               child: TextFormField(
-                                controller: shop_flat_address,
+                                controller: address,
                                 decoration: new InputDecoration(
                                     border: InputBorder.none,
                                     hintStyle: hintStyle,
@@ -524,7 +528,59 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                       ],
                     ),
                   ),
-
+                  //owner name
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.80,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.20,
+                          child: Text(
+                            "Parking Name",
+                            style: TextStyle(fontSize: fontSize),
+                          ),
+                        ),
+                        Text(':'),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.60,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: ShapeDecoration(
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                    width: 1.0,
+                                    style: BorderStyle.solid,
+                                    color: Colors.grey,
+                                  ),
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(5.0)),
+                                ),
+                              ),
+                              width: MediaQuery.of(context).size.width * 0.80,
+                              child: TextFormField(
+                                controller: parkingName,
+                                decoration: new InputDecoration(
+                                    border: InputBorder.none,
+                                    hintStyle: hintStyle,
+                                    focusedBorder: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    contentPadding: EdgeInsets.only(
+                                        left: 15,
+                                        bottom: 11,
+                                        top: 11,
+                                        right: 15),
+                                    hintText: "Type name here..."),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   //owner name
                   Container(
                     width: MediaQuery.of(context).size.width * 0.80,
@@ -963,6 +1019,62 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                       ],
                     ),
                   ),
+
+                  //quantity disposal
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.80,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.20,
+                          child: Text(
+                            "Wastage Quantity",
+                            style: TextStyle(fontSize: fontSize),
+                          ),
+                        ),
+                        Text(':'),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.60,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: ShapeDecoration(
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                    width: 1.0,
+                                    style: BorderStyle.solid,
+                                    color: Colors.grey,
+                                  ),
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(5.0)),
+                                ),
+                              ),
+                              width: MediaQuery.of(context).size.width * 0.80,
+                              child: TextFormField(
+                                keyboardType: TextInputType.number,
+                                controller: wastageQuantity,
+                                decoration: new InputDecoration(
+                                    border: InputBorder.none,
+                                    hintStyle: hintStyle,
+                                    focusedBorder: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    contentPadding: EdgeInsets.only(
+                                        left: 15,
+                                        bottom: 11,
+                                        top: 11,
+                                        right: 15),
+                                    hintText: "Type wastage Quantity here..."),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
                   // camera container
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -1017,14 +1129,16 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                         'area_id': _selected_area?.id??"",
                         'ward_id': _selected_ward?.id??"",
                         'landmark_id': _selected_landmarks?.id??"",
+                        'address': address.text??"",
+                        'parking_name': parkingName.text??"",
                         'business_type': _selected_Business_type?.name,
-                        'house_address': shop_flat_address.text,
                         'owner_name': ownerName.text,
                         'owner_mobile': owner_mobile_phno.text,
                         'owner_aadhar': owner_aadhaar.text,
-                        'type': _selected_housetype??"",
+                        'type': _selected_housetype?.type??"",
                         'existing_disposal': _selected_disposal?.disposal??"",
                         'quality_waste': _select_quantity?.waste??"",
+                        'wastage_quantity': wastageQuantity.text??"",
                         'latitude': (this.locationData?.latitude)?.toString()??"",
                         'longitude': (this.locationData?.longitude)?.toString()??"",
                         'images': [

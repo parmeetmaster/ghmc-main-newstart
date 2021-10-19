@@ -31,11 +31,11 @@ import 'package:ghmc/api/api.dart';
 import 'package:ghmc/model/all_drop_down_model.dart';
 import 'package:ghmc/util/extension.dart';
 
-class AddParkingProvider extends ChangeNotifier{
+class ToiletProvider extends ChangeNotifier{
   AllDropDownModel? dropDowns;
-  addParking(FormData formData, BuildContext context) async {
+  createToilet(FormData formData, BuildContext context) async {
     ApiResponse response = await ApiBase().baseFunction(() =>
-        ApiBase().getInstance()!.post("/createparking", data: formData));
+        ApiBase().getInstance()!.post("/createtoilets", data: formData));
     if (response.status == 200) {
       response.message!.showSnackbar(context);
       return response;

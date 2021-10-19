@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:file_support/file_support.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:ghmc/api/api.dart';
 import 'package:ghmc/globals/globals.dart';
 import 'package:ghmc/model/all_drop_down_model.dart';
@@ -12,6 +13,7 @@ import 'package:ghmc/provider/community_hall/community_hall.dart';
 import 'package:ghmc/provider/complex_building/complex_building.dart';
 import 'package:ghmc/provider/culvert/culvert_provider.dart';
 import 'package:ghmc/provider/open_place/open_place.dart';
+import 'package:ghmc/provider/toilet/toilet.dart';
 import 'package:ghmc/util/extension.dart';
 import 'package:ghmc/util/m_progress_indicator.dart';
 import 'package:ghmc/widget/appbar/appbar.dart';
@@ -25,14 +27,14 @@ import 'package:provider/provider.dart';
 import 'package:ghmc/util/utils.dart';
 
 @immutable
-class OpenPlaceScreen extends StatefulWidget {
-  OpenPlaceScreen({Key? key}) : super(key: key);
+class ToiletScreen extends StatefulWidget {
+  ToiletScreen({Key? key}) : super(key: key);
 
   @override
-  _OpenPlaceScreenState createState() => _OpenPlaceScreenState();
+  _ToiletScreenState createState() => _ToiletScreenState();
 }
 
-class _OpenPlaceScreenState extends State<OpenPlaceScreen> {
+class _ToiletScreenState extends State<ToiletScreen> {
   CulvertDataModel? zones;
   CulvertDataModel? circles;
   CulvertDataModel? wards;
@@ -71,10 +73,12 @@ class _OpenPlaceScreenState extends State<OpenPlaceScreen> {
   var owner_aadhaar = TextEditingController();
   Existing_disposal? _selected_disposal;
 
-  late OpenPlaceProvider provider =
-  Provider.of<OpenPlaceProvider>(context, listen: false);
+  late ToiletProvider provider =
+  Provider.of<ToiletProvider>(context, listen: false);
 
-  var openPlaceName= TextEditingController();
+  var toiletName= TextEditingController();
+
+  var wasteQty=TextEditingController();
 
   @override
   void initState() {
@@ -82,15 +86,15 @@ class _OpenPlaceScreenState extends State<OpenPlaceScreen> {
     _initialisedZones();
     provider.loadCommunityItems(context);
     provider=
-    Provider.of<OpenPlaceProvider>(context, listen: false);
+    Provider.of<ToiletProvider>(context, listen: false);
 
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: FAppBar.getCommonAppBar(title: "Open Place"),
-        body: Consumer<OpenPlaceProvider>(
+        appBar: FAppBar.getCommonAppBar(title: "Add Toilets"),
+        body: Consumer<ToiletProvider>(
             builder: (context, snapshot, child) {
               return snapshot.dropDowns!=null && zones!=null
                   ? ListView(
@@ -462,7 +466,60 @@ class _OpenPlaceScreenState extends State<OpenPlaceScreen> {
                       ],
                     ),
                   ),
-                  //see address
+                  //see toilet name
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.80,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.20,
+                          child: Text(
+                            "Toilet Name",
+                            style: TextStyle(fontSize: fontSize),
+                          ),
+                        ),
+                        Text(':'),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.60,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: ShapeDecoration(
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                    width: 1.0,
+                                    style: BorderStyle.solid,
+                                    color: Colors.grey,
+                                  ),
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(5.0)),
+                                ),
+                              ),
+                              width: MediaQuery.of(context).size.width * 0.80,
+                              child: TextFormField(
+                                controller: toiletName,
+                                decoration: new InputDecoration(
+                                    border: InputBorder.none,
+                                    hintStyle: hintStyle,
+                                    focusedBorder: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    contentPadding: EdgeInsets.only(
+                                        left: 15,
+                                        bottom: 11,
+                                        top: 11,
+                                        right: 15),
+                                    hintText: "Type toilet name here..."),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  //see toilet address
                   Container(
                     width: MediaQuery.of(context).size.width * 0.80,
                     child: Row(
@@ -507,60 +564,7 @@ class _OpenPlaceScreenState extends State<OpenPlaceScreen> {
                                         bottom: 11,
                                         top: 11,
                                         right: 15),
-                                    hintText: "Type address here..."),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  //see open place name
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.80,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.20,
-                          child: Text(
-                            "Open Place Name",
-                            style: TextStyle(fontSize: fontSize),
-                          ),
-                        ),
-                        Text(':'),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.60,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: ShapeDecoration(
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                    width: 1.0,
-                                    style: BorderStyle.solid,
-                                    color: Colors.grey,
-                                  ),
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
-                                ),
-                              ),
-                              width: MediaQuery.of(context).size.width * 0.80,
-                              child: TextFormField(
-                                controller: openPlaceName,
-                                decoration: new InputDecoration(
-                                    border: InputBorder.none,
-                                    hintStyle: hintStyle,
-                                    focusedBorder: InputBorder.none,
-                                    enabledBorder: InputBorder.none,
-                                    errorBorder: InputBorder.none,
-                                    disabledBorder: InputBorder.none,
-                                    contentPadding: EdgeInsets.only(
-                                        left: 15,
-                                        bottom: 11,
-                                        top: 11,
-                                        right: 15),
-                                    hintText: "Type Place name here..."),
+                                    hintText: "Type toilet address here..."),
                               ),
                             ),
                           ),
@@ -785,7 +789,7 @@ class _OpenPlaceScreenState extends State<OpenPlaceScreen> {
                                   underline: Container(
                                     color: Colors.transparent,
                                   ),
-                                  hint: Text('Select Disposal'),
+                                  hint: Text('Select Quantity'),
                                   isExpanded: true,
                                   value: _select_quantity,
                                   icon: const Icon(Icons.arrow_drop_down),
@@ -807,6 +811,60 @@ class _OpenPlaceScreenState extends State<OpenPlaceScreen> {
                                     });
                                   },
                                 ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  //see quantity name
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.80,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.20,
+                          child: Text(
+                            "Wastage Quantity",
+                            style: TextStyle(fontSize: fontSize),
+                          ),
+                        ),
+                        Text(':'),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.60,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: ShapeDecoration(
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                    width: 1.0,
+                                    style: BorderStyle.solid,
+                                    color: Colors.grey,
+                                  ),
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(5.0)),
+                                ),
+                              ),
+                              width: MediaQuery.of(context).size.width * 0.80,
+                              child: TextFormField(
+                                controller: wasteQty,
+                                keyboardType: TextInputType.number,
+                                decoration: new InputDecoration(
+                                    border: InputBorder.none,
+                                    hintStyle: hintStyle,
+                                    focusedBorder: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    contentPadding: EdgeInsets.only(
+                                        left: 15,
+                                        bottom: 11,
+                                        top: 11,
+                                        right: 15),
+                                    hintText: "Type quantity here..."),
                               ),
                             ),
                           ),
@@ -868,10 +926,11 @@ class _OpenPlaceScreenState extends State<OpenPlaceScreen> {
                         'area_id': _selected_area?.id??"",
                         'ward_id': _selected_ward?.id??"",
                         'landmark_id': _selected_landmarks?.id??"",
+                        'toilet_name': toiletName.text,
                         'address': address.text,
-                        'open_place_name': openPlaceName.text,
                         'incharge_name': inchargeName.text,
                         'incharge_mobile': inchargeMobileNumber.text,
+                        'wastage_quantity': wasteQty.text,
                         'existing_disposal': _selected_disposal?.disposal??"",
                         'quality_of_waste': _select_quantity?.waste??"",
                         'latitude': (this.locationData?.latitude)?.toString()??"",
@@ -887,7 +946,7 @@ class _OpenPlaceScreenState extends State<OpenPlaceScreen> {
 
 
 
-                      ApiResponse res = await provider.createOpenPlace(
+                      ApiResponse res = await provider.createToilet(
                           formData, context);
                       print(res.status);
                       if (res.status == 200) {

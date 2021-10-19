@@ -13,6 +13,7 @@ import 'package:ghmc/screens/culvert/addCulvert.dart';
 import 'package:ghmc/screens/culvert/culvertIssues.dart';
 import 'package:ghmc/screens/maps/mapScreen.dart';
 import 'package:ghmc/screens/open_place/open_place.dart';
+import 'package:ghmc/screens/toilet/toilet.dart';
 
 import 'package:ghmc/screens/vehicleHistory/absentVehicle.dart';
 import 'package:ghmc/screens/vehicleHistory/logHistory.dart';
@@ -399,6 +400,28 @@ class _MainDrawerState extends State<MainDrawer> {
                   );
                 },
               ),
+              ListTile(
+                leading: Icon(
+                  Icons.wash,
+                  color: Colors.white,
+                  size: 25,
+                ),
+                title: Text(
+                  "Add Toilet",
+                  style: TextStyle(
+                      fontSize: drawer_item_text, color: Colors.white),
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ToiletScreen(),
+                    ),
+                  );
+                },
+              ),
+
+
                 ListTile(
                   leading: Icon(
                     Icons.apartment,
