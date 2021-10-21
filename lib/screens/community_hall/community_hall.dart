@@ -81,6 +81,8 @@ class _CommunityHallScreenState extends State<CommunityHallScreen> {
 
   var buisnessname= TextEditingController();
 
+  var wasteageQty=TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -869,7 +871,7 @@ class _CommunityHallScreenState extends State<CommunityHallScreen> {
                         ],
                       ),
                     ),
-                    //Existing disposal
+                    //qty of waste
                     Container(
                       width: MediaQuery.of(context).size.width * 0.80,
                       child: Row(
@@ -940,6 +942,8 @@ class _CommunityHallScreenState extends State<CommunityHallScreen> {
                       ),
                     ),
 
+
+
                     //quantity disposal
                     Container(
                       width: MediaQuery.of(context).size.width * 0.80,
@@ -978,7 +982,7 @@ class _CommunityHallScreenState extends State<CommunityHallScreen> {
                                     underline: Container(
                                       color: Colors.transparent,
                                     ),
-                                    hint: Text('Select Disposal'),
+                                    hint: Text('Select Quantity'),
                                     isExpanded: true,
                                     value: _select_quantity,
                                     icon: const Icon(Icons.arrow_drop_down),
@@ -1000,6 +1004,60 @@ class _CommunityHallScreenState extends State<CommunityHallScreen> {
                                       });
                                     },
                                   ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    //input weight
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.20,
+                            child: Text(
+                              "Wastage Quantity",
+                              style: TextStyle(fontSize: fontSize),
+                            ),
+                          ),
+                          Text(':'),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.60,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1.0,
+                                      style: BorderStyle.solid,
+                                      color: Colors.grey,
+                                    ),
+                                    borderRadius:
+                                    BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                ),
+                                width: MediaQuery.of(context).size.width * 0.80,
+                                child: TextFormField(
+                                  controller: wasteageQty,
+                                  keyboardType: TextInputType.number,
+                                  decoration: new InputDecoration(
+                                      border: InputBorder.none,
+                                      hintStyle: hintStyle,
+                                      focusedBorder: InputBorder.none,
+                                      enabledBorder: InputBorder.none,
+                                      errorBorder: InputBorder.none,
+                                      disabledBorder: InputBorder.none,
+                                      contentPadding: EdgeInsets.only(
+                                          left: 15,
+                                          bottom: 11,
+                                          top: 11,
+                                          right: 15),
+                                      hintText: "Type Waste Quantity"),
                                 ),
                               ),
                             ),
@@ -1070,6 +1128,7 @@ class _CommunityHallScreenState extends State<CommunityHallScreen> {
                           'licence_number': _selected_license!.licence,
                           'existing_disposal': _selected_disposal,
                           'quality_waste': _select_quantity!.waste,
+                          'wastage_quantity': wasteageQty.text,
                           'latitude': (this.locationData?.latitude).toString(),
                           'longitude': (this.locationData?.latitude).toString(),
                           'images': [

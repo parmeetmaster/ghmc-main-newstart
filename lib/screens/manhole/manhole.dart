@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -9,11 +8,11 @@ import 'package:ghmc/globals/globals.dart';
 import 'package:ghmc/model/all_drop_down_model.dart';
 
 import 'package:ghmc/model/culvert/area_model.dart';
-import 'package:ghmc/provider/add_parking/add_parking.dart';
-import 'package:ghmc/provider/add_resident/add_resident_provider.dart';
 import 'package:ghmc/provider/community_hall/community_hall.dart';
 import 'package:ghmc/provider/complex_building/complex_building.dart';
 import 'package:ghmc/provider/culvert/culvert_provider.dart';
+import 'package:ghmc/provider/manhole/manhole.dart';
+import 'package:ghmc/provider/open_place/open_place.dart';
 import 'package:ghmc/util/extension.dart';
 import 'package:ghmc/util/m_progress_indicator.dart';
 import 'package:ghmc/widget/appbar/appbar.dart';
@@ -27,14 +26,14 @@ import 'package:provider/provider.dart';
 import 'package:ghmc/util/utils.dart';
 
 @immutable
-class AddParkingScreen extends StatefulWidget {
-  AddParkingScreen({Key? key}) : super(key: key);
+class ManholeScreen extends StatefulWidget {
+  ManholeScreen({Key? key}) : super(key: key);
 
   @override
-  _AddParkingScreenState createState() => _AddParkingScreenState();
+  _ManholeScreenState createState() => _ManholeScreenState();
 }
 
-class _AddParkingScreenState extends State<AddParkingScreen> {
+class _ManholeScreenState extends State<ManholeScreen> {
   CulvertDataModel? zones;
   CulvertDataModel? circles;
   CulvertDataModel? wards;
@@ -60,52 +59,43 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
 
   double fontSize = 14.0;
 
-  late final CommunityHallProvider communityHallProvider;
 
-  String? _selected_floor = null;
-  Category_type? _selected_category_type = null;
-  Business_type? _selected_Business_type = null;
-  Licence? _selected_license = null;
   Quality_waste? _select_quantity;
-  Existing_disposal? _existing_disposal = null;
   TextStyle hintStyle = TextStyle(fontSize: 14);
   var Business_name = TextEditingController();
 
   var shop_flat_address = TextEditingController();
 
 
-  var ownerName = TextEditingController();
-  var owner_mobile_phno = TextEditingController();
+  var inchargeName = TextEditingController();
+  var inchargeMobileNumber = TextEditingController();
   var owner_aadhaar = TextEditingController();
   Existing_disposal? _selected_disposal;
 
-  late CommunityHallProvider provider =
-  Provider.of<CommunityHallProvider>(context, listen: false);
+  late ManHoleProvider provider =
+  Provider.of<ManHoleProvider>(context, listen: false);
 
-  late AddParkingProvider addParkingProvider =
-  Provider.of<AddParkingProvider>(context, listen: false);
+  var manholeName= TextEditingController();
 
-  Type_of_house? _selected_housetype;
+  Type_of_manhole? _selected_manhole;
 
-  var parkingName=TextEditingController();
-
-  var wastageQuantity=TextEditingController();
   @override
   void initState() {
     super.initState();
     _initialisedZones();
     provider.loadCommunityItems(context);
-
+    provider=
+    Provider.of<ManHoleProvider>(context, listen: false);
 
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: FAppBar.getCommonAppBar(title: "Parking"),
-        body: Consumer2<AddParkingProvider,CommunityHallProvider>(
-            builder: (context, residentSnapShot,communityHallSnapshot, child) {
-              return communityHallSnapshot.dropDowns!=null && zones!=null
+        appBar: FAppBar.getCommonAppBar(title: "Manhole/Tree/Bus Stop"),
+        body: Consumer<ManHoleProvider>(
+            builder: (context, snapshot, child) {
+              return snapshot.dropDowns!=null && zones!=null
                   ? ListView(
                 padding: EdgeInsets.symmetric(horizontal: 10),
                 children: [
@@ -405,7 +395,7 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                       ],
                     ),
                   ),
-                  //landmarks
+                  //see landmarks
                   Container(
                     width: MediaQuery.of(context).size.width * 0.80,
                     child: Row(
@@ -475,7 +465,7 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                       ],
                     ),
                   ),
-                  //shop flat address
+                  //see address
                   Container(
                     width: MediaQuery.of(context).size.width * 0.80,
                     child: Row(
@@ -484,7 +474,7 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                         Container(
                           width: MediaQuery.of(context).size.width * 0.20,
                           child: Text(
-                            "House Address",
+                            "Address",
                             style: TextStyle(fontSize: fontSize),
                           ),
                         ),
@@ -520,7 +510,7 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                                         bottom: 11,
                                         top: 11,
                                         right: 15),
-                                    hintText: "Type Address here..."),
+                                    hintText: "Type address here..."),
                               ),
                             ),
                           ),
@@ -528,7 +518,7 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                       ],
                     ),
                   ),
-                  //owner name
+                  //see open place name
                   Container(
                     width: MediaQuery.of(context).size.width * 0.80,
                     child: Row(
@@ -537,7 +527,7 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                         Container(
                           width: MediaQuery.of(context).size.width * 0.20,
                           child: Text(
-                            "Parking Name",
+                            "Manhole Name",
                             style: TextStyle(fontSize: fontSize),
                           ),
                         ),
@@ -560,7 +550,7 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                               ),
                               width: MediaQuery.of(context).size.width * 0.80,
                               child: TextFormField(
-                                controller: parkingName,
+                                controller: manholeName,
                                 decoration: new InputDecoration(
                                     border: InputBorder.none,
                                     hintStyle: hintStyle,
@@ -573,7 +563,7 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                                         bottom: 11,
                                         top: 11,
                                         right: 15),
-                                    hintText: "Type name here..."),
+                                    hintText: "Type Man Hole name here..."),
                               ),
                             ),
                           ),
@@ -581,7 +571,7 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                       ],
                     ),
                   ),
-                  //owner name
+//see manhole type
                   Container(
                     width: MediaQuery.of(context).size.width * 0.80,
                     child: Row(
@@ -590,169 +580,7 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                         Container(
                           width: MediaQuery.of(context).size.width * 0.20,
                           child: Text(
-                            "Owner Name",
-                            style: TextStyle(fontSize: fontSize),
-                          ),
-                        ),
-                        Text(':'),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.60,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: ShapeDecoration(
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                    width: 1.0,
-                                    style: BorderStyle.solid,
-                                    color: Colors.grey,
-                                  ),
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
-                                ),
-                              ),
-                              width: MediaQuery.of(context).size.width * 0.80,
-                              child: TextFormField(
-                                controller: ownerName,
-                                decoration: new InputDecoration(
-                                    border: InputBorder.none,
-                                    hintStyle: hintStyle,
-                                    focusedBorder: InputBorder.none,
-                                    enabledBorder: InputBorder.none,
-                                    errorBorder: InputBorder.none,
-                                    disabledBorder: InputBorder.none,
-                                    contentPadding: EdgeInsets.only(
-                                        left: 15,
-                                        bottom: 11,
-                                        top: 11,
-                                        right: 15),
-                                    hintText: "Type name here..."),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-//owner mobile no
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.80,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.20,
-                          child: Text(
-                            "Owner Mobile Number",
-                            style: TextStyle(fontSize: fontSize),
-                          ),
-                        ),
-                        Text(':'),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.60,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: ShapeDecoration(
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                    width: 1.0,
-                                    style: BorderStyle.solid,
-                                    color: Colors.grey,
-                                  ),
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
-                                ),
-                              ),
-                              width: MediaQuery.of(context).size.width * 0.80,
-                              child: TextFormField(
-                                controller: owner_mobile_phno,
-                                keyboardType: TextInputType.number,
-                                decoration: new InputDecoration(
-                                    border: InputBorder.none,
-                                    hintStyle: hintStyle,
-                                    focusedBorder: InputBorder.none,
-                                    enabledBorder: InputBorder.none,
-                                    errorBorder: InputBorder.none,
-                                    disabledBorder: InputBorder.none,
-                                    contentPadding: EdgeInsets.only(
-                                        left: 15,
-                                        bottom: 11,
-                                        top: 11,
-                                        right: 15),
-                                    hintText: "Type 10 digit number here"),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-//owner adhaar
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.80,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.20,
-                          child: Text(
-                            "Owner Aadhaar Number",
-                            style: TextStyle(fontSize: fontSize),
-                          ),
-                        ),
-                        Text(':'),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.60,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: ShapeDecoration(
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                    width: 1.0,
-                                    style: BorderStyle.solid,
-                                    color: Colors.grey,
-                                  ),
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
-                                ),
-                              ),
-                              width: MediaQuery.of(context).size.width * 0.80,
-                              child: TextFormField(
-                                controller: owner_aadhaar,
-                                keyboardType: TextInputType.number,
-                                decoration: new InputDecoration(
-                                    border: InputBorder.none,
-                                    hintStyle: hintStyle,
-                                    focusedBorder: InputBorder.none,
-                                    enabledBorder: InputBorder.none,
-                                    errorBorder: InputBorder.none,
-                                    disabledBorder: InputBorder.none,
-                                    contentPadding: EdgeInsets.only(
-                                        left: 15,
-                                        bottom: 11,
-                                        top: 11,
-                                        right: 15),
-                                    hintText: "Type Aadhaar here..."),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.80,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.18,
-                          child: Text(
-                            "Business Type",
+                            "Manhole Type",
                             style: TextStyle(fontSize: fontSize),
                           ),
                         ),
@@ -777,99 +605,29 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                               child: Padding(
                                 padding:
                                 const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                                child: DropdownButton<Business_type>(
+                                child: DropdownButton<Type_of_manhole>(
                                   underline: Container(
                                     color: Colors.transparent,
                                   ),
-                                  hint: Text('Select Business Type'),
+                                  hint: Text('Select manhole Type'),
                                   isExpanded: true,
-                                  value: _selected_Business_type,
+                                  value: _selected_manhole,
                                   icon: const Icon(Icons.arrow_drop_down),
                                   iconSize: 20,
                                   elevation: 16,
                                   style: const TextStyle(color: Colors.black),
                                   items: provider.dropDowns!
-                                      .data!.businessType!
-                                      .map<DropdownMenuItem<Business_type>>(
-                                          (Business_type value) {
-                                        return DropdownMenuItem<Business_type>(
+                                      .data!.typeOfManhole!
+                                      .map<DropdownMenuItem<Type_of_manhole>>(
+                                          (Type_of_manhole value) {
+                                        return DropdownMenuItem<Type_of_manhole>(
                                           value: value,
                                           child: Text("${value.name}"),
                                         );
                                       }).toList(),
                                   onChanged: (newValue) async {
                                     setState(() {
-                                      _selected_Business_type = newValue;
-                                    });
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  // resident type
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.80,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.20,
-                          child: Text(
-                            "Resident Type",
-                            style: TextStyle(fontSize: fontSize),
-                          ),
-                        ),
-                        Text(':'),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.60,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: ShapeDecoration(
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                    width: 1.0,
-                                    style: BorderStyle.solid,
-                                    color: Colors.grey,
-                                  ),
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
-                                ),
-                              ),
-                              width: MediaQuery.of(context).size.width * 0.80,
-                              child: Padding(
-                                padding:
-                                const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                                child: DropdownButton<Type_of_house>(
-                                  underline: Container(
-                                    color: Colors.transparent,
-                                  ),
-                                  hint: Text('Select Resident'),
-                                  isExpanded: true,
-                                  value: _selected_housetype,
-                                  icon: const Icon(Icons.arrow_drop_down),
-                                  iconSize: 20,
-                                  elevation: 16,
-                                  style: const TextStyle(color: Colors.black),
-                                  items: provider.dropDowns!
-                                      .data!.typeOfHouse!
-                                      .map<
-                                      DropdownMenuItem<
-                                          Type_of_house>>(
-                                          (Type_of_house value) {
-                                        return DropdownMenuItem<
-                                            Type_of_house>(
-                                          value: value,
-                                          child: Text("${value.type}"),
-                                        );
-                                      }).toList(),
-                                  onChanged: (newValue) async {
-                                    setState(() {
-                                      _selected_housetype = newValue;
+                                      _selected_manhole = newValue;
                                     });
                                   },
                                 ),
@@ -881,199 +639,6 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                     ),
                   ),
 
-                  //Existing disposal
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.80,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.20,
-                          child: Text(
-                            "Existing Disposal",
-                            style: TextStyle(fontSize: fontSize),
-                          ),
-                        ),
-                        Text(':'),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.60,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: ShapeDecoration(
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                    width: 1.0,
-                                    style: BorderStyle.solid,
-                                    color: Colors.grey,
-                                  ),
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
-                                ),
-                              ),
-                              width: MediaQuery.of(context).size.width * 0.80,
-                              child: Padding(
-                                padding:
-                                const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                                child: DropdownButton<Existing_disposal>(
-                                  underline: Container(
-                                    color: Colors.transparent,
-                                  ),
-                                  hint: Text('Select Disposal'),
-                                  isExpanded: true,
-                                  value: _selected_disposal,
-                                  icon: const Icon(Icons.arrow_drop_down),
-                                  iconSize: 20,
-                                  elevation: 16,
-                                  style: const TextStyle(color: Colors.black),
-                                  items: provider.dropDowns!
-                                      .data!.existingDisposal!
-                                      .map<
-                                      DropdownMenuItem<
-                                          Existing_disposal>>(
-                                          (Existing_disposal value) {
-                                        return DropdownMenuItem<
-                                            Existing_disposal>(
-                                          value: value,
-                                          child: Text("${value.disposal}"),
-                                        );
-                                      }).toList(),
-                                  onChanged: (newValue) async {
-                                    setState(() {
-                                      _selected_disposal = newValue;
-                                    });
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  //quantity disposal
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.80,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.20,
-                          child: Text(
-                            "Approx Quantity of waste",
-                            style: TextStyle(fontSize: fontSize),
-                          ),
-                        ),
-                        Text(':'),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.60,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: ShapeDecoration(
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                    width: 1.0,
-                                    style: BorderStyle.solid,
-                                    color: Colors.grey,
-                                  ),
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
-                                ),
-                              ),
-                              width: MediaQuery.of(context).size.width * 0.80,
-                              child: Padding(
-                                padding:
-                                const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                                child: DropdownButton<Quality_waste>(
-                                  underline: Container(
-                                    color: Colors.transparent,
-                                  ),
-                                  hint: Text('Select Quantity'),
-                                  isExpanded: true,
-                                  value: _select_quantity,
-                                  icon: const Icon(Icons.arrow_drop_down),
-                                  iconSize: 20,
-                                  elevation: 16,
-                                  style: const TextStyle(color: Colors.black),
-                                  items: provider.dropDowns!
-                                      .data!.qualityWaste!
-                                      .map<DropdownMenuItem<Quality_waste>>(
-                                          (Quality_waste value) {
-                                        return DropdownMenuItem<Quality_waste>(
-                                          value: value,
-                                          child: Text("${value.waste}"),
-                                        );
-                                      }).toList(),
-                                  onChanged: (newValue) async {
-                                    setState(() {
-                                      _select_quantity = newValue;
-                                    });
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  //quantity disposal
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.80,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.20,
-                          child: Text(
-                            "Wastage Quantity",
-                            style: TextStyle(fontSize: fontSize),
-                          ),
-                        ),
-                        Text(':'),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.60,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: ShapeDecoration(
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                    width: 1.0,
-                                    style: BorderStyle.solid,
-                                    color: Colors.grey,
-                                  ),
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
-                                ),
-                              ),
-                              width: MediaQuery.of(context).size.width * 0.80,
-                              child: TextFormField(
-                                keyboardType: TextInputType.number,
-                                controller: wastageQuantity,
-                                decoration: new InputDecoration(
-                                    border: InputBorder.none,
-                                    hintStyle: hintStyle,
-                                    focusedBorder: InputBorder.none,
-                                    enabledBorder: InputBorder.none,
-                                    errorBorder: InputBorder.none,
-                                    disabledBorder: InputBorder.none,
-                                    contentPadding: EdgeInsets.only(
-                                        left: 15,
-                                        bottom: 11,
-                                        top: 11,
-                                        right: 15),
-                                    hintText: "Type wastage Quantity here..."),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
 
                   // camera container
                   Padding(
@@ -1129,18 +694,11 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                         'area_id': _selected_area?.id??"",
                         'ward_id': _selected_ward?.id??"",
                         'landmark_id': _selected_landmarks?.id??"",
-                        'address': address.text??"",
-                        'parking_name': parkingName.text??"",
-                        'business_type': _selected_Business_type?.name,
-                        'owner_name': ownerName.text,
-                        'owner_mobile': owner_mobile_phno.text,
-                        'owner_aadhar': owner_aadhaar.text,
-                        'type': _selected_housetype?.type??"",
-                        'existing_disposal': _selected_disposal?.disposal??"",
-                        'quality_waste': _select_quantity?.waste??"",
-                        'wastage_quantity': wastageQuantity.text??"",
+                        'address': address.text,
+                        'man_hole_name': manholeName.text,
                         'latitude': (this.locationData?.latitude)?.toString()??"",
-                        'longitude': (this.locationData?.longitude)?.toString()??"",
+                        'longitude': (this.locationData?.latitude)?.toString()??"",
+                        'type': _selected_manhole?.name??"",
                         'images': [
                           for (var file in this.images!)
                             ...{
@@ -1151,16 +709,12 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                       });
 
 
-                      ApiResponse res = await addParkingProvider.addParking(
+
+                      ApiResponse res = await provider.createManhole(
                           formData, context);
                       print(res.status);
                       if (res.status == 200) {
-                        Timer.periodic(Duration(seconds: 2), (timer) async{
-                          timer.cancel();
-                          Navigator.pop(context);
-
-                        });
-
+                        Navigator.pop(context);
                       }
                     },
                   )

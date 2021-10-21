@@ -1,6 +1,6 @@
 /// login : true
 /// status : true
-/// data : {"business_type":[{"name":"Kirana shop"},{"name":"Medical shop"},{"name":"Education"},{"name":"Auto mobiles"}],"category_type":[{"name":"Business"},{"name":"Residencial"},{"name":"Both"}],"licence":[{"licence":"Perminent"},{"licence":"Temporary"},{"licence":"No"}],"existing_disposal":[{"disposal":"Dry"},{"disposal":"Wet"},{"disposal":"Dry & Wet"},{"disposal":"Other"}],"quality_waste":[{"waste":"Killos"},{"waste":"Tones"}],"type_of_house":[{"type":"Pacca"},{"type":"Semi pacca"},{"type":"Kaccha"}]}
+/// data : {"business_type":[{"name":"Kirana shop"},{"name":"Medical shop"},{"name":"Education"},{"name":"Auto mobiles"}],"category_type":[{"name":"Business"},{"name":"Residencial"},{"name":"Both"}],"licence":[{"licence":"Perminent"},{"licence":"Temporary"},{"licence":"No"}],"existing_disposal":[{"disposal":"Dry"},{"disposal":"Wet"},{"disposal":"Dry & Wet"},{"disposal":"Other"}],"quality_waste":[{"waste":"Killos"},{"waste":"Tones"}],"type_of_house":[{"type":"Pacca"},{"type":"Semi pacca"},{"type":"Kaccha"}],"type_of_manhole":[{"name":"Man hole"},{"name":"Tree"},{"name":"Bus stop"}],"type_of_details":[{"name":"Temple"},{"name":"Majid"},{"name":"Church"},{"name":"Yard"},{"name":"Water Tank"},{"name":"Government Property"}]}
 
 class AllDropDownModel {
   AllDropDownModel({
@@ -35,6 +35,8 @@ class AllDropDownModel {
 /// existing_disposal : [{"disposal":"Dry"},{"disposal":"Wet"},{"disposal":"Dry & Wet"},{"disposal":"Other"}]
 /// quality_waste : [{"waste":"Killos"},{"waste":"Tones"}]
 /// type_of_house : [{"type":"Pacca"},{"type":"Semi pacca"},{"type":"Kaccha"}]
+/// type_of_manhole : [{"name":"Man hole"},{"name":"Tree"},{"name":"Bus stop"}]
+/// type_of_details : [{"name":"Temple"},{"name":"Majid"},{"name":"Church"},{"name":"Yard"},{"name":"Water Tank"},{"name":"Government Property"}]
 
 class Data {
   Data({
@@ -43,7 +45,9 @@ class Data {
       this.licence, 
       this.existingDisposal, 
       this.qualityWaste, 
-      this.typeOfHouse,});
+      this.typeOfHouse, 
+      this.typeOfManhole, 
+      this.typeOfDetails,});
 
   Data.fromJson(dynamic json) {
     if (json['business_type'] != null) {
@@ -82,6 +86,18 @@ class Data {
         typeOfHouse?.add(Type_of_house.fromJson(v));
       });
     }
+    if (json['type_of_manhole'] != null) {
+      typeOfManhole = [];
+      json['type_of_manhole'].forEach((v) {
+        typeOfManhole?.add(Type_of_manhole.fromJson(v));
+      });
+    }
+    if (json['type_of_details'] != null) {
+      typeOfDetails = [];
+      json['type_of_details'].forEach((v) {
+        typeOfDetails?.add(Type_of_details.fromJson(v));
+      });
+    }
   }
   List<Business_type>? businessType;
   List<Category_type>? categoryType;
@@ -89,6 +105,8 @@ class Data {
   List<Existing_disposal>? existingDisposal;
   List<Quality_waste>? qualityWaste;
   List<Type_of_house>? typeOfHouse;
+  List<Type_of_manhole>? typeOfManhole;
+  List<Type_of_details>? typeOfDetails;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -110,6 +128,50 @@ class Data {
     if (typeOfHouse != null) {
       map['type_of_house'] = typeOfHouse?.map((v) => v.toJson()).toList();
     }
+    if (typeOfManhole != null) {
+      map['type_of_manhole'] = typeOfManhole?.map((v) => v.toJson()).toList();
+    }
+    if (typeOfDetails != null) {
+      map['type_of_details'] = typeOfDetails?.map((v) => v.toJson()).toList();
+    }
+    return map;
+  }
+
+}
+
+/// name : "Temple"
+
+class Type_of_details {
+  Type_of_details({
+      this.name,});
+
+  Type_of_details.fromJson(dynamic json) {
+    name = json['name'];
+  }
+  String? name;
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['name'] = name;
+    return map;
+  }
+
+}
+
+/// name : "Man hole"
+
+class Type_of_manhole {
+  Type_of_manhole({
+      this.name,});
+
+  Type_of_manhole.fromJson(dynamic json) {
+    name = json['name'];
+  }
+  String? name;
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['name'] = name;
     return map;
   }
 

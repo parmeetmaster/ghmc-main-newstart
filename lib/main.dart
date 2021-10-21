@@ -15,9 +15,11 @@ import 'package:ghmc/provider/culvert/culvert_provider.dart';
 import 'package:ghmc/provider/dashboard_provider/dash_board_provider.dart';
 import 'package:ghmc/provider/location_provider/location_provider.dart';
 import 'package:ghmc/provider/login_provider/login_provider.dart';
+import 'package:ghmc/provider/manhole/manhole.dart';
 import 'package:ghmc/provider/maps_provider/maps_provider.dart';
 import 'package:ghmc/provider/open_place/open_place.dart';
 import 'package:ghmc/provider/splash_provider/splash_provider.dart';
+import 'package:ghmc/provider/temple/temple.dart';
 import 'package:ghmc/provider/toilet/toilet.dart';
 import 'package:ghmc/provider/userHistory_provider/logHistory_provider.dart';
 import 'package:ghmc/screens/login/ghmc_loginpage.dart';
@@ -100,6 +102,8 @@ void main() async {
         ChangeNotifierProvider(create: (ctx) => OpenPlaceProvider()),
         ChangeNotifierProvider(create: (ctx) => AddParkingProvider()),
         ChangeNotifierProvider(create: (ctx) => ToiletProvider()),
+        ChangeNotifierProvider(create: (ctx) => ManHoleProvider()),
+        ChangeNotifierProvider(create: (ctx) => TempleProvider()),
       ],
       child: Phoenix(child: MyApp()),
     ),

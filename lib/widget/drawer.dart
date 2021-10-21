@@ -11,8 +11,10 @@ import 'package:ghmc/screens/complex_bulding/complex_building.dart';
 import 'package:ghmc/screens/create_street_vendor/create_Street_vendor.dart';
 import 'package:ghmc/screens/culvert/addCulvert.dart';
 import 'package:ghmc/screens/culvert/culvertIssues.dart';
+import 'package:ghmc/screens/manhole/manhole.dart';
 import 'package:ghmc/screens/maps/mapScreen.dart';
 import 'package:ghmc/screens/open_place/open_place.dart';
+import 'package:ghmc/screens/temple/temple.dart';
 import 'package:ghmc/screens/toilet/toilet.dart';
 
 import 'package:ghmc/screens/vehicleHistory/absentVehicle.dart';
@@ -327,7 +329,7 @@ class _MainDrawerState extends State<MainDrawer> {
                   size: 25,
                 ),
                 title: Text(
-                  "Add Resident",
+                  "Residents/house",
                   style: TextStyle(
                       fontSize: drawer_item_text, color: Colors.white),
                 ),
@@ -347,7 +349,7 @@ class _MainDrawerState extends State<MainDrawer> {
                   size: 25,
                 ),
                 title: Text(
-                  "Create Street Vendor",
+                  "Street vendor",
                   style: TextStyle(
                       fontSize: drawer_item_text, color: Colors.white),
                 ),
@@ -420,7 +422,46 @@ class _MainDrawerState extends State<MainDrawer> {
                   );
                 },
               ),
-
+              ListTile(
+                leading: Icon(
+                  Icons.wb_sunny,
+                  color: Colors.white,
+                  size: 25,
+                ),
+                title: Text(
+                  "Temple",
+                  style: TextStyle(
+                      fontSize: drawer_item_text, color: Colors.white),
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TempleScreen(),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.remove_circle_outlined,
+                  color: Colors.white,
+                  size: 25,
+                ),
+                title: Text(
+                  "Manhole Registration",
+                  style: TextStyle(
+                      fontSize: drawer_item_text, color: Colors.white),
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ManholeScreen(),
+                    ),
+                  );
+                },
+              ),
 
                 ListTile(
                   leading: Icon(
@@ -437,7 +478,7 @@ class _MainDrawerState extends State<MainDrawer> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ComplaintBuilding(),
+                        builder: (context) => ComplexBuilding(),
                       ),
                     );
                   },

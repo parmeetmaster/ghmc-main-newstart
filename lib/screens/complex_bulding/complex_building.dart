@@ -10,14 +10,14 @@ import 'circle_user_access_complex.dart';
 import 'complex_building_add.dart';
 
 /// pending to show things here api is not ready
-class ComplaintBuilding extends StatefulWidget {
-  const ComplaintBuilding({Key? key}) : super(key: key);
+class ComplexBuilding extends StatefulWidget {
+  const ComplexBuilding({Key? key}) : super(key: key);
 
   @override
-  _ComplaintBuildingState createState() => _ComplaintBuildingState();
+  _ComplexBuildingState createState() => _ComplexBuildingState();
 }
 
-class _ComplaintBuildingState extends State<ComplaintBuilding> {
+class _ComplexBuildingState extends State<ComplexBuilding> {
   @override
   void initState() {
     Provider.of<ComplexBuildingProvider>(context, listen: false)

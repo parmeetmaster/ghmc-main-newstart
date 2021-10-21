@@ -84,6 +84,10 @@ class _CreateStreetVendorState extends State<CreateStreetVendor> {
 
   late CreateStreetVendorProvider createStreetVendor =
   Provider.of<CreateStreetVendorProvider>(context, listen: false);
+
+  var wastageQty=TextEditingController();
+
+  var buisnessname=TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -96,7 +100,7 @@ class _CreateStreetVendorState extends State<CreateStreetVendor> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: FAppBar.getCommonAppBar(title: "Create Street Vendor"),
+        appBar: FAppBar.getCommonAppBar(title: "Street vendor"),
         body: Consumer2<CreateStreetVendorProvider,CommunityHallProvider>(
             builder: (context, residentSnapShot,communityHallSnapshot, child) {
           return communityHallSnapshot.dropDowns!=null && zones!=null
@@ -523,6 +527,127 @@ class _CreateStreetVendorState extends State<CreateStreetVendor> {
                       ),
                     ),*/
 
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.18,
+                            child: Text(
+                              "Business Type",
+                              style: TextStyle(fontSize: fontSize),
+                            ),
+                          ),
+                          Text(':'),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.60,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1.0,
+                                      style: BorderStyle.solid,
+                                      color: Colors.grey,
+                                    ),
+                                    borderRadius:
+                                    BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                ),
+                                width: MediaQuery.of(context).size.width * 0.80,
+                                child: Padding(
+                                  padding:
+                                  const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                                  child: DropdownButton<Business_type>(
+                                    underline: Container(
+                                      color: Colors.transparent,
+                                    ),
+                                    hint: Text('Select Business Type'),
+                                    isExpanded: true,
+                                    value: _selected_Business_type,
+                                    icon: const Icon(Icons.arrow_drop_down),
+                                    iconSize: 20,
+                                    elevation: 16,
+                                    style: const TextStyle(color: Colors.black),
+                                    items: provider.dropDowns!
+                                        .data!.businessType!
+                                        .map<DropdownMenuItem<Business_type>>(
+                                            (Business_type value) {
+                                          return DropdownMenuItem<Business_type>(
+                                            value: value,
+                                            child: Text("${value.name}"),
+                                          );
+                                        }).toList(),
+                                    onChanged: (newValue) async {
+                                      setState(() {
+                                        _selected_Business_type = newValue;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+//buisness name
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.20,
+                            child: Text(
+                              "Business name",
+                              style: TextStyle(fontSize: fontSize),
+                            ),
+                          ),
+                          Text(':'),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.60,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1.0,
+                                      style: BorderStyle.solid,
+                                      color: Colors.grey,
+                                    ),
+                                    borderRadius:
+                                    BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                ),
+                                width: MediaQuery.of(context).size.width * 0.80,
+                                child: TextFormField(
+                                  controller: buisnessname,
+                                  decoration: new InputDecoration(
+                                      border: InputBorder.none,
+                                      hintStyle: hintStyle,
+                                      focusedBorder: InputBorder.none,
+                                      enabledBorder: InputBorder.none,
+                                      errorBorder: InputBorder.none,
+                                      disabledBorder: InputBorder.none,
+                                      contentPadding: EdgeInsets.only(
+                                          left: 15,
+                                          bottom: 11,
+                                          top: 11,
+                                          right: 15),
+                                      hintText: "Type Business name here..."),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+
                     //owner name
                     Container(
                       width: MediaQuery.of(context).size.width * 0.80,
@@ -866,7 +991,7 @@ class _CreateStreetVendorState extends State<CreateStreetVendor> {
                                     underline: Container(
                                       color: Colors.transparent,
                                     ),
-                                    hint: Text('Select Disposal'),
+                                    hint: Text('Select Quantity'),
                                     isExpanded: true,
                                     value: _select_quantity,
                                     icon: const Icon(Icons.arrow_drop_down),
@@ -888,6 +1013,60 @@ class _CreateStreetVendorState extends State<CreateStreetVendor> {
                                       });
                                     },
                                   ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    //wastage quantity
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.20,
+                            child: Text(
+                              "Wastage Quantity",
+                              style: TextStyle(fontSize: fontSize),
+                            ),
+                          ),
+                          Text(':'),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.60,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1.0,
+                                      style: BorderStyle.solid,
+                                      color: Colors.grey,
+                                    ),
+                                    borderRadius:
+                                    BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                ),
+                                width: MediaQuery.of(context).size.width * 0.80,
+                                child: TextFormField(
+                                  controller: wastageQty,
+                                  keyboardType: TextInputType.number,
+                                  decoration: new InputDecoration(
+                                      border: InputBorder.none,
+                                      hintStyle: hintStyle,
+                                      focusedBorder: InputBorder.none,
+                                      enabledBorder: InputBorder.none,
+                                      errorBorder: InputBorder.none,
+                                      disabledBorder: InputBorder.none,
+                                      contentPadding: EdgeInsets.only(
+                                          left: 15,
+                                          bottom: 11,
+                                          top: 11,
+                                          right: 15),
+                                      hintText: "Type Waste Quantity here..."),
                                 ),
                               ),
                             ),
@@ -949,13 +1128,17 @@ class _CreateStreetVendorState extends State<CreateStreetVendor> {
                           'area_id': _selected_area?.id??"",
                           'ward_id': _selected_ward?.id??"",
                           'landmark_id': _selected_landmarks?.id??"",
-                       /*   'business_type': _selected_Business_type?.name,*/
+                          'business_type': _selected_Business_type?.name,
+
+                          'business_name': buisnessname.text,
                        /*   'house_address': shop_flat_address.text,*/
                           'owner_name': ownerName.text,
                           'owner_mobile': owner_mobile_phno.text,
                           'owner_aadhar': owner_aadhaar.text,
+
                           'existing_disposal': _selected_disposal?.disposal??"",
                           'quality_waste': _select_quantity?.waste??"",
+                          'wastage_quantity': wastageQty.text,
                           'latitude': (this.locationData?.latitude)?.toString()??"",
                           'longitude': (this.locationData?.longitude)?.toString()??"",
                           'images': [

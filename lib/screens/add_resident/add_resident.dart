@@ -85,6 +85,8 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
   Provider.of<AddResidentProvider>(context, listen: false);
 
   Type_of_house? _selected_housetype;
+
+  var wastageQty=TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -97,7 +99,7 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: FAppBar.getCommonAppBar(title: "Add Resident"),
+        appBar: FAppBar.getCommonAppBar(title: "Residents/house"),
         body: Consumer2<AddResidentProvider,CommunityHallProvider>(
             builder: (context, residentSnapShot,communityHallSnapshot, child) {
           return communityHallSnapshot.dropDowns!=null && zones!=null
@@ -686,7 +688,7 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                       ),
                     ),
 
-
+/*
                     Container(
                       width: MediaQuery.of(context).size.width * 0.80,
                       child: Row(
@@ -752,7 +754,7 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                           ),
                         ],
                       ),
-                    ),
+                    ),*/
    // resident type
                     Container(
                       width: MediaQuery.of(context).size.width * 0.80,
@@ -933,7 +935,7 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                                     underline: Container(
                                       color: Colors.transparent,
                                     ),
-                                    hint: Text('Select Disposal'),
+                                    hint: Text('Select Quantity Type'),
                                     isExpanded: true,
                                     value: _select_quantity,
                                     icon: const Icon(Icons.arrow_drop_down),
@@ -962,6 +964,63 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                         ],
                       ),
                     ),
+
+                    //wastage Quantity
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.20,
+                            child: Text(
+                              "Wastage Quantity",
+                              style: TextStyle(fontSize: fontSize),
+                            ),
+                          ),
+                          Text(':'),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.60,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1.0,
+                                      style: BorderStyle.solid,
+                                      color: Colors.grey,
+                                    ),
+                                    borderRadius:
+                                    BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                ),
+                                width: MediaQuery.of(context).size.width * 0.80,
+                                child: TextFormField(
+                                  controller: wastageQty,
+                                  keyboardType: TextInputType.number,
+                                  decoration: new InputDecoration(
+                                      border: InputBorder.none,
+                                      hintStyle: hintStyle,
+                                      focusedBorder: InputBorder.none,
+                                      enabledBorder: InputBorder.none,
+                                      errorBorder: InputBorder.none,
+                                      disabledBorder: InputBorder.none,
+                                      contentPadding: EdgeInsets.only(
+                                          left: 15,
+                                          bottom: 11,
+                                          top: 11,
+                                          right: 15),
+                                      hintText: "Type Wastage Quantity here..."),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+
                     // camera container
                     Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -1021,6 +1080,7 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                           'owner_name': ownerName.text,
                           'owner_mobile': owner_mobile_phno.text,
                           'owner_aadhar': owner_aadhaar.text,
+                          'wastage_quantity': wastageQty.text,
                           'type': _selected_housetype??"",
                           'existing_disposal': _selected_disposal?.disposal??"",
                           'quality_waste': _select_quantity?.waste??"",

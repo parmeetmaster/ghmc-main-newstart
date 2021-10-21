@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -9,11 +8,11 @@ import 'package:ghmc/globals/globals.dart';
 import 'package:ghmc/model/all_drop_down_model.dart';
 
 import 'package:ghmc/model/culvert/area_model.dart';
-import 'package:ghmc/provider/add_parking/add_parking.dart';
-import 'package:ghmc/provider/add_resident/add_resident_provider.dart';
 import 'package:ghmc/provider/community_hall/community_hall.dart';
 import 'package:ghmc/provider/complex_building/complex_building.dart';
 import 'package:ghmc/provider/culvert/culvert_provider.dart';
+import 'package:ghmc/provider/open_place/open_place.dart';
+import 'package:ghmc/provider/temple/temple.dart';
 import 'package:ghmc/util/extension.dart';
 import 'package:ghmc/util/m_progress_indicator.dart';
 import 'package:ghmc/widget/appbar/appbar.dart';
@@ -27,14 +26,14 @@ import 'package:provider/provider.dart';
 import 'package:ghmc/util/utils.dart';
 
 @immutable
-class AddParkingScreen extends StatefulWidget {
-  AddParkingScreen({Key? key}) : super(key: key);
+class TempleScreen extends StatefulWidget {
+  TempleScreen({Key? key}) : super(key: key);
 
   @override
-  _AddParkingScreenState createState() => _AddParkingScreenState();
+  _TempleScreenState createState() => _TempleScreenState();
 }
 
-class _AddParkingScreenState extends State<AddParkingScreen> {
+class _TempleScreenState extends State<TempleScreen> {
   CulvertDataModel? zones;
   CulvertDataModel? circles;
   CulvertDataModel? wards;
@@ -60,52 +59,45 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
 
   double fontSize = 14.0;
 
-  late final CommunityHallProvider communityHallProvider;
 
-  String? _selected_floor = null;
-  Category_type? _selected_category_type = null;
-  Business_type? _selected_Business_type = null;
-  Licence? _selected_license = null;
   Quality_waste? _select_quantity;
-  Existing_disposal? _existing_disposal = null;
   TextStyle hintStyle = TextStyle(fontSize: 14);
   var Business_name = TextEditingController();
 
   var shop_flat_address = TextEditingController();
 
 
-  var ownerName = TextEditingController();
-  var owner_mobile_phno = TextEditingController();
+  var inchargeName = TextEditingController();
+  var inchargeMobileNumber = TextEditingController();
   var owner_aadhaar = TextEditingController();
   Existing_disposal? _selected_disposal;
 
-  late CommunityHallProvider provider =
-  Provider.of<CommunityHallProvider>(context, listen: false);
+  late TempleProvider provider =
+  Provider.of<TempleProvider>(context, listen: false);
 
-  late AddParkingProvider addParkingProvider =
-  Provider.of<AddParkingProvider>(context, listen: false);
+  var templeName= TextEditingController();
 
-  Type_of_house? _selected_housetype;
+  var wastageQty=TextEditingController();
 
-  var parkingName=TextEditingController();
+  Type_of_details? _selectedPlace;
 
-  var wastageQuantity=TextEditingController();
   @override
   void initState() {
     super.initState();
     _initialisedZones();
     provider.loadCommunityItems(context);
-
+    provider=
+    Provider.of<TempleProvider>(context, listen: false);
 
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: FAppBar.getCommonAppBar(title: "Parking"),
-        body: Consumer2<AddParkingProvider,CommunityHallProvider>(
-            builder: (context, residentSnapShot,communityHallSnapshot, child) {
-              return communityHallSnapshot.dropDowns!=null && zones!=null
+        appBar: FAppBar.getCommonAppBar(title: "Temple"),
+        body: Consumer<TempleProvider>(
+            builder: (context, snapshot, child) {
+              return snapshot.dropDowns!=null && zones!=null
                   ? ListView(
                 padding: EdgeInsets.symmetric(horizontal: 10),
                 children: [
@@ -405,7 +397,7 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                       ],
                     ),
                   ),
-                  //landmarks
+                  //see landmarks
                   Container(
                     width: MediaQuery.of(context).size.width * 0.80,
                     child: Row(
@@ -475,7 +467,7 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                       ],
                     ),
                   ),
-                  //shop flat address
+                  //see address
                   Container(
                     width: MediaQuery.of(context).size.width * 0.80,
                     child: Row(
@@ -484,7 +476,7 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                         Container(
                           width: MediaQuery.of(context).size.width * 0.20,
                           child: Text(
-                            "House Address",
+                            "Address",
                             style: TextStyle(fontSize: fontSize),
                           ),
                         ),
@@ -520,7 +512,7 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                                         bottom: 11,
                                         top: 11,
                                         right: 15),
-                                    hintText: "Type Address here..."),
+                                    hintText: "Type address here..."),
                               ),
                             ),
                           ),
@@ -528,7 +520,7 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                       ],
                     ),
                   ),
-                  //owner name
+                  //see open place name
                   Container(
                     width: MediaQuery.of(context).size.width * 0.80,
                     child: Row(
@@ -537,7 +529,7 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                         Container(
                           width: MediaQuery.of(context).size.width * 0.20,
                           child: Text(
-                            "Parking Name",
+                            "Temple Name",
                             style: TextStyle(fontSize: fontSize),
                           ),
                         ),
@@ -560,7 +552,60 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                               ),
                               width: MediaQuery.of(context).size.width * 0.80,
                               child: TextFormField(
-                                controller: parkingName,
+                                controller: templeName,
+                                decoration: new InputDecoration(
+                                    border: InputBorder.none,
+                                    hintStyle: hintStyle,
+                                    focusedBorder: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    contentPadding: EdgeInsets.only(
+                                        left: 15,
+                                        bottom: 11,
+                                        top: 11,
+                                        right: 15),
+                                    hintText: "Type Place name here..."),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+//see incharge name
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.80,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.20,
+                          child: Text(
+                            "Incharge Name",
+                            style: TextStyle(fontSize: fontSize),
+                          ),
+                        ),
+                        Text(':'),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.60,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: ShapeDecoration(
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                    width: 1.0,
+                                    style: BorderStyle.solid,
+                                    color: Colors.grey,
+                                  ),
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(5.0)),
+                                ),
+                              ),
+                              width: MediaQuery.of(context).size.width * 0.80,
+                              child: TextFormField(
+                                controller: inchargeName,
                                 decoration: new InputDecoration(
                                     border: InputBorder.none,
                                     hintStyle: hintStyle,
@@ -581,7 +626,7 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                       ],
                     ),
                   ),
-                  //owner name
+//incharge mobile no
                   Container(
                     width: MediaQuery.of(context).size.width * 0.80,
                     child: Row(
@@ -590,7 +635,7 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                         Container(
                           width: MediaQuery.of(context).size.width * 0.20,
                           child: Text(
-                            "Owner Name",
+                            "Incharge Mobile Number",
                             style: TextStyle(fontSize: fontSize),
                           ),
                         ),
@@ -613,60 +658,7 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                               ),
                               width: MediaQuery.of(context).size.width * 0.80,
                               child: TextFormField(
-                                controller: ownerName,
-                                decoration: new InputDecoration(
-                                    border: InputBorder.none,
-                                    hintStyle: hintStyle,
-                                    focusedBorder: InputBorder.none,
-                                    enabledBorder: InputBorder.none,
-                                    errorBorder: InputBorder.none,
-                                    disabledBorder: InputBorder.none,
-                                    contentPadding: EdgeInsets.only(
-                                        left: 15,
-                                        bottom: 11,
-                                        top: 11,
-                                        right: 15),
-                                    hintText: "Type name here..."),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-//owner mobile no
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.80,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.20,
-                          child: Text(
-                            "Owner Mobile Number",
-                            style: TextStyle(fontSize: fontSize),
-                          ),
-                        ),
-                        Text(':'),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.60,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: ShapeDecoration(
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                    width: 1.0,
-                                    style: BorderStyle.solid,
-                                    color: Colors.grey,
-                                  ),
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
-                                ),
-                              ),
-                              width: MediaQuery.of(context).size.width * 0.80,
-                              child: TextFormField(
-                                controller: owner_mobile_phno,
+                                controller: inchargeMobileNumber,
                                 keyboardType: TextInputType.number,
                                 decoration: new InputDecoration(
                                     border: InputBorder.none,
@@ -680,199 +672,7 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                                         bottom: 11,
                                         top: 11,
                                         right: 15),
-                                    hintText: "Type 10 digit number here"),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-//owner adhaar
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.80,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.20,
-                          child: Text(
-                            "Owner Aadhaar Number",
-                            style: TextStyle(fontSize: fontSize),
-                          ),
-                        ),
-                        Text(':'),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.60,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: ShapeDecoration(
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                    width: 1.0,
-                                    style: BorderStyle.solid,
-                                    color: Colors.grey,
-                                  ),
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
-                                ),
-                              ),
-                              width: MediaQuery.of(context).size.width * 0.80,
-                              child: TextFormField(
-                                controller: owner_aadhaar,
-                                keyboardType: TextInputType.number,
-                                decoration: new InputDecoration(
-                                    border: InputBorder.none,
-                                    hintStyle: hintStyle,
-                                    focusedBorder: InputBorder.none,
-                                    enabledBorder: InputBorder.none,
-                                    errorBorder: InputBorder.none,
-                                    disabledBorder: InputBorder.none,
-                                    contentPadding: EdgeInsets.only(
-                                        left: 15,
-                                        bottom: 11,
-                                        top: 11,
-                                        right: 15),
-                                    hintText: "Type Aadhaar here..."),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.80,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.18,
-                          child: Text(
-                            "Business Type",
-                            style: TextStyle(fontSize: fontSize),
-                          ),
-                        ),
-                        Text(':'),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.60,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: ShapeDecoration(
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                    width: 1.0,
-                                    style: BorderStyle.solid,
-                                    color: Colors.grey,
-                                  ),
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
-                                ),
-                              ),
-                              width: MediaQuery.of(context).size.width * 0.80,
-                              child: Padding(
-                                padding:
-                                const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                                child: DropdownButton<Business_type>(
-                                  underline: Container(
-                                    color: Colors.transparent,
-                                  ),
-                                  hint: Text('Select Business Type'),
-                                  isExpanded: true,
-                                  value: _selected_Business_type,
-                                  icon: const Icon(Icons.arrow_drop_down),
-                                  iconSize: 20,
-                                  elevation: 16,
-                                  style: const TextStyle(color: Colors.black),
-                                  items: provider.dropDowns!
-                                      .data!.businessType!
-                                      .map<DropdownMenuItem<Business_type>>(
-                                          (Business_type value) {
-                                        return DropdownMenuItem<Business_type>(
-                                          value: value,
-                                          child: Text("${value.name}"),
-                                        );
-                                      }).toList(),
-                                  onChanged: (newValue) async {
-                                    setState(() {
-                                      _selected_Business_type = newValue;
-                                    });
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  // resident type
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.80,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.20,
-                          child: Text(
-                            "Resident Type",
-                            style: TextStyle(fontSize: fontSize),
-                          ),
-                        ),
-                        Text(':'),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.60,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: ShapeDecoration(
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                    width: 1.0,
-                                    style: BorderStyle.solid,
-                                    color: Colors.grey,
-                                  ),
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
-                                ),
-                              ),
-                              width: MediaQuery.of(context).size.width * 0.80,
-                              child: Padding(
-                                padding:
-                                const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                                child: DropdownButton<Type_of_house>(
-                                  underline: Container(
-                                    color: Colors.transparent,
-                                  ),
-                                  hint: Text('Select Resident'),
-                                  isExpanded: true,
-                                  value: _selected_housetype,
-                                  icon: const Icon(Icons.arrow_drop_down),
-                                  iconSize: 20,
-                                  elevation: 16,
-                                  style: const TextStyle(color: Colors.black),
-                                  items: provider.dropDowns!
-                                      .data!.typeOfHouse!
-                                      .map<
-                                      DropdownMenuItem<
-                                          Type_of_house>>(
-                                          (Type_of_house value) {
-                                        return DropdownMenuItem<
-                                            Type_of_house>(
-                                          value: value,
-                                          child: Text("${value.type}"),
-                                        );
-                                      }).toList(),
-                                  onChanged: (newValue) async {
-                                    setState(() {
-                                      _selected_housetype = newValue;
-                                    });
-                                  },
-                                ),
+                                    hintText: "Type 10 digit number here..."),
                               ),
                             ),
                           ),
@@ -952,6 +752,74 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                     ),
                   ),
 
+                  //type
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.80,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.20,
+                          child: Text(
+                            "Place Type",
+                            style: TextStyle(fontSize: fontSize),
+                          ),
+                        ),
+                        Text(':'),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.60,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: ShapeDecoration(
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                    width: 1.0,
+                                    style: BorderStyle.solid,
+                                    color: Colors.grey,
+                                  ),
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(5.0)),
+                                ),
+                              ),
+                              width: MediaQuery.of(context).size.width * 0.80,
+                              child: Padding(
+                                padding:
+                                const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                                child: DropdownButton<Type_of_details>(
+                                  underline: Container(
+                                    color: Colors.transparent,
+                                  ),
+                                  hint: Text('Select Place'),
+                                  isExpanded: true,
+                                  value: _selectedPlace,
+                                  icon: const Icon(Icons.arrow_drop_down),
+                                  iconSize: 20,
+                                  elevation: 16,
+                                  style: const TextStyle(color: Colors.black),
+                                  items: provider.dropDowns!
+                                      .data!.typeOfDetails!
+                                      .map<DropdownMenuItem<Type_of_details>>(
+                                          (Type_of_details value) {
+                                        return DropdownMenuItem<Type_of_details>(
+                                          value: value,
+                                          child: Text("${value.name}"),
+                                        );
+                                      }).toList(),
+                                  onChanged: (newValue) async {
+                                    setState(() {
+                                      _selectedPlace = newValue;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
                   //quantity disposal
                   Container(
                     width: MediaQuery.of(context).size.width * 0.80,
@@ -961,7 +829,7 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                         Container(
                           width: MediaQuery.of(context).size.width * 0.20,
                           child: Text(
-                            "Approx Quantity of waste",
+                            "Quantity of waste",
                             style: TextStyle(fontSize: fontSize),
                           ),
                         ),
@@ -990,7 +858,7 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                                   underline: Container(
                                     color: Colors.transparent,
                                   ),
-                                  hint: Text('Select Quantity'),
+                                  hint: Text('Select Quantity Type'),
                                   isExpanded: true,
                                   value: _select_quantity,
                                   icon: const Icon(Icons.arrow_drop_down),
@@ -1020,7 +888,6 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                     ),
                   ),
 
-                  //quantity disposal
                   Container(
                     width: MediaQuery.of(context).size.width * 0.80,
                     child: Row(
@@ -1029,7 +896,7 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                         Container(
                           width: MediaQuery.of(context).size.width * 0.20,
                           child: Text(
-                            "Wastage Quantity",
+                            "Wastage Quantity ",
                             style: TextStyle(fontSize: fontSize),
                           ),
                         ),
@@ -1052,8 +919,8 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                               ),
                               width: MediaQuery.of(context).size.width * 0.80,
                               child: TextFormField(
+                                controller: wastageQty,
                                 keyboardType: TextInputType.number,
-                                controller: wastageQuantity,
                                 decoration: new InputDecoration(
                                     border: InputBorder.none,
                                     hintStyle: hintStyle,
@@ -1066,7 +933,7 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                                         bottom: 11,
                                         top: 11,
                                         right: 15),
-                                    hintText: "Type wastage Quantity here..."),
+                                    hintText: "Type Wastage Quantity "),
                               ),
                             ),
                           ),
@@ -1129,18 +996,16 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                         'area_id': _selected_area?.id??"",
                         'ward_id': _selected_ward?.id??"",
                         'landmark_id': _selected_landmarks?.id??"",
-                        'address': address.text??"",
-                        'parking_name': parkingName.text??"",
-                        'business_type': _selected_Business_type?.name,
-                        'owner_name': ownerName.text,
-                        'owner_mobile': owner_mobile_phno.text,
-                        'owner_aadhar': owner_aadhaar.text,
-                        'type': _selected_housetype?.type??"",
+                        'address': address.text,
+                        'temple_name': templeName.text,
+                        'incharge_name': inchargeName.text,
+                        'incharge_mobile': inchargeMobileNumber.text,
                         'existing_disposal': _selected_disposal?.disposal??"",
-                        'quality_waste': _select_quantity?.waste??"",
-                        'wastage_quantity': wastageQuantity.text??"",
+                        'quality_of_waste': _select_quantity?.waste??"",
+                        'wastage_quantity': wastageQty.text,
+                        'type': _selectedPlace?.name??"",
                         'latitude': (this.locationData?.latitude)?.toString()??"",
-                        'longitude': (this.locationData?.longitude)?.toString()??"",
+                        'longitude': (this.locationData?.latitude)?.toString()??"",
                         'images': [
                           for (var file in this.images!)
                             ...{
@@ -1151,16 +1016,12 @@ class _AddParkingScreenState extends State<AddParkingScreen> {
                       });
 
 
-                      ApiResponse res = await addParkingProvider.addParking(
+
+                      ApiResponse res = await provider.createTemple(
                           formData, context);
                       print(res.status);
                       if (res.status == 200) {
-                        Timer.periodic(Duration(seconds: 2), (timer) async{
-                          timer.cancel();
-                          Navigator.pop(context);
-
-                        });
-
+                        Navigator.pop(context);
                       }
                     },
                   )

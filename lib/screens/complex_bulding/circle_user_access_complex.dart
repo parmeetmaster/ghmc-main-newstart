@@ -63,6 +63,8 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
   var owner_aadhaar=TextEditingController();
   Existing_disposal? _selected_disposal;
 
+  var wastageQty=TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -768,7 +770,7 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                                     underline: Container(
                                       color: Colors.transparent,
                                     ),
-                                    hint: Text('Select Disposal'),
+                                    hint: Text('Select Quantity'),
                                     isExpanded: true,
                                     value: _select_quantity,
                                     icon: const Icon(Icons.arrow_drop_down),
@@ -797,6 +799,61 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                         ],
                       ),
                     ),
+                    //Enter quantity
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.20,
+                            child: Text(
+                              "Wastage Quantity",
+                              style: TextStyle(fontSize: fontSize),
+                            ),
+                          ),
+                          Text(':'),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.64,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1.0,
+                                      style: BorderStyle.solid,
+                                      color: Colors.grey,
+                                    ),
+                                    borderRadius:
+                                    BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                ),
+                                width: MediaQuery.of(context).size.width * 0.80,
+                                child: TextFormField(
+                                  controller: wastageQty,
+                                  keyboardType: TextInputType.number,
+                                  decoration: new InputDecoration(
+                                      border: InputBorder.none,
+                                      focusedBorder: InputBorder.none,
+                                      enabledBorder: InputBorder.none,
+                                      errorBorder: InputBorder.none,
+                                      disabledBorder: InputBorder.none,
+                                      contentPadding: EdgeInsets.only(
+                                          left: 15,
+                                          bottom: 11,
+                                          top: 11,
+                                          right: 15),
+                                      hintStyle: hintStyle,
+                                      hintText: "Type wastage Quantity"),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
                     // camera container
                     Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -879,6 +936,7 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                           'owner_mobile': this.owner_mobile_phno.text,
                           'owner_aadhar': this.owner_aadhaar.text,
                           'licence_number': this._selected_license?.licence??"",
+                          'wastage_quantity': this.wastageQty.text,
                           'existing_disposal': this._selected_disposal?.disposal??"",
                           'approx_quality_waste': this._select_quantity!.waste??"",
                           'latitude': (this.locationData?.latitude).toString(),
