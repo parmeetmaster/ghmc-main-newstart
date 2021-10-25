@@ -34,15 +34,18 @@ import 'package:ghmc/util/extension.dart';
 class AddParkingProvider extends ChangeNotifier{
   AllDropDownModel? dropDowns;
   addParking(FormData formData, BuildContext context) async {
-    ApiResponse response = await ApiBase().baseFunction(() =>
-        ApiBase().getInstance()!.post("/createparking", data: formData));
-    if (response.status == 200) {
-      response.message!.showSnackbar(context);
-      return response;
-    } else {
-      response.message!.showSnackbar(context);
-      return response;
-    }
+ try{
+   ApiResponse response = await ApiBase().baseFunction(() =>
+       ApiBase().getInstance()!.post("/createparking", data: formData));
+   if (response.status == 200) {
+     response.message!.showSnackbar(context);
+     return response;
+   } else {
+     response.message!.showSnackbar(context);
+     return response;
+   }
+
+ }catch(e){}
   }
 
 

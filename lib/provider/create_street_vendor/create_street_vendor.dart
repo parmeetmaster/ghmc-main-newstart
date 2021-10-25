@@ -30,18 +30,21 @@ import 'package:ghmc/util/utils.dart';
 class CreateStreetVendorProvider extends ChangeNotifier{
 
   createVendorProfile( FormData formData,BuildContext context)async{
-    ApiResponse response = await ApiBase().baseFunction(() => ApiBase()
-        .getInstance()!
-        .post("/createstreetvendor", data: formData));
-    if (response.status == 200) {
-      response.message!.showSnackbar(context);
-      return response;
-    } else {
-      response.message!.showSnackbar(context);
-      return response;
-    }
+ try{
+   ApiResponse response = await ApiBase().baseFunction(() => ApiBase()
+       .getInstance()!
+       .post("/createstreetvendor", data: formData));
+   if (response.status == 200) {
+     response.message!.showSnackbar(context);
+     return response;
+   } else {
+     response.message!.showSnackbar(context);
+     return response;
+   }
 
 
+
+ }catch(e){}
   }
 
 

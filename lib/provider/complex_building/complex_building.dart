@@ -24,6 +24,7 @@ class ComplexBuildingProvider extends ChangeNotifier {
   }
 
   uploadComplexBuildingDetails(FormData data, BuildContext context) async {
+  try{
     ApiResponse response = await ApiBase().baseFunction(() =>
         ApiBase().getInstance()!.post("/createcomplex_build_two", data: data));
     if (response.status == 200) {
@@ -33,6 +34,8 @@ class ComplexBuildingProvider extends ChangeNotifier {
       response.message!.showSnackbar(context);
       return response;
     }
+  }
+  catch(e){}
   }
 
 

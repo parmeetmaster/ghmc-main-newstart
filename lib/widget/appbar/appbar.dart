@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ghmc/globals/constants.dart';
 
 abstract class FAppBar {
-  static getCommonAppBar({String title = ""}) {
+  static getCommonAppBar({String title = "", TextStyle? textStyle}) {
     return AppBar(
       flexibleSpace: Container(
         decoration: BoxDecoration(
@@ -11,7 +11,7 @@ abstract class FAppBar {
           ),
         ),
       ),
-      title: Text('${title}'),
+      title: Text('${title}',style: textStyle,),
     );
   }
 

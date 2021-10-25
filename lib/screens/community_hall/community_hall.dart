@@ -17,6 +17,7 @@ import 'package:ghmc/widget/appbar/appbar.dart';
 import 'package:ghmc/widget/buttons/gradeint_button.dart';
 import 'package:ghmc/widget/container/camera_container.dart';
 import 'package:ghmc/widget/container/map_container.dart';
+import 'package:ghmc/widget/grid/grid_image.dart';
 import 'package:ghmc/widget/loading_widget.dart';
 import 'package:location_platform_interface/location_platform_interface.dart';
 import 'package:provider/provider.dart';
@@ -70,7 +71,6 @@ class _CommunityHallScreenState extends State<CommunityHallScreen> {
 
   var shop_flat_address = TextEditingController();
 
-
   var ownerName = TextEditingController();
   var owner_mobile_phno = TextEditingController();
   var owner_aadhaar = TextEditingController();
@@ -79,26 +79,26 @@ class _CommunityHallScreenState extends State<CommunityHallScreen> {
   late CommunityHallProvider provider =
       Provider.of<CommunityHallProvider>(context, listen: false);
 
-  var buisnessname= TextEditingController();
+  var buisnessname = TextEditingController();
 
-  var wasteageQty=TextEditingController();
+  var wasteageQty = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _initialisedZones();
     provider.loadCommunityItems(context);
-
-
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: FAppBar.getCommonAppBar(title: "Community Hall"),
+        appBar: FAppBar.getCommonAppBar(
+            title: "Commercial Establishment/ Community hall",
+            textStyle: TextStyle(fontSize: 13)),
         body: Consumer<CommunityHallProvider>(
             builder: (context, snapshot, child) {
-          return snapshot.dropDowns!=null && zones!=null
+          return snapshot.dropDowns != null && zones != null
               ? ListView(
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   children: [
@@ -513,8 +513,8 @@ class _CommunityHallScreenState extends State<CommunityHallScreen> {
                                     iconSize: 20,
                                     elevation: 16,
                                     style: const TextStyle(color: Colors.black),
-                                    items: provider.dropDowns!
-                                        .data!.businessType!
+                                    items: provider
+                                        .dropDowns!.data!.businessType!
                                         .map<DropdownMenuItem<Business_type>>(
                                             (Business_type value) {
                                       return DropdownMenuItem<Business_type>(
@@ -562,7 +562,7 @@ class _CommunityHallScreenState extends State<CommunityHallScreen> {
                                       color: Colors.grey,
                                     ),
                                     borderRadius:
-                                    BorderRadius.all(Radius.circular(5.0)),
+                                        BorderRadius.all(Radius.circular(5.0)),
                                   ),
                                 ),
                                 width: MediaQuery.of(context).size.width * 0.80,
@@ -741,7 +741,8 @@ class _CommunityHallScreenState extends State<CommunityHallScreen> {
                                           bottom: 11,
                                           top: 11,
                                           right: 15),
-                                      hintText: "Type 10 digit number here...community_hall.dart"),
+                                      hintText:
+                                          "Type 10 digit number here...community_hall.dart"),
                                 ),
                               ),
                             ),
@@ -849,8 +850,7 @@ class _CommunityHallScreenState extends State<CommunityHallScreen> {
                                     iconSize: 20,
                                     elevation: 16,
                                     style: const TextStyle(color: Colors.black),
-                                    items: provider
-                                        .dropDowns!.data!.licence!
+                                    items: provider.dropDowns!.data!.licence!
                                         .map<DropdownMenuItem<Licence>>(
                                             (Licence value) {
                                       return DropdownMenuItem<Licence>(
@@ -916,8 +916,8 @@ class _CommunityHallScreenState extends State<CommunityHallScreen> {
                                     iconSize: 20,
                                     elevation: 16,
                                     style: const TextStyle(color: Colors.black),
-                                    items: provider.dropDowns!
-                                        .data!.existingDisposal!
+                                    items: provider
+                                        .dropDowns!.data!.existingDisposal!
                                         .map<
                                                 DropdownMenuItem<
                                                     Existing_disposal>>(
@@ -942,8 +942,6 @@ class _CommunityHallScreenState extends State<CommunityHallScreen> {
                       ),
                     ),
 
-
-
                     //quantity disposal
                     Container(
                       width: MediaQuery.of(context).size.width * 0.80,
@@ -953,7 +951,7 @@ class _CommunityHallScreenState extends State<CommunityHallScreen> {
                           Container(
                             width: MediaQuery.of(context).size.width * 0.20,
                             child: Text(
-                              "Quantity of waste",
+                              "Select Quantity",
                               style: TextStyle(fontSize: fontSize),
                             ),
                           ),
@@ -989,8 +987,8 @@ class _CommunityHallScreenState extends State<CommunityHallScreen> {
                                     iconSize: 20,
                                     elevation: 16,
                                     style: const TextStyle(color: Colors.black),
-                                    items: provider.dropDowns!
-                                        .data!.qualityWaste!
+                                    items: provider
+                                        .dropDowns!.data!.qualityWaste!
                                         .map<DropdownMenuItem<Quality_waste>>(
                                             (Quality_waste value) {
                                       return DropdownMenuItem<Quality_waste>(
@@ -1020,7 +1018,7 @@ class _CommunityHallScreenState extends State<CommunityHallScreen> {
                           Container(
                             width: MediaQuery.of(context).size.width * 0.20,
                             child: Text(
-                              "Wastage Quantity",
+                              "Wastage Weight",
                               style: TextStyle(fontSize: fontSize),
                             ),
                           ),
@@ -1038,7 +1036,7 @@ class _CommunityHallScreenState extends State<CommunityHallScreen> {
                                       color: Colors.grey,
                                     ),
                                     borderRadius:
-                                    BorderRadius.all(Radius.circular(5.0)),
+                                        BorderRadius.all(Radius.circular(5.0)),
                                   ),
                                 ),
                                 width: MediaQuery.of(context).size.width * 0.80,
@@ -1074,27 +1072,28 @@ class _CommunityHallScreenState extends State<CommunityHallScreen> {
                         },
                       ),
                     ),
-                         Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: CameraContainer(
-                        cameraData: (s) async {
-                          MProgressIndicator.show(context);
-                          try {
-                            List<File>? tempimages = [];
-                           await Future.forEach(s,(e)async{
-                             print(e);
-                                File? file = await FileSupport().compressImage(e as File);
-                                tempimages.add(file!);
-
-                            });
-                            this.images!.clear();
-                            this.images!.addAll(tempimages);
-                          } catch (e) {
-                            MProgressIndicator.hide();
-                          }
+                    GridImage(
+                      context: context,
+                      onchange: (List<File> files) async {
+                        MProgressIndicator.show(context);
+                        try {
+                          List<File>? tempimages = [];
+                          await Future.forEach(files, (e) async {
+                            print(e);
+                            File? file =
+                                await FileSupport().compressImage(e as File);
+                            tempimages.add(file!);
+                          });
+                          this.images!.clear();
+                          "${tempimages.length} are compress"
+                              .toString()
+                              .printwtf;
+                          this.images!.addAll(tempimages);
+                        } catch (e) {
                           MProgressIndicator.hide();
-                        },
-                      ),
+                        }
+                        MProgressIndicator.hide();
+                      },
                     ),
 
                     SizedBox(
@@ -1140,49 +1139,15 @@ class _CommunityHallScreenState extends State<CommunityHallScreen> {
                           ]
                         });
 
-                        /*     FormData formData1 = FormData.fromMap({
-                          'user_id': Globals.userData!.data!.userId!,
-                          'floor': this._selected_floor!,
-                          'floor_no':this.floors.text,
-                          'category': this._selected_category_type?.name??"",
-                          'business_type': this._selected_Business_type?.name??"",
-                          'business_name': this.Business_name.text,
-                          'shop_address': this.shop_flat_address.text,
-                          'owner_name': this.shopAddress.text,
-                          'owner_mobile': this.owner_mobile_phno.text,
-                          'owner_aadhar': this.owner_aadhaar.text,
-                          'licence_number': this._selected_license?.licence??"",
-                          'existing_disposal': this._selected_disposal?.disposal??"",
-                          'approx_quality_waste': this._select_quantity!.waste??"",
-                          'latitude': (this.locationData?.latitude).toString(),
-                          'longitude': (this.locationData?.latitude).toString(),
-
-                          'images': [
-                            for (var file in this.images!)
-                              ...{
-                                await MultipartFile.fromFile(file.path,
-                                    filename: file.path.split('/').last)
-                              }.toList()
-                          ]
-                        });
-
-*/
-
-                        // FormData formdata = FormData.fromMap(formData);
-
-                        /*   for (File file in this.images!) {
-                          formdata.files.addAll([
-                            MapEntry("images",
-                                await MultipartFile.fromFile(file.path)),
-                          ]);
-                        }*/
-
+                        MProgressIndicator.show(context);
                         ApiResponse res = await provider.uploadCommunityHall(
                             formData, context);
                         print(res.status);
                         if (res.status == 200) {
                           Navigator.pop(context);
                         }
+                        MProgressIndicator.hide();
+
                       },
                     )
                   ],

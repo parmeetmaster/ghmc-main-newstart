@@ -34,15 +34,17 @@ import 'package:ghmc/util/extension.dart';
 class ToiletProvider extends ChangeNotifier{
   AllDropDownModel? dropDowns;
   createToilet(FormData formData, BuildContext context) async {
-    ApiResponse response = await ApiBase().baseFunction(() =>
-        ApiBase().getInstance()!.post("/createtoilets", data: formData));
-    if (response.status == 200) {
-      response.message!.showSnackbar(context);
-      return response;
-    } else {
-      response.message!.showSnackbar(context);
-      return response;
-    }
+try{
+  ApiResponse response = await ApiBase().baseFunction(() =>
+      ApiBase().getInstance()!.post("/createtoilets", data: formData));
+  if (response.status == 200) {
+    response.message!.showSnackbar(context);
+    return response;
+  } else {
+    response.message!.showSnackbar(context);
+    return response;
+  }
+}catch(e){}
   }
 
 

@@ -19,6 +19,7 @@ import 'package:ghmc/widget/appbar/appbar.dart';
 import 'package:ghmc/widget/buttons/gradeint_button.dart';
 import 'package:ghmc/widget/container/camera_container.dart';
 import 'package:ghmc/widget/container/map_container.dart';
+import 'package:ghmc/widget/grid/grid_image.dart';
 import 'package:ghmc/widget/loading_widget.dart';
 import 'package:location_platform_interface/location_platform_interface.dart';
 import 'package:provider/provider.dart';
@@ -71,7 +72,7 @@ class _ManholeScreenState extends State<ManholeScreen> {
   var inchargeMobileNumber = TextEditingController();
   var owner_aadhaar = TextEditingController();
   Existing_disposal? _selected_disposal;
-
+  Manhole_type? selectedManholeCritical;
   late ManHoleProvider provider =
   Provider.of<ManHoleProvider>(context, listen: false);
 
@@ -518,7 +519,7 @@ class _ManholeScreenState extends State<ManholeScreen> {
                       ],
                     ),
                   ),
-                  //see open place name
+                  //see select manhole type
                   Container(
                     width: MediaQuery.of(context).size.width * 0.80,
                     child: Row(
@@ -527,7 +528,7 @@ class _ManholeScreenState extends State<ManholeScreen> {
                         Container(
                           width: MediaQuery.of(context).size.width * 0.20,
                           child: Text(
-                            "Manhole Name",
+                            "Manhole Type",
                             style: TextStyle(fontSize: fontSize),
                           ),
                         ),
@@ -549,21 +550,35 @@ class _ManholeScreenState extends State<ManholeScreen> {
                                 ),
                               ),
                               width: MediaQuery.of(context).size.width * 0.80,
-                              child: TextFormField(
-                                controller: manholeName,
-                                decoration: new InputDecoration(
-                                    border: InputBorder.none,
-                                    hintStyle: hintStyle,
-                                    focusedBorder: InputBorder.none,
-                                    enabledBorder: InputBorder.none,
-                                    errorBorder: InputBorder.none,
-                                    disabledBorder: InputBorder.none,
-                                    contentPadding: EdgeInsets.only(
-                                        left: 15,
-                                        bottom: 11,
-                                        top: 11,
-                                        right: 15),
-                                    hintText: "Type Man Hole name here..."),
+                              child: Padding(
+                                padding:
+                                const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                                child: DropdownButton<Manhole_type>(
+                                  underline: Container(
+                                    color: Colors.transparent,
+                                  ),
+                                  hint: Text('Select Type'),
+                                  isExpanded: true,
+                                  value: selectedManholeCritical,
+                                  icon: const Icon(Icons.arrow_drop_down),
+                                  iconSize: 20,
+                                  elevation: 16,
+                                  style: const TextStyle(color: Colors.black),
+                                  items: provider.dropDowns!
+                                      .data!.manholeType!
+                                      .map<DropdownMenuItem<Manhole_type>>(
+                                          (Manhole_type value) {
+                                        return DropdownMenuItem<Manhole_type>(
+                                          value: value,
+                                          child: Text("${value.name}"),
+                                        );
+                                      }).toList(),
+                                  onChanged: (newValue) async {
+                                    setState(() {
+                                      selectedManholeCritical = newValue;
+                                    });
+                                  },
+                                ),
                               ),
                             ),
                           ),
@@ -571,7 +586,7 @@ class _ManholeScreenState extends State<ManholeScreen> {
                       ],
                     ),
                   ),
-//see manhole type
+                  //see select type
                   Container(
                     width: MediaQuery.of(context).size.width * 0.80,
                     child: Row(
@@ -580,7 +595,7 @@ class _ManholeScreenState extends State<ManholeScreen> {
                         Container(
                           width: MediaQuery.of(context).size.width * 0.20,
                           child: Text(
-                            "Manhole Type",
+                            "Select Type",
                             style: TextStyle(fontSize: fontSize),
                           ),
                         ),
@@ -639,8 +654,59 @@ class _ManholeScreenState extends State<ManholeScreen> {
                     ),
                   ),
 
-
-                  // camera container
+                  //see open place name
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.80,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.20,
+                          child: Text(
+                            "Manhole Name",
+                            style: TextStyle(fontSize: fontSize),
+                          ),
+                        ),
+                        Text(':'),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.60,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: ShapeDecoration(
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                    width: 1.0,
+                                    style: BorderStyle.solid,
+                                    color: Colors.grey,
+                                  ),
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(5.0)),
+                                ),
+                              ),
+                              width: MediaQuery.of(context).size.width * 0.80,
+                              child: TextFormField(
+                                controller: manholeName,
+                                decoration: new InputDecoration(
+                                    border: InputBorder.none,
+                                    hintStyle: hintStyle,
+                                    focusedBorder: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    contentPadding: EdgeInsets.only(
+                                        left: 15,
+                                        bottom: 11,
+                                        top: 11,
+                                        right: 15),
+                                    hintText: "Type Man Hole name here..."),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: MapContainer(
@@ -649,28 +715,30 @@ class _ManholeScreenState extends State<ManholeScreen> {
                       },
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: CameraContainer(
-                      cameraData: (s) async {
-                        MProgressIndicator.show(context);
-                        try {
-                          List<File>? tempimages = [];
-                          await Future.forEach(s,(e)async{
-                            print(e);
-                            File? file = await FileSupport().compressImage(e as File);
-                            tempimages.add(file!);
 
-                          });
-                          this.images!.clear();
-                          this.images!.addAll(tempimages);
-                        } catch (e) {
-                          MProgressIndicator.hide();
-                        }
-                        MProgressIndicator.hide();
-                      },
-                    ),
+                  Text("Select Image",style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600),),
+                  SizedBox(
+                    height: 5,
                   ),
+                  GridImage(context: context, onchange: (List<File> files)async {
+                    MProgressIndicator.show(context);
+                    try {
+                      List<File>? tempimages = [];
+                      await Future.forEach(files,(e)async{
+                        print(e);
+                        File? file = await FileSupport().compressImage(e as File);
+                        tempimages.add(file!);
+
+                      });
+                      this.images!.clear();
+                      "${tempimages.length} are compress".toString().printwtf;
+                      this.images!.addAll(tempimages);
+                    } catch (e) {
+                      MProgressIndicator.hide();
+                    }
+                    MProgressIndicator.hide();
+                  },),
+
 
                   SizedBox(
                     height: 10,
@@ -695,7 +763,9 @@ class _ManholeScreenState extends State<ManholeScreen> {
                         'ward_id': _selected_ward?.id??"",
                         'landmark_id': _selected_landmarks?.id??"",
                         'address': address.text,
+                        'address': address.text,
                         'man_hole_name': manholeName.text,
+                        'minor_major':selectedManholeCritical?.name??"",
                         'latitude': (this.locationData?.latitude)?.toString()??"",
                         'longitude': (this.locationData?.latitude)?.toString()??"",
                         'type': _selected_manhole?.name??"",
@@ -709,9 +779,10 @@ class _ManholeScreenState extends State<ManholeScreen> {
                       });
 
 
-
+                      MProgressIndicator.show(context);
                       ApiResponse res = await provider.createManhole(
                           formData, context);
+                      MProgressIndicator.hide();
                       print(res.status);
                       if (res.status == 200) {
                         Navigator.pop(context);

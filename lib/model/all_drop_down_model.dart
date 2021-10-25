@@ -1,6 +1,6 @@
 /// login : true
 /// status : true
-/// data : {"business_type":[{"name":"Kirana shop"},{"name":"Medical shop"},{"name":"Education"},{"name":"Auto mobiles"}],"category_type":[{"name":"Business"},{"name":"Residencial"},{"name":"Both"}],"licence":[{"licence":"Perminent"},{"licence":"Temporary"},{"licence":"No"}],"existing_disposal":[{"disposal":"Dry"},{"disposal":"Wet"},{"disposal":"Dry & Wet"},{"disposal":"Other"}],"quality_waste":[{"waste":"Killos"},{"waste":"Tones"}],"type_of_house":[{"type":"Pacca"},{"type":"Semi pacca"},{"type":"Kaccha"}],"type_of_manhole":[{"name":"Man hole"},{"name":"Tree"},{"name":"Bus stop"}],"type_of_details":[{"name":"Temple"},{"name":"Majid"},{"name":"Church"},{"name":"Yard"},{"name":"Water Tank"},{"name":"Government Property"}]}
+/// data : {"business_type":[{"name":"Kirana shop"},{"name":"Medical shop"},{"name":"Education"},{"name":"Auto mobiles"}],"category_type":[{"name":"Business"},{"name":"Residencial"}],"licence":[{"licence":"Perminent"},{"licence":"Temporary"},{"licence":"No"}],"existing_disposal":[{"disposal":"Dry"},{"disposal":"Wet"},{"disposal":"Dry & Wet"},{"disposal":"Other"}],"quality_waste":[{"waste":"Killos"},{"waste":"Tones"}],"type_of_house":[{"type":"Pacca"},{"type":"Semi pacca"},{"type":"Kaccha"}],"type_of_manhole":[{"name":"Man hole"},{"name":"Tree"},{"name":"Bus stop"}],"manhole_type":[{"name":"Minor"},{"name":"Major"}],"type_of_details":[{"name":"Temple"},{"name":"Majid"},{"name":"Church"},{"name":"Yard"},{"name":"Water Tank"},{"name":"Government Property"}]}
 
 class AllDropDownModel {
   AllDropDownModel({
@@ -30,12 +30,13 @@ class AllDropDownModel {
 }
 
 /// business_type : [{"name":"Kirana shop"},{"name":"Medical shop"},{"name":"Education"},{"name":"Auto mobiles"}]
-/// category_type : [{"name":"Business"},{"name":"Residencial"},{"name":"Both"}]
+/// category_type : [{"name":"Business"},{"name":"Residencial"}]
 /// licence : [{"licence":"Perminent"},{"licence":"Temporary"},{"licence":"No"}]
 /// existing_disposal : [{"disposal":"Dry"},{"disposal":"Wet"},{"disposal":"Dry & Wet"},{"disposal":"Other"}]
 /// quality_waste : [{"waste":"Killos"},{"waste":"Tones"}]
 /// type_of_house : [{"type":"Pacca"},{"type":"Semi pacca"},{"type":"Kaccha"}]
 /// type_of_manhole : [{"name":"Man hole"},{"name":"Tree"},{"name":"Bus stop"}]
+/// manhole_type : [{"name":"Minor"},{"name":"Major"}]
 /// type_of_details : [{"name":"Temple"},{"name":"Majid"},{"name":"Church"},{"name":"Yard"},{"name":"Water Tank"},{"name":"Government Property"}]
 
 class Data {
@@ -47,6 +48,7 @@ class Data {
       this.qualityWaste, 
       this.typeOfHouse, 
       this.typeOfManhole, 
+      this.manholeType, 
       this.typeOfDetails,});
 
   Data.fromJson(dynamic json) {
@@ -92,6 +94,12 @@ class Data {
         typeOfManhole?.add(Type_of_manhole.fromJson(v));
       });
     }
+    if (json['manhole_type'] != null) {
+      manholeType = [];
+      json['manhole_type'].forEach((v) {
+        manholeType?.add(Manhole_type.fromJson(v));
+      });
+    }
     if (json['type_of_details'] != null) {
       typeOfDetails = [];
       json['type_of_details'].forEach((v) {
@@ -106,6 +114,7 @@ class Data {
   List<Quality_waste>? qualityWaste;
   List<Type_of_house>? typeOfHouse;
   List<Type_of_manhole>? typeOfManhole;
+  List<Manhole_type>? manholeType;
   List<Type_of_details>? typeOfDetails;
 
   Map<String, dynamic> toJson() {
@@ -131,6 +140,9 @@ class Data {
     if (typeOfManhole != null) {
       map['type_of_manhole'] = typeOfManhole?.map((v) => v.toJson()).toList();
     }
+    if (manholeType != null) {
+      map['manhole_type'] = manholeType?.map((v) => v.toJson()).toList();
+    }
     if (typeOfDetails != null) {
       map['type_of_details'] = typeOfDetails?.map((v) => v.toJson()).toList();
     }
@@ -146,6 +158,25 @@ class Type_of_details {
       this.name,});
 
   Type_of_details.fromJson(dynamic json) {
+    name = json['name'];
+  }
+  String? name;
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['name'] = name;
+    return map;
+  }
+
+}
+
+/// name : "Minor"
+
+class Manhole_type {
+  Manhole_type({
+      this.name,});
+
+  Manhole_type.fromJson(dynamic json) {
     name = json['name'];
   }
   String? name;

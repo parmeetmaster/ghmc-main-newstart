@@ -5,11 +5,14 @@ import 'package:file_support/file_support.dart';
 import 'package:flutter/material.dart';
 import 'package:ghmc/api/api.dart';
 import 'package:ghmc/globals/globals.dart';
-import 'package:ghmc/model/complex_building/complex_add_model.dart';
+import 'package:ghmc/model/all_drop_down_model.dart';
+
 import 'package:ghmc/model/culvert/area_model.dart';
 import 'package:ghmc/provider/community_hall/community_hall.dart';
 import 'package:ghmc/provider/complex_building/complex_building.dart';
 import 'package:ghmc/provider/culvert/culvert_provider.dart';
+import 'package:ghmc/provider/open_place/open_place.dart';
+import 'package:ghmc/provider/temple/temple.dart';
 import 'package:ghmc/util/extension.dart';
 import 'package:ghmc/util/m_progress_indicator.dart';
 import 'package:ghmc/widget/appbar/appbar.dart';
@@ -20,23 +23,29 @@ import 'package:ghmc/widget/grid/grid_image.dart';
 import 'package:ghmc/widget/loading_widget.dart';
 import 'package:location_platform_interface/location_platform_interface.dart';
 import 'package:provider/provider.dart';
-import 'package:ghmc/model/all_drop_down_model.dart' as alldrop;
 
-import 'complex_building.dart';
 import 'package:ghmc/util/utils.dart';
 
-class CicrclueUserAccessComplex extends StatefulWidget {
-  String id;
-
-  CicrclueUserAccessComplex(this.id, {Key? key}) : super(key: key);
+@immutable
+class TempleScreen extends StatefulWidget {
+  TempleScreen({Key? key}) : super(key: key);
 
   @override
-  _CicrclueUserAccessComplexState createState() =>
-      _CicrclueUserAccessComplexState();
+  _TempleScreenState createState() => _TempleScreenState();
 }
 
-class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
-  double fontSize = 14.0;
+class _TempleScreenState extends State<TempleScreen> {
+  CulvertDataModel? zones;
+  CulvertDataModel? circles;
+  CulvertDataModel? wards;
+  CulvertDataModel? areas;
+  CulvertDataModel? landmarks;
+
+  DataItem? _selected_zones;
+  DataItem? _selected_circle;
+  DataItem? _selected_ward;
+  DataItem? _selected_area;
+  DataItem? _selected_landmarks;
 
   var landmark = TextEditingController();
   var name = TextEditingController();
@@ -48,65 +57,64 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
   LocationData? locationData;
 
   List<File>? images = [];
-  late final ComplexBuildingProvider provider;
 
-  String? _selected_floor = null;
-  Category_type? _selected_category_type = null;
-  Business_type? _selected_Business_type = null;
-  String selectBuisnessesident = "";
-  Licence? _selected_license = null;
+  double fontSize = 14.0;
+
   Quality_waste? _select_quantity;
-  Existing_disposal? _existing_disposal = null;
   TextStyle hintStyle = TextStyle(fontSize: 14);
   var Business_name = TextEditingController();
 
   var shop_flat_address = TextEditingController();
 
-  var owner_name = TextEditingController();
-
-  var owner_mobile_phno = TextEditingController();
+  var inchargeName = TextEditingController();
+  var inchargeMobileNumber = TextEditingController();
   var owner_aadhaar = TextEditingController();
   Existing_disposal? _selected_disposal;
-  late CommunityHallProvider comprovider =
-      Provider.of<CommunityHallProvider>(context, listen: false);
+
+  late TempleProvider provider =
+      Provider.of<TempleProvider>(context, listen: false);
+
+  var templeName = TextEditingController();
+
   var wastageQty = TextEditingController();
 
-  alldrop.Type_of_house? _selected_housetype;
+  Type_of_details? _selectedPlace;
 
   @override
   void initState() {
     super.initState();
-    comprovider.loadCommunityItems(context);
-    provider = Provider.of<ComplexBuildingProvider>(context, listen: false);
-    provider.loadComplexBuilingDropDownOptions(widget.id);
+    _initialisedZones();
+    provider.loadCommunityItems(context);
+    provider = Provider.of<TempleProvider>(context, listen: false);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: FAppBar.getCommonAppBar(title: "Complex/Building"),
-        body: Consumer<ComplexBuildingProvider>(
-            builder: (context, snapshot, child) {
-          return provider.complexAddModelDropDown != null
+        appBar: FAppBar.getCommonAppBar(
+            title: "Devotional/Govt Establishment",
+            textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+        body: Consumer<TempleProvider>(builder: (context, snapshot, child) {
+          return snapshot.dropDowns != null && zones != null
               ? ListView(
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   children: [
-                    //floors
+                    //zones
                     Container(
                       width: MediaQuery.of(context).size.width * 0.80,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
-                            width: MediaQuery.of(context).size.width * 0.20,
+                            width: MediaQuery.of(context).size.width * 0.18,
                             child: Text(
-                              "Floor",
+                              "Zones",
                               style: TextStyle(fontSize: fontSize),
                             ),
                           ),
                           Text(':'),
                           Container(
-                            width: MediaQuery.of(context).size.width * 0.64,
+                            width: MediaQuery.of(context).size.width * 0.60,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Container(
@@ -125,149 +133,37 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                                 child: Padding(
                                   padding:
                                       const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                                  child: DropdownButton<String>(
+                                  child: DropdownButton(
                                     underline: Container(
                                       color: Colors.transparent,
                                     ),
-                                    hint: Text('Floor'),
+                                    hint: Text('Zones'),
                                     isExpanded: true,
-                                    value: _selected_floor,
+                                    value: _selected_zones,
                                     icon: const Icon(Icons.arrow_drop_down),
                                     iconSize: 20,
                                     elevation: 16,
                                     style: const TextStyle(color: Colors.black),
-                                    items: provider
-                                        .complexAddModelDropDown!.data!.floor!
-                                        .map<DropdownMenuItem<String>>(
-                                            (String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text("${value}"),
-                                      );
-                                    }).toList(),
-                                    onChanged: (newValue) async {
-                                      setState(() {
-                                        _selected_floor = newValue;
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    //flat name:
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.80,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.20,
-                            child: Text(
-                              "Flat Number",
-                              style: TextStyle(fontSize: fontSize),
-                            ),
-                          ),
-                          Text(':'),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.64,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                decoration: ShapeDecoration(
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(
-                                      width: 1.0,
-                                      style: BorderStyle.solid,
-                                      color: Colors.grey,
-                                    ),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(5.0)),
-                                  ),
-                                ),
-                                width: MediaQuery.of(context).size.width * 0.80,
-                                child: TextFormField(
-                                  controller: floors,
-                                  decoration: new InputDecoration(
-                                      border: InputBorder.none,
-                                      hintStyle: hintStyle,
-                                      focusedBorder: InputBorder.none,
-                                      enabledBorder: InputBorder.none,
-                                      errorBorder: InputBorder.none,
-                                      disabledBorder: InputBorder.none,
-                                      contentPadding: EdgeInsets.only(
-                                          left: 15,
-                                          bottom: 11,
-                                          top: 11,
-                                          right: 15),
-                                      hintText: "Enter flat number"),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    //categories
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.80,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.20,
-                            child: Text(
-                              "Category Types",
-                              style: TextStyle(fontSize: fontSize),
-                            ),
-                          ),
-                          Text(':'),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.64,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                decoration: ShapeDecoration(
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(
-                                      width: 1.0,
-                                      style: BorderStyle.solid,
-                                      color: Colors.grey,
-                                    ),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(5.0)),
-                                  ),
-                                ),
-                                width: MediaQuery.of(context).size.width * 0.80,
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                                  child: DropdownButton<Category_type>(
-                                    underline: Container(
-                                      color: Colors.transparent,
-                                    ),
-                                    hint: Text('Select category'),
-                                    isExpanded: true,
-                                    value: _selected_category_type,
-                                    icon: const Icon(Icons.arrow_drop_down),
-                                    iconSize: 20,
-                                    elevation: 16,
-                                    style: const TextStyle(color: Colors.black),
-                                    items: provider.complexAddModelDropDown!
-                                        .data!.categoryType!
-                                        .map<DropdownMenuItem<Category_type>>(
-                                            (Category_type value) {
-                                      return DropdownMenuItem<Category_type>(
+                                    items: zones!.data!
+                                        .map<DropdownMenuItem<DataItem>>(
+                                            (DataItem value) {
+                                      return DropdownMenuItem<DataItem>(
                                         value: value,
                                         child: Text("${value.name}"),
                                       );
                                     }).toList(),
                                     onChanged: (newValue) async {
                                       setState(() {
-                                        _selected_category_type = newValue;
+                                        _selected_zones = newValue as DataItem;
+                                        circles = null;
+                                        this.landmarks = null;
+                                        this._selected_landmarks = null;
+                                        _selected_circle = null;
+                                        wards = null;
+                                        _selected_ward = null;
+                                        areas = null;
+                                        _selected_area = null;
+                                        _intialised_Circles();
                                       });
                                     },
                                   ),
@@ -278,257 +174,220 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                         ],
                       ),
                     ),
-                    //Business type and residental type
-                    if (_selected_category_type != null &&
-                        _selected_category_type!.name == "Business")
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.80,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.20,
-                              child: Text(
-                                "Business Type",
-                                style: TextStyle(fontSize: fontSize),
-                              ),
+                    // see circle
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.18,
+                            child: Text(
+                              "Circle",
+                              style: TextStyle(fontSize: fontSize),
                             ),
-                            Text(':'),
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.64,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  decoration: ShapeDecoration(
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                        width: 1.0,
-                                        style: BorderStyle.solid,
-                                        color: Colors.grey,
-                                      ),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(5.0)),
+                          ),
+                          Text(':'),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.60,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1.0,
+                                      style: BorderStyle.solid,
+                                      color: Colors.grey,
                                     ),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
                                   ),
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.80,
-                                  child: Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                                    child: DropdownButton<Business_type>(
-                                      underline: Container(
-                                        color: Colors.transparent,
-                                      ),
-                                      hint: Text('Select Business Type'),
-                                      isExpanded: true,
-                                      value: _selected_Business_type,
-                                      icon: const Icon(Icons.arrow_drop_down),
-                                      iconSize: 20,
-                                      elevation: 16,
-                                      style:
-                                          const TextStyle(color: Colors.black),
-                                      items: provider.complexAddModelDropDown!
-                                          .data!.businessType!
-                                          .map<DropdownMenuItem<Business_type>>(
-                                              (Business_type value) {
-                                        return DropdownMenuItem<Business_type>(
-                                          value: value,
-                                          child: Text("${value.name}"),
-                                        );
-                                      }).toList(),
-                                      onChanged: (newValue) async {
-                                        setState(() {
-                                          _selected_Business_type = newValue;
-                                          selectBuisnessesident =
-                                              newValue!.name!;
-                                          ;
-                                        });
-                                      },
+                                ),
+                                width: MediaQuery.of(context).size.width * 0.80,
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                                  child: DropdownButton<DataItem>(
+                                    underline: Container(
+                                      color: Colors.transparent,
                                     ),
+                                    hint: Text('Circles'),
+                                    isExpanded: true,
+                                    value: _selected_circle,
+                                    icon: const Icon(Icons.arrow_drop_down),
+                                    iconSize: 20,
+                                    elevation: 16,
+                                    style: const TextStyle(color: Colors.black),
+                                    items: circles != null
+                                        ? circles!.data!
+                                            .map<DropdownMenuItem<DataItem>>(
+                                                (DataItem value) {
+                                            return DropdownMenuItem<DataItem>(
+                                              value: value,
+                                              child: Text("${value.name}"),
+                                            );
+                                          }).toList()
+                                        : [],
+                                    onChanged: (newValue) async {
+                                      setState(() {
+                                        _selected_circle = newValue as DataItem;
+                                        wards = null;
+                                        _selected_ward = null;
+                                        areas = null;
+                                        _selected_area = null;
+                                        this.landmarks = null;
+                                        this._selected_landmarks = null;
+                                        _intialised_Wards();
+                                      });
+                                    },
                                   ),
                                 ),
                               ),
                             ),
-                          ],
-                        ),
-                      )
-                    else if (_selected_category_type != null)
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.80,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.20,
-                              child: Text(
-                                "Resident Type",
-                                style: TextStyle(fontSize: fontSize),
-                              ),
-                            ),
-                            Text(':'),
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.64,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  decoration: ShapeDecoration(
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                        width: 1.0,
-                                        style: BorderStyle.solid,
-                                        color: Colors.grey,
-                                      ),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(5.0)),
-                                    ),
-                                  ),
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.80,
-                                  child: Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                                    child:
-                                        DropdownButton<alldrop.Type_of_house>(
-                                      underline: Container(
-                                        color: Colors.transparent,
-                                      ),
-                                      hint: Text('Select Resident'),
-                                      isExpanded: true,
-                                      value: _selected_housetype,
-                                      icon: const Icon(Icons.arrow_drop_down),
-                                      iconSize: 20,
-                                      elevation: 16,
-                                      style:
-                                          const TextStyle(color: Colors.black),
-                                      items: comprovider
-                                          .dropDowns!.data!.typeOfHouse!
-                                          .map<
-                                                  DropdownMenuItem<
-                                                      alldrop.Type_of_house>>(
-                                              (alldrop.Type_of_house value) {
-                                        return DropdownMenuItem<
-                                            alldrop.Type_of_house>(
-                                          value: value,
-                                          child: Text("${value.type}"),
-                                        );
-                                      }).toList(),
-                                      onChanged: (newValue) async {
-                                        setState(() {
-                                          _selected_housetype = newValue;
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
+                    ),
+                    // see ward
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.18,
+                            child: Text(
+                              "Ward",
+                              style: TextStyle(fontSize: fontSize),
+                            ),
+                          ),
+                          Text(':'),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.60,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1.0,
+                                      style: BorderStyle.solid,
+                                      color: Colors.grey,
+                                    ),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                ),
+                                width: MediaQuery.of(context).size.width * 0.80,
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                                  child: DropdownButton<DataItem>(
+                                    underline: Container(
+                                      color: Colors.transparent,
+                                    ),
+                                    hint: Text('Wards'),
+                                    isExpanded: true,
+                                    value: _selected_ward,
+                                    icon: const Icon(Icons.arrow_drop_down),
+                                    iconSize: 20,
+                                    elevation: 16,
+                                    style: const TextStyle(color: Colors.black),
+                                    items: wards != null
+                                        ? wards!.data!
+                                            .map<DropdownMenuItem<DataItem>>(
+                                                (DataItem value) {
+                                            return DropdownMenuItem<DataItem>(
+                                              value: value,
+                                              child: Text("${value.name}"),
+                                            );
+                                          }).toList()
+                                        : [],
+                                    onChanged: (newValue) async {
+                                      setState(() {
+                                        _selected_ward = newValue as DataItem;
+                                        areas = null;
+                                        _selected_area = null;
+                                        this.landmarks = null;
+                                        this._selected_landmarks = null;
+                                        _intialised_Areas();
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    //see areas
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.18,
+                            child: Text(
+                              "Areas/Colony",
+                              style: TextStyle(fontSize: fontSize),
+                            ),
+                          ),
+                          Text(':'),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.60,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1.0,
+                                      style: BorderStyle.solid,
+                                      color: Colors.grey,
+                                    ),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                ),
+                                width: MediaQuery.of(context).size.width * 0.80,
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                                  child: DropdownButton<DataItem>(
+                                    underline: Container(
+                                      color: Colors.transparent,
+                                    ),
+                                    hint: Text('Areas'),
+                                    isExpanded: true,
+                                    value: _selected_area,
+                                    icon: const Icon(Icons.arrow_drop_down),
+                                    iconSize: 20,
+                                    elevation: 16,
+                                    style: const TextStyle(color: Colors.black),
+                                    items: areas != null
+                                        ? areas!.data!
+                                            .map<DropdownMenuItem<DataItem>>(
+                                                (DataItem value) {
+                                            return DropdownMenuItem<DataItem>(
+                                              value: value,
+                                              child: Text("${value.name}"),
+                                            );
+                                          }).toList()
+                                        : [],
+                                    onChanged: (newValue) async {
+                                      setState(() {
+                                        _selected_area = newValue as DataItem;
+                                        landmarks = null;
+                                        _selected_landmarks = null;
+                                        this._intialised_Landmarks();
 
-                    //Business name:
-                    if (_selected_category_type != null)
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.80,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.20,
-                              child: Text(
-                                _selected_category_type!.name == "Business"
-                                    ? "Business Name"
-                                    : "Residential Name",
-                                style: TextStyle(fontSize: fontSize),
-                              ),
-                            ),
-                            Text(':'),
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.64,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  decoration: ShapeDecoration(
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                        width: 1.0,
-                                        style: BorderStyle.solid,
-                                        color: Colors.grey,
-                                      ),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(5.0)),
-                                    ),
+                                        setState(() {});
+                                      });
+                                    },
                                   ),
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.80,
-                                  child: TextFormField(
-                                    controller: Business_name,
-                                    decoration: new InputDecoration(
-                                        border: InputBorder.none,
-                                        focusedBorder: InputBorder.none,
-                                        enabledBorder: InputBorder.none,
-                                        errorBorder: InputBorder.none,
-                                        hintStyle: hintStyle,
-                                        disabledBorder: InputBorder.none,
-                                        contentPadding: EdgeInsets.only(
-                                            left: 15,
-                                            bottom: 11,
-                                            top: 11,
-                                            right: 15),
-                                        hintText: "Type  name here..."),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-//shop flat address :
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.80,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.20,
-                            child: Text(
-                              "Shop/Flat Address",
-                              style: TextStyle(fontSize: fontSize),
-                            ),
-                          ),
-                          Text(':'),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.64,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                decoration: ShapeDecoration(
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(
-                                      width: 1.0,
-                                      style: BorderStyle.solid,
-                                      color: Colors.grey,
-                                    ),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(5.0)),
-                                  ),
-                                ),
-                                width: MediaQuery.of(context).size.width * 0.80,
-                                child: TextFormField(
-                                  controller: shop_flat_address,
-                                  decoration: new InputDecoration(
-                                      border: InputBorder.none,
-                                      focusedBorder: InputBorder.none,
-                                      enabledBorder: InputBorder.none,
-                                      errorBorder: InputBorder.none,
-                                      hintStyle: hintStyle,
-                                      disabledBorder: InputBorder.none,
-                                      contentPadding: EdgeInsets.only(
-                                          left: 15,
-                                          bottom: 11,
-                                          top: 11,
-                                          right: 15),
-                                      hintText: "Type Address here..."),
                                 ),
                               ),
                             ),
@@ -536,7 +395,77 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                         ],
                       ),
                     ),
-//owner name:
+                    //see landmarks
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.18,
+                            child: Text(
+                              "Landmarks",
+                              style: TextStyle(fontSize: fontSize),
+                            ),
+                          ),
+                          Text(':'),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.60,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1.0,
+                                      style: BorderStyle.solid,
+                                      color: Colors.grey,
+                                    ),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                ),
+                                width: MediaQuery.of(context).size.width * 0.80,
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                                  child: DropdownButton<DataItem>(
+                                    underline: Container(
+                                      color: Colors.transparent,
+                                    ),
+                                    hint: Text('Select Landmarks'),
+                                    isExpanded: true,
+                                    value: _selected_landmarks,
+                                    icon: const Icon(Icons.arrow_drop_down),
+                                    iconSize: 20,
+                                    elevation: 16,
+                                    style: const TextStyle(color: Colors.black),
+                                    items: landmarks != null
+                                        ? landmarks!.data!
+                                            .map<DropdownMenuItem<DataItem>>(
+                                                (DataItem value) {
+                                            return DropdownMenuItem<DataItem>(
+                                              value: value,
+                                              child: Text("${value.name}"),
+                                            );
+                                          }).toList()
+                                        : [],
+                                    onChanged: (newValue) async {
+                                      setState(() {
+                                        _selected_landmarks =
+                                            newValue as DataItem;
+                                        setState(() {});
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    //see address
                     Container(
                       width: MediaQuery.of(context).size.width * 0.80,
                       child: Row(
@@ -545,13 +474,13 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                           Container(
                             width: MediaQuery.of(context).size.width * 0.20,
                             child: Text(
-                              "Owner Name",
+                              "Address",
                               style: TextStyle(fontSize: fontSize),
                             ),
                           ),
                           Text(':'),
                           Container(
-                            width: MediaQuery.of(context).size.width * 0.64,
+                            width: MediaQuery.of(context).size.width * 0.60,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Container(
@@ -568,7 +497,7 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                                 ),
                                 width: MediaQuery.of(context).size.width * 0.80,
                                 child: TextFormField(
-                                  controller: owner_name,
+                                  controller: address,
                                   decoration: new InputDecoration(
                                       border: InputBorder.none,
                                       hintStyle: hintStyle,
@@ -581,7 +510,7 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                                           bottom: 11,
                                           top: 11,
                                           right: 15),
-                                      hintText: "Type Owner name here..."),
+                                      hintText: "Type address here..."),
                                 ),
                               ),
                             ),
@@ -589,7 +518,7 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                         ],
                       ),
                     ),
-                    //owner mobile number:
+                    //see open place name
                     Container(
                       width: MediaQuery.of(context).size.width * 0.80,
                       child: Row(
@@ -598,13 +527,13 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                           Container(
                             width: MediaQuery.of(context).size.width * 0.20,
                             child: Text(
-                              "Owner Mobile Number",
+                              "Temple Name",
                               style: TextStyle(fontSize: fontSize),
                             ),
                           ),
                           Text(':'),
                           Container(
-                            width: MediaQuery.of(context).size.width * 0.64,
+                            width: MediaQuery.of(context).size.width * 0.60,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Container(
@@ -621,7 +550,113 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                                 ),
                                 width: MediaQuery.of(context).size.width * 0.80,
                                 child: TextFormField(
-                                  controller: owner_mobile_phno,
+                                  controller: templeName,
+                                  decoration: new InputDecoration(
+                                      border: InputBorder.none,
+                                      hintStyle: hintStyle,
+                                      focusedBorder: InputBorder.none,
+                                      enabledBorder: InputBorder.none,
+                                      errorBorder: InputBorder.none,
+                                      disabledBorder: InputBorder.none,
+                                      contentPadding: EdgeInsets.only(
+                                          left: 15,
+                                          bottom: 11,
+                                          top: 11,
+                                          right: 15),
+                                      hintText: "Type Place name here..."),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+//see incharge name
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.20,
+                            child: Text(
+                              "Incharge Name",
+                              style: TextStyle(fontSize: fontSize),
+                            ),
+                          ),
+                          Text(':'),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.60,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1.0,
+                                      style: BorderStyle.solid,
+                                      color: Colors.grey,
+                                    ),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                ),
+                                width: MediaQuery.of(context).size.width * 0.80,
+                                child: TextFormField(
+                                  controller: inchargeName,
+                                  decoration: new InputDecoration(
+                                      border: InputBorder.none,
+                                      hintStyle: hintStyle,
+                                      focusedBorder: InputBorder.none,
+                                      enabledBorder: InputBorder.none,
+                                      errorBorder: InputBorder.none,
+                                      disabledBorder: InputBorder.none,
+                                      contentPadding: EdgeInsets.only(
+                                          left: 15,
+                                          bottom: 11,
+                                          top: 11,
+                                          right: 15),
+                                      hintText: "Type name here..."),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+//incharge mobile no
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.20,
+                            child: Text(
+                              "Incharge Mobile Number",
+                              style: TextStyle(fontSize: fontSize),
+                            ),
+                          ),
+                          Text(':'),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.60,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1.0,
+                                      style: BorderStyle.solid,
+                                      color: Colors.grey,
+                                    ),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                ),
+                                width: MediaQuery.of(context).size.width * 0.80,
+                                child: TextFormField(
+                                  controller: inchargeMobileNumber,
                                   keyboardType: TextInputType.number,
                                   decoration: new InputDecoration(
                                       border: InputBorder.none,
@@ -635,60 +670,7 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                                           bottom: 11,
                                           top: 11,
                                           right: 15),
-                                      hintText: "Type 10 digit number here"),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    //owner adhaar number:
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.80,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.20,
-                            child: Text(
-                              "Owner Adhaar",
-                              style: TextStyle(fontSize: fontSize),
-                            ),
-                          ),
-                          Text(':'),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.64,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                decoration: ShapeDecoration(
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(
-                                      width: 1.0,
-                                      style: BorderStyle.solid,
-                                      color: Colors.grey,
-                                    ),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(5.0)),
-                                  ),
-                                ),
-                                width: MediaQuery.of(context).size.width * 0.80,
-                                child: TextFormField(
-                                  controller: owner_aadhaar,
-                                  decoration: new InputDecoration(
-                                      border: InputBorder.none,
-                                      focusedBorder: InputBorder.none,
-                                      enabledBorder: InputBorder.none,
-                                      errorBorder: InputBorder.none,
-                                      disabledBorder: InputBorder.none,
-                                      contentPadding: EdgeInsets.only(
-                                          left: 15,
-                                          bottom: 11,
-                                          top: 11,
-                                          right: 15),
-                                      hintStyle: hintStyle,
-                                      hintText: "Type Owner Adhhaar number"),
+                                      hintText: "Type 10 digit number here..."),
                                 ),
                               ),
                             ),
@@ -697,73 +679,6 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                       ),
                     ),
 
-                    //license number
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.80,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.20,
-                            child: Text(
-                              "License Number",
-                              style: TextStyle(fontSize: fontSize),
-                            ),
-                          ),
-                          Text(':'),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.64,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                decoration: ShapeDecoration(
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(
-                                      width: 1.0,
-                                      style: BorderStyle.solid,
-                                      color: Colors.grey,
-                                    ),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(5.0)),
-                                  ),
-                                ),
-                                width: MediaQuery.of(context).size.width * 0.80,
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                                  child: DropdownButton<Licence>(
-                                    underline: Container(
-                                      color: Colors.transparent,
-                                    ),
-                                    hint: Text('Selected License'),
-                                    isExpanded: true,
-                                    value: _selected_license,
-                                    icon: const Icon(Icons.arrow_drop_down),
-                                    iconSize: 20,
-                                    elevation: 16,
-                                    style: const TextStyle(color: Colors.black),
-                                    items: provider
-                                        .complexAddModelDropDown!.data!.licence!
-                                        .map<DropdownMenuItem<Licence>>(
-                                            (Licence value) {
-                                      return DropdownMenuItem<Licence>(
-                                        value: value,
-                                        child: Text("${value.licence}"),
-                                      );
-                                    }).toList(),
-                                    onChanged: (newValue) async {
-                                      setState(() {
-                                        _selected_license = newValue;
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                     //Existing disposal
                     Container(
                       width: MediaQuery.of(context).size.width * 0.80,
@@ -779,7 +694,7 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                           ),
                           Text(':'),
                           Container(
-                            width: MediaQuery.of(context).size.width * 0.64,
+                            width: MediaQuery.of(context).size.width * 0.60,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Container(
@@ -809,8 +724,8 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                                     iconSize: 20,
                                     elevation: 16,
                                     style: const TextStyle(color: Colors.black),
-                                    items: provider.complexAddModelDropDown!
-                                        .data!.existingDisposal!
+                                    items: provider
+                                        .dropDowns!.data!.existingDisposal!
                                         .map<
                                                 DropdownMenuItem<
                                                     Existing_disposal>>(
@@ -834,6 +749,75 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                         ],
                       ),
                     ),
+
+                    //type
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.20,
+                            child: Text(
+                              "Place Type",
+                              style: TextStyle(fontSize: fontSize),
+                            ),
+                          ),
+                          Text(':'),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.60,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1.0,
+                                      style: BorderStyle.solid,
+                                      color: Colors.grey,
+                                    ),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                ),
+                                width: MediaQuery.of(context).size.width * 0.80,
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                                  child: DropdownButton<Type_of_details>(
+                                    underline: Container(
+                                      color: Colors.transparent,
+                                    ),
+                                    hint: Text('Select Place'),
+                                    isExpanded: true,
+                                    value: _selectedPlace,
+                                    icon: const Icon(Icons.arrow_drop_down),
+                                    iconSize: 20,
+                                    elevation: 16,
+                                    style: const TextStyle(color: Colors.black),
+                                    items: provider
+                                        .dropDowns!.data!.typeOfDetails!
+                                        .map<DropdownMenuItem<Type_of_details>>(
+                                            (Type_of_details value) {
+                                      return DropdownMenuItem<Type_of_details>(
+                                        value: value,
+                                        child: Text("${value.name}"),
+                                      );
+                                    }).toList(),
+                                    onChanged: (newValue) async {
+                                      setState(() {
+                                        _selectedPlace = newValue;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
                     //quantity disposal
                     Container(
                       width: MediaQuery.of(context).size.width * 0.80,
@@ -843,13 +827,13 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                           Container(
                             width: MediaQuery.of(context).size.width * 0.20,
                             child: Text(
-                              "Approx Quantity of waste",
+                              "Select Quantity",
                               style: TextStyle(fontSize: fontSize),
                             ),
                           ),
                           Text(':'),
                           Container(
-                            width: MediaQuery.of(context).size.width * 0.64,
+                            width: MediaQuery.of(context).size.width * 0.60,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Container(
@@ -872,15 +856,15 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                                     underline: Container(
                                       color: Colors.transparent,
                                     ),
-                                    hint: Text('Select Quantity'),
+                                    hint: Text('Select Quantity Type'),
                                     isExpanded: true,
                                     value: _select_quantity,
                                     icon: const Icon(Icons.arrow_drop_down),
                                     iconSize: 20,
                                     elevation: 16,
                                     style: const TextStyle(color: Colors.black),
-                                    items: provider.complexAddModelDropDown!
-                                        .data!.qualityWaste!
+                                    items: provider
+                                        .dropDowns!.data!.qualityWaste!
                                         .map<DropdownMenuItem<Quality_waste>>(
                                             (Quality_waste value) {
                                       return DropdownMenuItem<Quality_waste>(
@@ -901,7 +885,7 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                         ],
                       ),
                     ),
-                    //Enter quantity
+
                     Container(
                       width: MediaQuery.of(context).size.width * 0.80,
                       child: Row(
@@ -910,13 +894,13 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                           Container(
                             width: MediaQuery.of(context).size.width * 0.20,
                             child: Text(
-                              "Wastage Weight",
+                              "Wastage Quantity ",
                               style: TextStyle(fontSize: fontSize),
                             ),
                           ),
                           Text(':'),
                           Container(
-                            width: MediaQuery.of(context).size.width * 0.64,
+                            width: MediaQuery.of(context).size.width * 0.60,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Container(
@@ -937,6 +921,7 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                                   keyboardType: TextInputType.number,
                                   decoration: new InputDecoration(
                                       border: InputBorder.none,
+                                      hintStyle: hintStyle,
                                       focusedBorder: InputBorder.none,
                                       enabledBorder: InputBorder.none,
                                       errorBorder: InputBorder.none,
@@ -946,8 +931,7 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                                           bottom: 11,
                                           top: 11,
                                           right: 15),
-                                      hintStyle: hintStyle,
-                                      hintText: "Type wastage Quantity"),
+                                      hintText: "Type Wastage Quantity "),
                                 ),
                               ),
                             ),
@@ -965,24 +949,30 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                         },
                       ),
                     ),
-                    GridImage(context: context, title:"Select Image",onchange: (List<File> files)async {
-                      MProgressIndicator.show(context);
-                      try {
-                        List<File>? tempimages = [];
-                        await Future.forEach(files,(e)async{
-                          print(e);
-                          File? file = await FileSupport().compressImage(e as File);
-                          tempimages.add(file!);
-
-                        });
-                        this.images!.clear();
-                        "${tempimages.length} are compress".toString().printwtf;
-                        this.images!.addAll(tempimages);
-                      } catch (e) {
+                    GridImage(
+                      context: context,
+                      title: "Select Image",
+                      onchange: (List<File> files) async {
+                        MProgressIndicator.show(context);
+                        try {
+                          List<File>? tempimages = [];
+                          await Future.forEach(files, (e) async {
+                            print(e);
+                            File? file =
+                                await FileSupport().compressImage(e as File);
+                            tempimages.add(file!);
+                          });
+                          this.images!.clear();
+                          "${tempimages.length} are compress"
+                              .toString()
+                              .printwtf;
+                          this.images!.addAll(tempimages);
+                        } catch (e) {
+                          MProgressIndicator.hide();
+                        }
                         MProgressIndicator.hide();
-                      }
-                      MProgressIndicator.hide();
-                    },),
+                      },
+                    ),
 
                     SizedBox(
                       height: 10,
@@ -999,32 +989,26 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                           "Only max 5 images are allowed".showSnackbar(context);
                           return;
                         }
-
                         FormData formData = FormData.fromMap({
-                          'user_id': Globals.userData!.data!.userId!,
-                          'floor': this._selected_floor!,
-                          'floor_no': this.floors.text,
-                          'category': this._selected_category_type?.name ?? "",
-                          'business_type':
-                              _selected_category_type!.name == "Business"
-                                  ? this._selected_Business_type?.name ?? ""
-                                  : this._selected_housetype?.type ?? "",
-                          'business_name': this.Business_name.text,
-                          'shop_address': this.shop_flat_address.text,
-                          'owner_name': this.owner_name.text,
-                          'owner_mobile': this.owner_mobile_phno.text,
-                          'owner_aadhar': this.owner_aadhaar.text,
-                          'licence_number':
-                              this._selected_license?.licence ?? "",
-                          'wastage_quantity': this.wastageQty.text,
+                          'user_id': Globals.userData?.data?.userId ?? "",
+                          'zones_id': _selected_zones?.id ?? "",
+                          'circles_id': _selected_circle?.id ?? "",
+                          'area_id': _selected_area?.id ?? "",
+                          'ward_id': _selected_ward?.id ?? "",
+                          'landmark_id': _selected_landmarks?.id ?? "",
+                          'address': address.text,
+                          'temple_name': templeName.text,
+                          'incharge_name': inchargeName.text,
+                          'incharge_mobile': inchargeMobileNumber.text,
                           'existing_disposal':
-                              this._selected_disposal?.disposal ?? "",
-                          'approx_quality_waste':
-                              this._select_quantity!.waste ?? "",
-                          'latitude': (this.locationData?.latitude).toString(),
-                          'longitude': (this.locationData?.latitude).toString(),
-                          'complex_id': widget.id,
-                          'resident_type': this._selected_housetype?.type ?? "",
+                              _selected_disposal?.disposal ?? "",
+                          'quality_of_waste': _select_quantity?.waste ?? "",
+                          'wastage_quantity': wastageQty.text,
+                          'type': _selectedPlace?.name ?? "",
+                          'latitude':
+                              (this.locationData?.latitude)?.toString() ?? "",
+                          'longitude':
+                              (this.locationData?.latitude)?.toString() ?? "",
                           'images': [
                             for (var file in this.images!)
                               ...{
@@ -1035,16 +1019,13 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                         });
 
                         MProgressIndicator.show(context);
-                        final provider = Provider.of<ComplexBuildingProvider>(
-                            context,
-                            listen: false);
-                        ApiResponse res = await provider
-                            .uploadComplexBuildingDetails(formData, context);
+                        ApiResponse res =
+                            await provider.createTemple(formData, context);
+                        MProgressIndicator.hide();
                         print(res.status);
                         if (res.status == 200) {
                           Navigator.pop(context);
                         }
-                        MProgressIndicator.hide();
                       },
                     )
                   ],
@@ -1052,4 +1033,72 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
               : Loading();
         }));
   }
+
+  // get data for zones
+  Future<void> _initialisedZones() async {
+    final culvert_provider =
+        Provider.of<CulvertProvider>(context, listen: false);
+    ApiResponse? resp = await culvert_provider.getZones();
+    if (resp!.status == 200)
+      zones = CulvertDataModel.fromJson(resp.completeResponse);
+    else
+      resp.message!.showSnackbar(context);
+
+    setState(() {});
+  }
+
+  // get data for wards
+  Future<void> _intialised_Circles() async {
+    MProgressIndicator.show(context);
+    final culvert_provider =
+        Provider.of<CulvertProvider>(context, listen: false);
+    ApiResponse? resp = await culvert_provider.getCircles(_selected_zones!);
+    MProgressIndicator.hide();
+    if (resp!.status == 200)
+      circles = CulvertDataModel.fromJson(resp.completeResponse);
+    else
+      resp.message!.showSnackbar(context);
+
+    setState(() {});
+  }
+
+  // get data for wards
+  Future<void> _intialised_Wards() async {
+    MProgressIndicator.show(context);
+    final culvert_provider =
+        Provider.of<CulvertProvider>(context, listen: false);
+    ApiResponse? resp = await culvert_provider.getWards(_selected_circle);
+    if (resp!.status == 200)
+      wards = CulvertDataModel.fromJson(resp.completeResponse);
+    else
+      resp.message!.showSnackbar(context);
+
+    setState(() {});
+  }
+
+  void _intialised_Areas() async {
+    MProgressIndicator.show(context);
+    final culvert_provider =
+        Provider.of<CulvertProvider>(context, listen: false);
+    ApiResponse? resp = await culvert_provider.getAreas(_selected_ward!);
+    if (resp!.status == 200)
+      areas = CulvertDataModel.fromJson(resp.completeResponse);
+    else
+      resp.message!.showSnackbar(context);
+    setState(() {});
+  }
+
+  void _intialised_Landmarks() async {
+    MProgressIndicator.show(context);
+    final culvert_provider =
+        Provider.of<CulvertProvider>(context, listen: false);
+    ApiResponse? resp = await culvert_provider.getLandmarks(_selected_area!);
+    if (resp!.status == 200)
+      landmarks = CulvertDataModel.fromJson(resp.completeResponse);
+    else
+      resp.message!.showSnackbar(context);
+    setState(() {});
+  }
+
+  _intialBuisnessType() {}
 }

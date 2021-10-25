@@ -20,6 +20,7 @@ import 'package:ghmc/widget/appbar/appbar.dart';
 import 'package:ghmc/widget/buttons/gradeint_button.dart';
 import 'package:ghmc/widget/container/camera_container.dart';
 import 'package:ghmc/widget/container/map_container.dart';
+import 'package:ghmc/widget/grid/grid_image.dart';
 import 'package:ghmc/widget/loading_widget.dart';
 import 'package:location_platform_interface/location_platform_interface.dart';
 import 'package:provider/provider.dart';
@@ -1029,7 +1030,7 @@ class _CreateStreetVendorState extends State<CreateStreetVendor> {
                           Container(
                             width: MediaQuery.of(context).size.width * 0.20,
                             child: Text(
-                              "Wastage Quantity",
+                              "Wastage Weight",
                               style: TextStyle(fontSize: fontSize),
                             ),
                           ),
@@ -1083,28 +1084,24 @@ class _CreateStreetVendorState extends State<CreateStreetVendor> {
                         },
                       ),
                     ),
-                         Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: CameraContainer(
-                        cameraData: (s) async {
-                          MProgressIndicator.show(context);
-                          try {
-                            List<File>? tempimages = [];
-                           await Future.forEach(s,(e)async{
-                             print(e);
-                                File? file = await FileSupport().compressImage(e as File);
-                                tempimages.add(file!);
+                    GridImage(context: context, title:"Select Image",onchange: (List<File> files)async {
+                      MProgressIndicator.show(context);
+                      try {
+                        List<File>? tempimages = [];
+                        await Future.forEach(files,(e)async{
+                          print(e);
+                          File? file = await FileSupport().compressImage(e as File);
+                          tempimages.add(file!);
 
-                            });
-                            this.images!.clear();
-                            this.images!.addAll(tempimages);
-                          } catch (e) {
-                            MProgressIndicator.hide();
-                          }
-                          MProgressIndicator.hide();
-                        },
-                      ),
-                    ),
+                        });
+                        this.images!.clear();
+                        "${tempimages.length} are compress".toString().printwtf;
+                        this.images!.addAll(tempimages);
+                      } catch (e) {
+                        MProgressIndicator.hide();
+                      }
+                      MProgressIndicator.hide();
+                    },),
 
                     SizedBox(
                       height: 10,
@@ -1150,10 +1147,11 @@ class _CreateStreetVendorState extends State<CreateStreetVendor> {
                           ]
                         });
 
-
+MProgressIndicator.show(context);
                         ApiResponse res = await createStreetVendor.createVendorProfile(
                             formData, context);
                         print(res.status);
+                        MProgressIndicator.hide();
                         if (res.status == 200) {
                           Timer.periodic(Duration(seconds: 2), (timer) async{
                             timer.cancel();

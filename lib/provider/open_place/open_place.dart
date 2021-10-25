@@ -34,6 +34,7 @@ import 'package:ghmc/util/extension.dart';
 class OpenPlaceProvider extends ChangeNotifier{
   AllDropDownModel? dropDowns;
   createOpenPlace(FormData formData, BuildContext context) async {
+  try{
     ApiResponse response = await ApiBase().baseFunction(() =>
         ApiBase().getInstance()!.post("/createopenplace", data: formData));
     if (response.status == 200) {
@@ -43,6 +44,7 @@ class OpenPlaceProvider extends ChangeNotifier{
       response.message!.showSnackbar(context);
       return response;
     }
+  }catch(e){}
   }
 
 

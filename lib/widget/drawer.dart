@@ -11,10 +11,11 @@ import 'package:ghmc/screens/complex_bulding/complex_building.dart';
 import 'package:ghmc/screens/create_street_vendor/create_Street_vendor.dart';
 import 'package:ghmc/screens/culvert/addCulvert.dart';
 import 'package:ghmc/screens/culvert/culvertIssues.dart';
+import 'package:ghmc/screens/devotional/temple.dart';
 import 'package:ghmc/screens/manhole/manhole.dart';
 import 'package:ghmc/screens/maps/mapScreen.dart';
 import 'package:ghmc/screens/open_place/open_place.dart';
-import 'package:ghmc/screens/temple/temple.dart';
+
 import 'package:ghmc/screens/toilet/toilet.dart';
 
 import 'package:ghmc/screens/vehicleHistory/absentVehicle.dart';
@@ -309,7 +310,7 @@ class _MainDrawerState extends State<MainDrawer> {
                     size: 25,
                   ),
                   title: Text(
-                    "Community Hall",
+                    "Commercial Establishment/ Community hall",
                     style: TextStyle(
                         fontSize: drawer_item_text, color: Colors.white),
                   ),
@@ -429,7 +430,7 @@ class _MainDrawerState extends State<MainDrawer> {
                   size: 25,
                 ),
                 title: Text(
-                  "Temple",
+                  "Devotional/Govt Establishment",
                   style: TextStyle(
                       fontSize: drawer_item_text, color: Colors.white),
                 ),
@@ -449,7 +450,7 @@ class _MainDrawerState extends State<MainDrawer> {
                   size: 25,
                 ),
                 title: Text(
-                  "Manhole Registration",
+                  "Manhole/Tree/Bus stop",
                   style: TextStyle(
                       fontSize: drawer_item_text, color: Colors.white),
                 ),
