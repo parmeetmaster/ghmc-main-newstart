@@ -17,6 +17,7 @@ import 'package:ghmc/screens/maps/mapScreen.dart';
 import 'package:ghmc/screens/open_place/open_place.dart';
 
 import 'package:ghmc/screens/toilet/toilet.dart';
+import 'package:ghmc/screens/toilet/toilet_scanner_screen.dart';
 
 import 'package:ghmc/screens/vehicleHistory/absentVehicle.dart';
 import 'package:ghmc/screens/vehicleHistory/logHistory.dart';
@@ -113,6 +114,28 @@ class _MainDrawerState extends State<MainDrawer> {
                     Navigator.pop(context);
                   },
                 ),
+
+              ListTile(
+                leading: Icon(
+                  Icons.local_police,
+                  color: Colors.white,
+                  size: 25,
+                ),
+                title: Text(
+                  "Test",
+                  style: TextStyle(
+                      fontSize: drawer_item_text, color: Colors.white),
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ToiletScanScreen(),
+                    ),
+                  );
+                },
+              ),
+
 
               ///
               if (Globals.authority!.data!.first.complaints == true)

@@ -300,6 +300,14 @@ class _DashBoardScreenState extends State<DashBoardScreen>
         builder: (context) => QRScreen(),
       ),
     );
+
+    bool operation = await DashBoardProvider.getReference(context).performQrAction(
+      id: widget.credentialsModel!.data!.userId!,
+      qrdata: qrdata,
+      latitude: current_Latitude,
+      longitude: current_Longitude,
+    );
+
     MProgressIndicator.show(context);
     print("QR DATA IS : $qrdata");
     Globals.userData!.data!.userId!.printwtf;

@@ -74,7 +74,7 @@ class _ComplexBuildingState extends State<ComplexBuilding> {
                                     CicrclueUserAccessComplex(e.id!).push(context);
                                   },
                                   child: Text(
-                                    'Add Complex',
+                                    'Add Flats',
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 20),
                                   )),

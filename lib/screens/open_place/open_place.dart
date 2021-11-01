@@ -876,7 +876,7 @@ class _OpenPlaceScreenState extends State<OpenPlaceScreen> {
                         },
                       ),
                     ),
-                    GridImage(
+                    GridImage(  images:   this.images! ,
                       context: context,
                       title: "Select Image",
                       onchange: (List<File> files) async {

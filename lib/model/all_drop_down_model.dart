@@ -1,6 +1,6 @@
 /// login : true
 /// status : true
-/// data : {"business_type":[{"name":"Kirana shop"},{"name":"Medical shop"},{"name":"Education"},{"name":"Auto mobiles"}],"category_type":[{"name":"Business"},{"name":"Residencial"}],"licence":[{"licence":"Perminent"},{"licence":"Temporary"},{"licence":"No"}],"existing_disposal":[{"disposal":"Dry"},{"disposal":"Wet"},{"disposal":"Dry & Wet"},{"disposal":"Other"}],"quality_waste":[{"waste":"Killos"},{"waste":"Tones"}],"type_of_house":[{"type":"Pacca"},{"type":"Semi pacca"},{"type":"Kaccha"}],"type_of_manhole":[{"name":"Man hole"},{"name":"Tree"},{"name":"Bus stop"}],"manhole_type":[{"name":"Minor"},{"name":"Major"}],"type_of_details":[{"name":"Temple"},{"name":"Majid"},{"name":"Church"},{"name":"Yard"},{"name":"Water Tank"},{"name":"Government Property"}]}
+/// data : {"business_type":[{"name":"Kirana shop"},{"name":"Medical shop"},{"name":"Education"},{"name":"Auto mobiles"}],"category_type":[{"name":"Business"},{"name":"Residencial"}],"licence":[{"licence":"Perminent"},{"licence":"Temporary"},{"licence":"No"}],"existing_disposal":[{"disposal":"Dry"},{"disposal":"Wet"},{"disposal":"Dry & Wet"},{"disposal":"Other"}],"quality_waste":[{"waste":"Killos"},{"waste":"Tones"}],"type_of_house":[{"type":"Pacca"},{"type":"Semi pacca"},{"type":"Kaccha"}],"type_of_manhole":[{"name":"Man hole"},{"name":"Tree"},{"name":"Bus stop"}],"manhole_type":[{"name":"Minor"},{"name":"Major"}],"type_of_details":[{"name":"Temple"},{"name":"Majid"},{"name":"Church"},{"name":"Yard"},{"name":"Water Tank"},{"name":"Government Property"}],"community_type":[{"name":"Commercial Establishment"},{"name":"Community Hall"}],"toilets_scan_type":[{"name":"Cleaning"},{"name":"Picking Garbage"}],"toilets_scan_reason":[{"name":"Cleaned"},{"name":"Water not available"},{"name":"Damages"}]}
 
 class AllDropDownModel {
   AllDropDownModel({
@@ -38,6 +38,9 @@ class AllDropDownModel {
 /// type_of_manhole : [{"name":"Man hole"},{"name":"Tree"},{"name":"Bus stop"}]
 /// manhole_type : [{"name":"Minor"},{"name":"Major"}]
 /// type_of_details : [{"name":"Temple"},{"name":"Majid"},{"name":"Church"},{"name":"Yard"},{"name":"Water Tank"},{"name":"Government Property"}]
+/// community_type : [{"name":"Commercial Establishment"},{"name":"Community Hall"}]
+/// toilets_scan_type : [{"name":"Cleaning"},{"name":"Picking Garbage"}]
+/// toilets_scan_reason : [{"name":"Cleaned"},{"name":"Water not available"},{"name":"Damages"}]
 
 class Data {
   Data({
@@ -49,7 +52,10 @@ class Data {
       this.typeOfHouse, 
       this.typeOfManhole, 
       this.manholeType, 
-      this.typeOfDetails,});
+      this.typeOfDetails, 
+      this.communityType, 
+      this.toiletsScanType, 
+      this.toiletsScanReason,});
 
   Data.fromJson(dynamic json) {
     if (json['business_type'] != null) {
@@ -106,6 +112,24 @@ class Data {
         typeOfDetails?.add(Type_of_details.fromJson(v));
       });
     }
+    if (json['community_type'] != null) {
+      communityType = [];
+      json['community_type'].forEach((v) {
+        communityType?.add(Community_type.fromJson(v));
+      });
+    }
+    if (json['toilets_scan_type'] != null) {
+      toiletsScanType = [];
+      json['toilets_scan_type'].forEach((v) {
+        toiletsScanType?.add(Toilets_scan_type.fromJson(v));
+      });
+    }
+    if (json['toilets_scan_reason'] != null) {
+      toiletsScanReason = [];
+      json['toilets_scan_reason'].forEach((v) {
+        toiletsScanReason?.add(Toilets_scan_reason.fromJson(v));
+      });
+    }
   }
   List<Business_type>? businessType;
   List<Category_type>? categoryType;
@@ -116,6 +140,9 @@ class Data {
   List<Type_of_manhole>? typeOfManhole;
   List<Manhole_type>? manholeType;
   List<Type_of_details>? typeOfDetails;
+  List<Community_type>? communityType;
+  List<Toilets_scan_type>? toiletsScanType;
+  List<Toilets_scan_reason>? toiletsScanReason;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -146,6 +173,72 @@ class Data {
     if (typeOfDetails != null) {
       map['type_of_details'] = typeOfDetails?.map((v) => v.toJson()).toList();
     }
+    if (communityType != null) {
+      map['community_type'] = communityType?.map((v) => v.toJson()).toList();
+    }
+    if (toiletsScanType != null) {
+      map['toilets_scan_type'] = toiletsScanType?.map((v) => v.toJson()).toList();
+    }
+    if (toiletsScanReason != null) {
+      map['toilets_scan_reason'] = toiletsScanReason?.map((v) => v.toJson()).toList();
+    }
+    return map;
+  }
+
+}
+
+/// name : "Cleaned"
+
+class Toilets_scan_reason {
+  Toilets_scan_reason({
+      this.name,});
+
+  Toilets_scan_reason.fromJson(dynamic json) {
+    name = json['name'];
+  }
+  String? name;
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['name'] = name;
+    return map;
+  }
+
+}
+
+/// name : "Cleaning"
+
+class Toilets_scan_type {
+  Toilets_scan_type({
+      this.name,});
+
+  Toilets_scan_type.fromJson(dynamic json) {
+    name = json['name'];
+  }
+  String? name;
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['name'] = name;
+    return map;
+  }
+
+}
+
+/// name : "Commercial Establishment"
+
+class Community_type {
+  Community_type({
+      this.name,});
+
+  Community_type.fromJson(dynamic json) {
+    name = json['name'];
+  }
+  String? name;
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['name'] = name;
     return map;
   }
 

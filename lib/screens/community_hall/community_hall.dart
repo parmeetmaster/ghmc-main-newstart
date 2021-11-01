@@ -83,6 +83,8 @@ class _CommunityHallScreenState extends State<CommunityHallScreen> {
 
   var wasteageQty = TextEditingController();
 
+  String? _community_Type;
+
   @override
   void initState() {
     super.initState();
@@ -941,7 +943,74 @@ class _CommunityHallScreenState extends State<CommunityHallScreen> {
                         ],
                       ),
                     ),
-
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.20,
+                            child: Text(
+                              "Community Type",
+                              style: TextStyle(fontSize: fontSize),
+                            ),
+                          ),
+                          Text(':'),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.60,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1.0,
+                                      style: BorderStyle.solid,
+                                      color: Colors.grey,
+                                    ),
+                                    borderRadius:
+                                    BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                ),
+                                width: MediaQuery.of(context).size.width * 0.80,
+                                child: Padding(
+                                  padding:
+                                  const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                                  child: DropdownButton<String>(
+                                    underline: Container(
+                                      color: Colors.transparent,
+                                    ),
+                                    hint: Text('Select Community Type'),
+                                    isExpanded: true,
+                                    value: _community_Type,
+                                    icon: const Icon(Icons.arrow_drop_down),
+                                    iconSize: 20,
+                                    elevation: 16,
+                                    style: const TextStyle(color: Colors.black),
+                                    items: ["Commercial Establishment","Community Hall"]
+                                        .map<
+                                        DropdownMenuItem<
+                                            String>>(
+                                            (String value) {
+                                          return DropdownMenuItem<
+                                              String>(
+                                            value: value,
+                                            child: Text("${value}"),
+                                          );
+                                        }).toList(),
+                                    onChanged: (newValue) async {
+                                      setState(() {
+                                        _community_Type = newValue;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     //quantity disposal
                     Container(
                       width: MediaQuery.of(context).size.width * 0.80,
@@ -1072,7 +1141,7 @@ class _CommunityHallScreenState extends State<CommunityHallScreen> {
                         },
                       ),
                     ),
-                    GridImage(
+                    GridImage(  images:   this.images! ,
                       context: context,
                       onchange: (List<File> files) async {
                         MProgressIndicator.show(context);
@@ -1113,23 +1182,25 @@ class _CommunityHallScreenState extends State<CommunityHallScreen> {
                         }
                         FormData formData = FormData.fromMap({
                           'user_id': Globals.userData!.data!.userId!,
-                          'zones_id': _selected_zones!.id,
-                          'circles_id': _selected_circle!.id,
-                          'area_id': _selected_area!.id,
-                          'ward_id': _selected_ward!.id,
-                          'landmark_id': _selected_landmarks!.id,
+                          'zones_id': _selected_zones?.id??"",
+                          'circles_id': _selected_circle?.id??"",
+                          'area_id': _selected_area?.id??"",
+                          'ward_id': _selected_ward?.id??"",
+                          'landmark_id': _selected_landmarks?.id??"",
                           'business_type': _selected_Business_type!.name,
                           'business_name': buisnessname.text,
                           'shop_address': shop_flat_address.text,
                           'owner_name': ownerName.text,
                           'owner_mobile': owner_mobile_phno.text,
                           'owner_aadhar': owner_aadhaar.text,
-                          'licence_number': _selected_license!.licence,
-                          'existing_disposal': _selected_disposal,
-                          'quality_waste': _select_quantity!.waste,
+                          'licence_number': _selected_license?.licence??"",
+                          'existing_disposal': _selected_disposal?.disposal??"",
+                          'quality_waste': _select_quantity?.waste??"",
                           'wastage_quantity': wasteageQty.text,
-                          'latitude': (this.locationData?.latitude).toString(),
-                          'longitude': (this.locationData?.latitude).toString(),
+                          'latitude': (this.locationData?.latitude)?.toString()??"",
+                          'longitude': (this.locationData?.latitude)?.toString()??"",
+                          'type_community': _community_Type??"",
+
                           'images': [
                             for (var file in this.images!)
                               ...{

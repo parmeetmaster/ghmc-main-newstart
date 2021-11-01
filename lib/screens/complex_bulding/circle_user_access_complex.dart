@@ -965,7 +965,7 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                         },
                       ),
                     ),
-                    GridImage(context: context, title:"Select Image",onchange: (List<File> files)async {
+                    GridImage(  images:   this.images! ,context: context, title:"Select Image",onchange: (List<File> files)async {
                       MProgressIndicator.show(context);
                       try {
                         List<File>? tempimages = [];
@@ -1002,11 +1002,11 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
 
                         FormData formData = FormData.fromMap({
                           'user_id': Globals.userData!.data!.userId!,
-                          'floor': this._selected_floor!,
+                          'floor': this._selected_floor??"",
                           'floor_no': this.floors.text,
                           'category': this._selected_category_type?.name ?? "",
                           'business_type':
-                              _selected_category_type!.name == "Business"
+                              _selected_category_type?.name == "Business"
                                   ? this._selected_Business_type?.name ?? ""
                                   : this._selected_housetype?.type ?? "",
                           'business_name': this.Business_name.text,
@@ -1020,7 +1020,7 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                           'existing_disposal':
                               this._selected_disposal?.disposal ?? "",
                           'approx_quality_waste':
-                              this._select_quantity!.waste ?? "",
+                              this._select_quantity?.waste ?? "",
                           'latitude': (this.locationData?.latitude).toString(),
                           'longitude': (this.locationData?.latitude).toString(),
                           'complex_id': widget.id,

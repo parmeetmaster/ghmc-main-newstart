@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 class CardSeperateRow extends StatelessWidget {
   String? keyval;
   String? value;
+  double? fontsize;
 
-  CardSeperateRow(this.keyval, this.value);
+  CardSeperateRow(this.keyval, this.value, {this.fontsize = 18});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +26,7 @@ class CardSeperateRow extends StatelessWidget {
           flex: 5,
           child: Text(
             "${value ?? ""}",
-            style: TextStyle(fontSize: 18),
+            style: TextStyle(fontSize: fontsize),
           ),
         ),
       ],

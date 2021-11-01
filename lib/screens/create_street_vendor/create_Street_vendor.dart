@@ -1084,7 +1084,7 @@ class _CreateStreetVendorState extends State<CreateStreetVendor> {
                         },
                       ),
                     ),
-                    GridImage(context: context, title:"Select Image",onchange: (List<File> files)async {
+                    GridImage(  images:   this.images! ,context: context, title:"Select Image",onchange: (List<File> files)async {
                       MProgressIndicator.show(context);
                       try {
                         List<File>? tempimages = [];

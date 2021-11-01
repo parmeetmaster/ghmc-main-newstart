@@ -60,13 +60,11 @@ class _ManholeScreenState extends State<ManholeScreen> {
 
   double fontSize = 14.0;
 
-
   Quality_waste? _select_quantity;
   TextStyle hintStyle = TextStyle(fontSize: 14);
   var Business_name = TextEditingController();
 
   var shop_flat_address = TextEditingController();
-
 
   var inchargeName = TextEditingController();
   var inchargeMobileNumber = TextEditingController();
@@ -74,9 +72,9 @@ class _ManholeScreenState extends State<ManholeScreen> {
   Existing_disposal? _selected_disposal;
   Manhole_type? selectedManholeCritical;
   late ManHoleProvider provider =
-  Provider.of<ManHoleProvider>(context, listen: false);
+      Provider.of<ManHoleProvider>(context, listen: false);
 
-  var manholeName= TextEditingController();
+  var manholeName = TextEditingController();
 
   Type_of_manhole? _selected_manhole;
 
@@ -85,720 +83,727 @@ class _ManholeScreenState extends State<ManholeScreen> {
     super.initState();
     _initialisedZones();
     provider.loadCommunityItems(context);
-    provider=
-    Provider.of<ManHoleProvider>(context, listen: false);
-
+    provider = Provider.of<ManHoleProvider>(context, listen: false);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: FAppBar.getCommonAppBar(title: "Manhole/Tree/Bus Stop"),
-        body: Consumer<ManHoleProvider>(
-            builder: (context, snapshot, child) {
-              return snapshot.dropDowns!=null && zones!=null
-                  ? ListView(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                children: [
-                  //zones
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.80,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.18,
-                          child: Text(
-                            "Zones",
-                            style: TextStyle(fontSize: fontSize),
+        body: Consumer<ManHoleProvider>(builder: (context, snapshot, child) {
+          return snapshot.dropDowns != null && zones != null
+              ? ListView(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  children: [
+                    //zones
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.18,
+                            child: Text(
+                              "Zones",
+                              style: TextStyle(fontSize: fontSize),
+                            ),
                           ),
-                        ),
-                        Text(':'),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.60,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: ShapeDecoration(
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                    width: 1.0,
-                                    style: BorderStyle.solid,
-                                    color: Colors.grey,
+                          Text(':'),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.60,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1.0,
+                                      style: BorderStyle.solid,
+                                      color: Colors.grey,
+                                    ),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
                                   ),
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
                                 ),
-                              ),
-                              width: MediaQuery.of(context).size.width * 0.80,
-                              child: Padding(
-                                padding:
-                                const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                                child: DropdownButton(
-                                  underline: Container(
-                                    color: Colors.transparent,
+                                width: MediaQuery.of(context).size.width * 0.80,
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                                  child: DropdownButton(
+                                    underline: Container(
+                                      color: Colors.transparent,
+                                    ),
+                                    hint: Text('Zones'),
+                                    isExpanded: true,
+                                    value: _selected_zones,
+                                    icon: const Icon(Icons.arrow_drop_down),
+                                    iconSize: 20,
+                                    elevation: 16,
+                                    style: const TextStyle(color: Colors.black),
+                                    items: zones!.data!
+                                        .map<DropdownMenuItem<DataItem>>(
+                                            (DataItem value) {
+                                      return DropdownMenuItem<DataItem>(
+                                        value: value,
+                                        child: Text("${value.name}"),
+                                      );
+                                    }).toList(),
+                                    onChanged: (newValue) async {
+                                      setState(() {
+                                        _selected_zones = newValue as DataItem;
+                                        circles = null;
+                                        this.landmarks = null;
+                                        this._selected_landmarks = null;
+                                        _selected_circle = null;
+                                        wards = null;
+                                        _selected_ward = null;
+                                        areas = null;
+                                        _selected_area = null;
+                                        _intialised_Circles();
+                                      });
+                                    },
                                   ),
-                                  hint: Text('Zones'),
-                                  isExpanded: true,
-                                  value: _selected_zones,
-                                  icon: const Icon(Icons.arrow_drop_down),
-                                  iconSize: 20,
-                                  elevation: 16,
-                                  style: const TextStyle(color: Colors.black),
-                                  items: zones!.data!
-                                      .map<DropdownMenuItem<DataItem>>(
-                                          (DataItem value) {
-                                        return DropdownMenuItem<DataItem>(
-                                          value: value,
-                                          child: Text("${value.name}"),
-                                        );
-                                      }).toList(),
-                                  onChanged: (newValue) async {
-                                    setState(() {
-                                      _selected_zones = newValue as DataItem;
-                                      circles = null;
-                                      this.landmarks = null;
-                                      this._selected_landmarks = null;
-                                      _selected_circle = null;
-                                      wards = null;
-                                      _selected_ward = null;
-                                      areas = null;
-                                      _selected_area = null;
-                                      _intialised_Circles();
-                                    });
-                                  },
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  // see circle
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.80,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.18,
-                          child: Text(
-                            "Circle",
-                            style: TextStyle(fontSize: fontSize),
+                    // see circle
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.18,
+                            child: Text(
+                              "Circle",
+                              style: TextStyle(fontSize: fontSize),
+                            ),
                           ),
-                        ),
-                        Text(':'),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.60,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: ShapeDecoration(
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                    width: 1.0,
-                                    style: BorderStyle.solid,
-                                    color: Colors.grey,
+                          Text(':'),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.60,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1.0,
+                                      style: BorderStyle.solid,
+                                      color: Colors.grey,
+                                    ),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
                                   ),
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
                                 ),
-                              ),
-                              width: MediaQuery.of(context).size.width * 0.80,
-                              child: Padding(
-                                padding:
-                                const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                                child: DropdownButton<DataItem>(
-                                  underline: Container(
-                                    color: Colors.transparent,
+                                width: MediaQuery.of(context).size.width * 0.80,
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                                  child: DropdownButton<DataItem>(
+                                    underline: Container(
+                                      color: Colors.transparent,
+                                    ),
+                                    hint: Text('Circles'),
+                                    isExpanded: true,
+                                    value: _selected_circle,
+                                    icon: const Icon(Icons.arrow_drop_down),
+                                    iconSize: 20,
+                                    elevation: 16,
+                                    style: const TextStyle(color: Colors.black),
+                                    items: circles != null
+                                        ? circles!.data!
+                                            .map<DropdownMenuItem<DataItem>>(
+                                                (DataItem value) {
+                                            return DropdownMenuItem<DataItem>(
+                                              value: value,
+                                              child: Text("${value.name}"),
+                                            );
+                                          }).toList()
+                                        : [],
+                                    onChanged: (newValue) async {
+                                      setState(() {
+                                        _selected_circle = newValue as DataItem;
+                                        wards = null;
+                                        _selected_ward = null;
+                                        areas = null;
+                                        _selected_area = null;
+                                        this.landmarks = null;
+                                        this._selected_landmarks = null;
+                                        _intialised_Wards();
+                                      });
+                                    },
                                   ),
-                                  hint: Text('Circles'),
-                                  isExpanded: true,
-                                  value: _selected_circle,
-                                  icon: const Icon(Icons.arrow_drop_down),
-                                  iconSize: 20,
-                                  elevation: 16,
-                                  style: const TextStyle(color: Colors.black),
-                                  items: circles != null
-                                      ? circles!.data!
-                                      .map<DropdownMenuItem<DataItem>>(
-                                          (DataItem value) {
-                                        return DropdownMenuItem<DataItem>(
-                                          value: value,
-                                          child: Text("${value.name}"),
-                                        );
-                                      }).toList()
-                                      : [],
-                                  onChanged: (newValue) async {
-                                    setState(() {
-                                      _selected_circle = newValue as DataItem;
-                                      wards = null;
-                                      _selected_ward = null;
-                                      areas = null;
-                                      _selected_area = null;
-                                      this.landmarks = null;
-                                      this._selected_landmarks = null;
-                                      _intialised_Wards();
-                                    });
-                                  },
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  // see ward
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.80,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.18,
-                          child: Text(
-                            "Ward",
-                            style: TextStyle(fontSize: fontSize),
+                    // see ward
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.18,
+                            child: Text(
+                              "Ward",
+                              style: TextStyle(fontSize: fontSize),
+                            ),
                           ),
-                        ),
-                        Text(':'),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.60,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: ShapeDecoration(
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                    width: 1.0,
-                                    style: BorderStyle.solid,
-                                    color: Colors.grey,
+                          Text(':'),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.60,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1.0,
+                                      style: BorderStyle.solid,
+                                      color: Colors.grey,
+                                    ),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
                                   ),
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
                                 ),
-                              ),
-                              width: MediaQuery.of(context).size.width * 0.80,
-                              child: Padding(
-                                padding:
-                                const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                                child: DropdownButton<DataItem>(
-                                  underline: Container(
-                                    color: Colors.transparent,
+                                width: MediaQuery.of(context).size.width * 0.80,
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                                  child: DropdownButton<DataItem>(
+                                    underline: Container(
+                                      color: Colors.transparent,
+                                    ),
+                                    hint: Text('Wards'),
+                                    isExpanded: true,
+                                    value: _selected_ward,
+                                    icon: const Icon(Icons.arrow_drop_down),
+                                    iconSize: 20,
+                                    elevation: 16,
+                                    style: const TextStyle(color: Colors.black),
+                                    items: wards != null
+                                        ? wards!.data!
+                                            .map<DropdownMenuItem<DataItem>>(
+                                                (DataItem value) {
+                                            return DropdownMenuItem<DataItem>(
+                                              value: value,
+                                              child: Text("${value.name}"),
+                                            );
+                                          }).toList()
+                                        : [],
+                                    onChanged: (newValue) async {
+                                      setState(() {
+                                        _selected_ward = newValue as DataItem;
+                                        areas = null;
+                                        _selected_area = null;
+                                        this.landmarks = null;
+                                        this._selected_landmarks = null;
+                                        _intialised_Areas();
+                                      });
+                                    },
                                   ),
-                                  hint: Text('Wards'),
-                                  isExpanded: true,
-                                  value: _selected_ward,
-                                  icon: const Icon(Icons.arrow_drop_down),
-                                  iconSize: 20,
-                                  elevation: 16,
-                                  style: const TextStyle(color: Colors.black),
-                                  items: wards != null
-                                      ? wards!.data!
-                                      .map<DropdownMenuItem<DataItem>>(
-                                          (DataItem value) {
-                                        return DropdownMenuItem<DataItem>(
-                                          value: value,
-                                          child: Text("${value.name}"),
-                                        );
-                                      }).toList()
-                                      : [],
-                                  onChanged: (newValue) async {
-                                    setState(() {
-                                      _selected_ward = newValue as DataItem;
-                                      areas = null;
-                                      _selected_area = null;
-                                      this.landmarks = null;
-                                      this._selected_landmarks = null;
-                                      _intialised_Areas();
-                                    });
-                                  },
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  //see areas
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.80,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.18,
-                          child: Text(
-                            "Areas/Colony",
-                            style: TextStyle(fontSize: fontSize),
+                    //see areas
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.18,
+                            child: Text(
+                              "Areas/Colony",
+                              style: TextStyle(fontSize: fontSize),
+                            ),
                           ),
-                        ),
-                        Text(':'),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.60,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: ShapeDecoration(
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                    width: 1.0,
-                                    style: BorderStyle.solid,
-                                    color: Colors.grey,
+                          Text(':'),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.60,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1.0,
+                                      style: BorderStyle.solid,
+                                      color: Colors.grey,
+                                    ),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
                                   ),
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
                                 ),
-                              ),
-                              width: MediaQuery.of(context).size.width * 0.80,
-                              child: Padding(
-                                padding:
-                                const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                                child: DropdownButton<DataItem>(
-                                  underline: Container(
-                                    color: Colors.transparent,
-                                  ),
-                                  hint: Text('Areas'),
-                                  isExpanded: true,
-                                  value: _selected_area,
-                                  icon: const Icon(Icons.arrow_drop_down),
-                                  iconSize: 20,
-                                  elevation: 16,
-                                  style: const TextStyle(color: Colors.black),
-                                  items: areas != null
-                                      ? areas!.data!
-                                      .map<DropdownMenuItem<DataItem>>(
-                                          (DataItem value) {
-                                        return DropdownMenuItem<DataItem>(
-                                          value: value,
-                                          child: Text("${value.name}"),
-                                        );
-                                      }).toList()
-                                      : [],
-                                  onChanged: (newValue) async {
-                                    setState(() {
-                                      _selected_area = newValue as DataItem;
-                                      landmarks = null;
-                                      _selected_landmarks = null;
-                                      this._intialised_Landmarks();
+                                width: MediaQuery.of(context).size.width * 0.80,
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                                  child: DropdownButton<DataItem>(
+                                    underline: Container(
+                                      color: Colors.transparent,
+                                    ),
+                                    hint: Text('Areas'),
+                                    isExpanded: true,
+                                    value: _selected_area,
+                                    icon: const Icon(Icons.arrow_drop_down),
+                                    iconSize: 20,
+                                    elevation: 16,
+                                    style: const TextStyle(color: Colors.black),
+                                    items: areas != null
+                                        ? areas!.data!
+                                            .map<DropdownMenuItem<DataItem>>(
+                                                (DataItem value) {
+                                            return DropdownMenuItem<DataItem>(
+                                              value: value,
+                                              child: Text("${value.name}"),
+                                            );
+                                          }).toList()
+                                        : [],
+                                    onChanged: (newValue) async {
+                                      setState(() {
+                                        _selected_area = newValue as DataItem;
+                                        landmarks = null;
+                                        _selected_landmarks = null;
+                                        this._intialised_Landmarks();
 
-                                      setState(() {});
-                                    });
-                                  },
+                                        setState(() {});
+                                      });
+                                    },
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  //see landmarks
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.80,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.18,
-                          child: Text(
-                            "Landmarks",
-                            style: TextStyle(fontSize: fontSize),
+                    //see landmarks
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.18,
+                            child: Text(
+                              "Landmarks",
+                              style: TextStyle(fontSize: fontSize),
+                            ),
                           ),
-                        ),
-                        Text(':'),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.60,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: ShapeDecoration(
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                    width: 1.0,
-                                    style: BorderStyle.solid,
-                                    color: Colors.grey,
+                          Text(':'),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.60,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1.0,
+                                      style: BorderStyle.solid,
+                                      color: Colors.grey,
+                                    ),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
                                   ),
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
                                 ),
-                              ),
-                              width: MediaQuery.of(context).size.width * 0.80,
-                              child: Padding(
-                                padding:
-                                const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                                child: DropdownButton<DataItem>(
-                                  underline: Container(
-                                    color: Colors.transparent,
+                                width: MediaQuery.of(context).size.width * 0.80,
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                                  child: DropdownButton<DataItem>(
+                                    underline: Container(
+                                      color: Colors.transparent,
+                                    ),
+                                    hint: Text('Select Landmarks'),
+                                    isExpanded: true,
+                                    value: _selected_landmarks,
+                                    icon: const Icon(Icons.arrow_drop_down),
+                                    iconSize: 20,
+                                    elevation: 16,
+                                    style: const TextStyle(color: Colors.black),
+                                    items: landmarks != null
+                                        ? landmarks!.data!
+                                            .map<DropdownMenuItem<DataItem>>(
+                                                (DataItem value) {
+                                            return DropdownMenuItem<DataItem>(
+                                              value: value,
+                                              child: Text("${value.name}"),
+                                            );
+                                          }).toList()
+                                        : [],
+                                    onChanged: (newValue) async {
+                                      setState(() {
+                                        _selected_landmarks =
+                                            newValue as DataItem;
+                                        setState(() {});
+                                      });
+                                    },
                                   ),
-                                  hint: Text('Select Landmarks'),
-                                  isExpanded: true,
-                                  value: _selected_landmarks,
-                                  icon: const Icon(Icons.arrow_drop_down),
-                                  iconSize: 20,
-                                  elevation: 16,
-                                  style: const TextStyle(color: Colors.black),
-                                  items: landmarks != null
-                                      ? landmarks!.data!
-                                      .map<DropdownMenuItem<DataItem>>(
-                                          (DataItem value) {
-                                        return DropdownMenuItem<DataItem>(
-                                          value: value,
-                                          child: Text("${value.name}"),
-                                        );
-                                      }).toList()
-                                      : [],
-                                  onChanged: (newValue) async {
-                                    setState(() {
-                                      _selected_landmarks =
-                                      newValue as DataItem;
-                                      setState(() {});
-                                    });
-                                  },
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  //see address
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.80,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.20,
-                          child: Text(
-                            "Address",
-                            style: TextStyle(fontSize: fontSize),
-                          ),
-                        ),
-                        Text(':'),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.60,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: ShapeDecoration(
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                    width: 1.0,
-                                    style: BorderStyle.solid,
-                                    color: Colors.grey,
-                                  ),
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
-                                ),
-                              ),
-                              width: MediaQuery.of(context).size.width * 0.80,
-                              child: TextFormField(
-                                controller: address,
-                                decoration: new InputDecoration(
-                                    border: InputBorder.none,
-                                    hintStyle: hintStyle,
-                                    focusedBorder: InputBorder.none,
-                                    enabledBorder: InputBorder.none,
-                                    errorBorder: InputBorder.none,
-                                    disabledBorder: InputBorder.none,
-                                    contentPadding: EdgeInsets.only(
-                                        left: 15,
-                                        bottom: 11,
-                                        top: 11,
-                                        right: 15),
-                                    hintText: "Type address here..."),
-                              ),
+                    //see address
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.20,
+                            child: Text(
+                              "Address",
+                              style: TextStyle(fontSize: fontSize),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  //see select manhole type
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.80,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.20,
-                          child: Text(
-                            "Manhole Type",
-                            style: TextStyle(fontSize: fontSize),
-                          ),
-                        ),
-                        Text(':'),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.60,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: ShapeDecoration(
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                    width: 1.0,
-                                    style: BorderStyle.solid,
-                                    color: Colors.grey,
+                          Text(':'),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.60,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1.0,
+                                      style: BorderStyle.solid,
+                                      color: Colors.grey,
+                                    ),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
                                   ),
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
                                 ),
-                              ),
-                              width: MediaQuery.of(context).size.width * 0.80,
-                              child: Padding(
-                                padding:
-                                const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                                child: DropdownButton<Manhole_type>(
-                                  underline: Container(
-                                    color: Colors.transparent,
-                                  ),
-                                  hint: Text('Select Type'),
-                                  isExpanded: true,
-                                  value: selectedManholeCritical,
-                                  icon: const Icon(Icons.arrow_drop_down),
-                                  iconSize: 20,
-                                  elevation: 16,
-                                  style: const TextStyle(color: Colors.black),
-                                  items: provider.dropDowns!
-                                      .data!.manholeType!
-                                      .map<DropdownMenuItem<Manhole_type>>(
-                                          (Manhole_type value) {
-                                        return DropdownMenuItem<Manhole_type>(
-                                          value: value,
-                                          child: Text("${value.name}"),
-                                        );
-                                      }).toList(),
-                                  onChanged: (newValue) async {
-                                    setState(() {
-                                      selectedManholeCritical = newValue;
-                                    });
-                                  },
+                                width: MediaQuery.of(context).size.width * 0.80,
+                                child: TextFormField(
+                                  controller: address,
+                                  decoration: new InputDecoration(
+                                      border: InputBorder.none,
+                                      hintStyle: hintStyle,
+                                      focusedBorder: InputBorder.none,
+                                      enabledBorder: InputBorder.none,
+                                      errorBorder: InputBorder.none,
+                                      disabledBorder: InputBorder.none,
+                                      contentPadding: EdgeInsets.only(
+                                          left: 15,
+                                          bottom: 11,
+                                          top: 11,
+                                          right: 15),
+                                      hintText: "Type address here..."),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  //see select type
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.80,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.20,
-                          child: Text(
-                            "Select Type",
-                            style: TextStyle(fontSize: fontSize),
+                    //see select manhole type
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.20,
+                            child: Text(
+                              "Manhole Type",
+                              style: TextStyle(fontSize: fontSize),
+                            ),
                           ),
-                        ),
-                        Text(':'),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.60,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: ShapeDecoration(
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                    width: 1.0,
-                                    style: BorderStyle.solid,
-                                    color: Colors.grey,
+                          Text(':'),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.60,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1.0,
+                                      style: BorderStyle.solid,
+                                      color: Colors.grey,
+                                    ),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
                                   ),
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
                                 ),
-                              ),
-                              width: MediaQuery.of(context).size.width * 0.80,
-                              child: Padding(
-                                padding:
-                                const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                                child: DropdownButton<Type_of_manhole>(
-                                  underline: Container(
-                                    color: Colors.transparent,
+                                width: MediaQuery.of(context).size.width * 0.80,
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                                  child: DropdownButton<Manhole_type>(
+                                    underline: Container(
+                                      color: Colors.transparent,
+                                    ),
+                                    hint: Text('Select Type'),
+                                    isExpanded: true,
+                                    value: selectedManholeCritical,
+                                    icon: const Icon(Icons.arrow_drop_down),
+                                    iconSize: 20,
+                                    elevation: 16,
+                                    style: const TextStyle(color: Colors.black),
+                                    items: provider
+                                        .dropDowns!.data!.manholeType!
+                                        .map<DropdownMenuItem<Manhole_type>>(
+                                            (Manhole_type value) {
+                                      return DropdownMenuItem<Manhole_type>(
+                                        value: value,
+                                        child: Text("${value.name}"),
+                                      );
+                                    }).toList(),
+                                    onChanged: (newValue) async {
+                                      setState(() {
+                                        selectedManholeCritical = newValue;
+                                      });
+                                    },
                                   ),
-                                  hint: Text('Select manhole Type'),
-                                  isExpanded: true,
-                                  value: _selected_manhole,
-                                  icon: const Icon(Icons.arrow_drop_down),
-                                  iconSize: 20,
-                                  elevation: 16,
-                                  style: const TextStyle(color: Colors.black),
-                                  items: provider.dropDowns!
-                                      .data!.typeOfManhole!
-                                      .map<DropdownMenuItem<Type_of_manhole>>(
-                                          (Type_of_manhole value) {
-                                        return DropdownMenuItem<Type_of_manhole>(
-                                          value: value,
-                                          child: Text("${value.name}"),
-                                        );
-                                      }).toList(),
-                                  onChanged: (newValue) async {
-                                    setState(() {
-                                      _selected_manhole = newValue;
-                                    });
-                                  },
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
+                    //see select type
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.20,
+                            child: Text(
+                              "Select Type",
+                              style: TextStyle(fontSize: fontSize),
+                            ),
+                          ),
+                          Text(':'),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.60,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1.0,
+                                      style: BorderStyle.solid,
+                                      color: Colors.grey,
+                                    ),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                ),
+                                width: MediaQuery.of(context).size.width * 0.80,
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                                  child: DropdownButton<Type_of_manhole>(
+                                    underline: Container(
+                                      color: Colors.transparent,
+                                    ),
+                                    hint: Text('Select manhole Type'),
+                                    isExpanded: true,
+                                    value: _selected_manhole,
+                                    icon: const Icon(Icons.arrow_drop_down),
+                                    iconSize: 20,
+                                    elevation: 16,
+                                    style: const TextStyle(color: Colors.black),
+                                    items: provider
+                                        .dropDowns!.data!.typeOfManhole!
+                                        .map<DropdownMenuItem<Type_of_manhole>>(
+                                            (Type_of_manhole value) {
+                                      return DropdownMenuItem<Type_of_manhole>(
+                                        value: value,
+                                        child: Text("${value.name}"),
+                                      );
+                                    }).toList(),
+                                    onChanged: (newValue) async {
+                                      setState(() {
+                                        _selected_manhole = newValue;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
 
-                  //see open place name
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.80,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.20,
-                          child: Text(
-                            "Manhole Name",
-                            style: TextStyle(fontSize: fontSize),
+                    //see open place name
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.20,
+                            child: Text(
+                              "Manhole Name",
+                              style: TextStyle(fontSize: fontSize),
+                            ),
                           ),
-                        ),
-                        Text(':'),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.60,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: ShapeDecoration(
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                    width: 1.0,
-                                    style: BorderStyle.solid,
-                                    color: Colors.grey,
+                          Text(':'),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.60,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1.0,
+                                      style: BorderStyle.solid,
+                                      color: Colors.grey,
+                                    ),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
                                   ),
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
                                 ),
-                              ),
-                              width: MediaQuery.of(context).size.width * 0.80,
-                              child: TextFormField(
-                                controller: manholeName,
-                                decoration: new InputDecoration(
-                                    border: InputBorder.none,
-                                    hintStyle: hintStyle,
-                                    focusedBorder: InputBorder.none,
-                                    enabledBorder: InputBorder.none,
-                                    errorBorder: InputBorder.none,
-                                    disabledBorder: InputBorder.none,
-                                    contentPadding: EdgeInsets.only(
-                                        left: 15,
-                                        bottom: 11,
-                                        top: 11,
-                                        right: 15),
-                                    hintText: "Type Man Hole name here..."),
+                                width: MediaQuery.of(context).size.width * 0.80,
+                                child: TextFormField(
+                                  controller: manholeName,
+                                  decoration: new InputDecoration(
+                                      border: InputBorder.none,
+                                      hintStyle: hintStyle,
+                                      focusedBorder: InputBorder.none,
+                                      enabledBorder: InputBorder.none,
+                                      errorBorder: InputBorder.none,
+                                      disabledBorder: InputBorder.none,
+                                      contentPadding: EdgeInsets.only(
+                                          left: 15,
+                                          bottom: 11,
+                                          top: 11,
+                                          right: 15),
+                                      hintText: "Type Man Hole name here..."),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: MapContainer(
-                      locationData: (s) async {
-                        locationData = s;
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: MapContainer(
+                        locationData: (s) async {
+                          locationData = s;
+                        },
+                      ),
+                    ),
+
+                    Text(
+                      "Select Image",
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    GridImage(
+                      images:   this.images! ,
+                      context: context,
+                      onchange: (List<File> files) async {
+                        MProgressIndicator.show(context);
+                        try {
+                          List<File>? tempimages = [];
+                          await Future.forEach(files, (e) async {
+                            print(e);
+                            File? file =
+                                await FileSupport().compressImage(e as File);
+                            tempimages.add(file!);
+                          });
+                          this.images!.clear();
+                          "${tempimages.length} are compress"
+                              .toString()
+                              .printwtf;
+                          this.images!.addAll(tempimages);
+                        } catch (e) {
+                          MProgressIndicator.hide();
+                        }
+                        MProgressIndicator.hide();
                       },
                     ),
-                  ),
 
-                  Text("Select Image",style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600),),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  GridImage(context: context, onchange: (List<File> files)async {
-                    MProgressIndicator.show(context);
-                    try {
-                      List<File>? tempimages = [];
-                      await Future.forEach(files,(e)async{
-                        print(e);
-                        File? file = await FileSupport().compressImage(e as File);
-                        tempimages.add(file!);
+                    SizedBox(
+                      height: 10,
+                    ),
+                    GradientButton(
+                      title: "Submit",
+                      onclick: () async {
+                        if (this.locationData == null) {
+                          "Please choose location first".showSnackbar(context);
+                          return;
+                        }
 
-                      });
-                      this.images!.clear();
-                      "${tempimages.length} are compress".toString().printwtf;
-                      this.images!.addAll(tempimages);
-                    } catch (e) {
-                      MProgressIndicator.hide();
-                    }
-                    MProgressIndicator.hide();
-                  },),
+                        if (this.images!.length > 5) {
+                          "Only max 5 images are allowed".showSnackbar(context);
+                          return;
+                        }
+                        FormData formData = FormData.fromMap({
+                          'user_id': Globals.userData?.data?.userId ?? "",
+                          'zones_id': _selected_zones?.id ?? "",
+                          'circles_id': _selected_circle?.id ?? "",
+                          'area_id': _selected_area?.id ?? "",
+                          'ward_id': _selected_ward?.id ?? "",
+                          'landmark_id': _selected_landmarks?.id ?? "",
+                          'address': address.text,
+                          'address': address.text,
+                          'man_hole_name': manholeName.text,
+                          'minor_major': selectedManholeCritical?.name ?? "",
+                          'latitude':
+                              (this.locationData?.latitude)?.toString() ?? "",
+                          'longitude':
+                              (this.locationData?.latitude)?.toString() ?? "",
+                          'type': _selected_manhole?.name ?? "",
+                          'images': [
+                            for (var file in this.images!)
+                              ...{
+                                await MultipartFile.fromFile(file.path,
+                                    filename: file.path.split('/').last)
+                              }.toList()
+                          ]
+                        });
 
-
-                  SizedBox(
-                    height: 10,
-                  ),
-                  GradientButton(
-                    title: "Submit",
-                    onclick: () async {
-                      if (this.locationData == null) {
-                        "Please choose location first".showSnackbar(context);
-                        return;
-                      }
-
-                      if (this.images!.length > 5) {
-                        "Only max 5 images are allowed".showSnackbar(context);
-                        return;
-                      }
-                      FormData formData = FormData.fromMap({
-                        'user_id': Globals.userData?.data?.userId??"",
-                        'zones_id': _selected_zones?.id??"",
-                        'circles_id': _selected_circle?.id??"",
-                        'area_id': _selected_area?.id??"",
-                        'ward_id': _selected_ward?.id??"",
-                        'landmark_id': _selected_landmarks?.id??"",
-                        'address': address.text,
-                        'address': address.text,
-                        'man_hole_name': manholeName.text,
-                        'minor_major':selectedManholeCritical?.name??"",
-                        'latitude': (this.locationData?.latitude)?.toString()??"",
-                        'longitude': (this.locationData?.latitude)?.toString()??"",
-                        'type': _selected_manhole?.name??"",
-                        'images': [
-                          for (var file in this.images!)
-                            ...{
-                              await MultipartFile.fromFile(file.path,
-                                  filename: file.path.split('/').last)
-                            }.toList()
-                        ]
-                      });
-
-
-                      MProgressIndicator.show(context);
-                      ApiResponse res = await provider.createManhole(
-                          formData, context);
-                      MProgressIndicator.hide();
-                      print(res.status);
-                      if (res.status == 200) {
-                        Navigator.pop(context);
-                      }
-                    },
-                  )
-                ],
-              )
-                  : Loading();
-            }));
+                        MProgressIndicator.show(context);
+                        ApiResponse res =
+                            await provider.createManhole(formData, context);
+                        MProgressIndicator.hide();
+                        print(res.status);
+                        if (res.status == 200) {
+                          Navigator.pop(context);
+                        }
+                      },
+                    )
+                  ],
+                )
+              : Loading();
+        }));
   }
 
   // get data for zones
   Future<void> _initialisedZones() async {
     final culvert_provider =
-    Provider.of<CulvertProvider>(context, listen: false);
+        Provider.of<CulvertProvider>(context, listen: false);
     ApiResponse? resp = await culvert_provider.getZones();
     if (resp!.status == 200)
       zones = CulvertDataModel.fromJson(resp.completeResponse);
@@ -812,7 +817,7 @@ class _ManholeScreenState extends State<ManholeScreen> {
   Future<void> _intialised_Circles() async {
     MProgressIndicator.show(context);
     final culvert_provider =
-    Provider.of<CulvertProvider>(context, listen: false);
+        Provider.of<CulvertProvider>(context, listen: false);
     ApiResponse? resp = await culvert_provider.getCircles(_selected_zones!);
     MProgressIndicator.hide();
     if (resp!.status == 200)
@@ -827,7 +832,7 @@ class _ManholeScreenState extends State<ManholeScreen> {
   Future<void> _intialised_Wards() async {
     MProgressIndicator.show(context);
     final culvert_provider =
-    Provider.of<CulvertProvider>(context, listen: false);
+        Provider.of<CulvertProvider>(context, listen: false);
     ApiResponse? resp = await culvert_provider.getWards(_selected_circle);
     if (resp!.status == 200)
       wards = CulvertDataModel.fromJson(resp.completeResponse);
@@ -840,7 +845,7 @@ class _ManholeScreenState extends State<ManholeScreen> {
   void _intialised_Areas() async {
     MProgressIndicator.show(context);
     final culvert_provider =
-    Provider.of<CulvertProvider>(context, listen: false);
+        Provider.of<CulvertProvider>(context, listen: false);
     ApiResponse? resp = await culvert_provider.getAreas(_selected_ward!);
     if (resp!.status == 200)
       areas = CulvertDataModel.fromJson(resp.completeResponse);
@@ -852,7 +857,7 @@ class _ManholeScreenState extends State<ManholeScreen> {
   void _intialised_Landmarks() async {
     MProgressIndicator.show(context);
     final culvert_provider =
-    Provider.of<CulvertProvider>(context, listen: false);
+        Provider.of<CulvertProvider>(context, listen: false);
     ApiResponse? resp = await culvert_provider.getLandmarks(_selected_area!);
     if (resp!.status == 200)
       landmarks = CulvertDataModel.fromJson(resp.completeResponse);

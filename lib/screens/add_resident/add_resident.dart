@@ -1031,7 +1031,7 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                         },
                       ),
                     ),
-                    GridImage(context: context, title:"Select Image",onchange: (List<File> files)async {
+                    GridImage(  images:   this.images! ,context: context, title:"Select Image",onchange: (List<File> files)async {
                       MProgressIndicator.show(context);
                       try {
                         List<File>? tempimages = [];
@@ -1078,7 +1078,7 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                           'owner_mobile': owner_mobile_phno.text,
                           'owner_aadhar': owner_aadhaar.text,
                           'wastage_quantity': wastageQty.text,
-                          'type': _selected_housetype??"",
+                          'type': _selected_housetype?.type??"",
                           'existing_disposal': _selected_disposal?.disposal??"",
                           'quality_waste': _select_quantity?.waste??"",
                           'latitude': (this.locationData?.latitude)?.toString()??"",

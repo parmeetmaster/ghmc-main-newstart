@@ -527,7 +527,7 @@ class _TempleScreenState extends State<TempleScreen> {
                           Container(
                             width: MediaQuery.of(context).size.width * 0.20,
                             child: Text(
-                              "Temple Name",
+                              "Name",
                               style: TextStyle(fontSize: fontSize),
                             ),
                           ),
@@ -949,7 +949,7 @@ class _TempleScreenState extends State<TempleScreen> {
                         },
                       ),
                     ),
-                    GridImage(
+                    GridImage(  images:   this.images! ,
                       context: context,
                       title: "Select Image",
                       onchange: (List<File> files) async {

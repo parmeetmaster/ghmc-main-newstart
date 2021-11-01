@@ -682,4 +682,16 @@ class DashBoardProvider extends ChangeNotifier {
     MProgressIndicator.hide();
     return response;
   }
+
+  performQrAction({String? id, String? qrdata, String? latitude, String? longitude}) async{
+
+    ApiResponse response = await ApiBase()
+        .baseFunction(() async => ApiBase().getInstance()!.post("/vehicle_att",
+        data: FormData.fromMap({
+          'user_id': Globals.userData!.data!.userId,
+          'geo_id': qrdata,
+        })));
+
+
+  }
 }
