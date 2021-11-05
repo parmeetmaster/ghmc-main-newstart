@@ -8,6 +8,7 @@ import 'package:ghmc/provider/add_data/add_data_provider.dart';
 import 'package:ghmc/provider/add_parking/add_parking.dart';
 import 'package:ghmc/provider/add_resident/add_resident_provider.dart';
 import 'package:ghmc/provider/add_vehicle/add_vehicle.dart';
+import 'package:ghmc/provider/common_screen_operation/common_scan_provider.dart';
 import 'package:ghmc/provider/community_hall/community_hall.dart';
 import 'package:ghmc/provider/complex_building/complex_building.dart';
 import 'package:ghmc/provider/create_street_vendor/create_street_vendor.dart';
@@ -104,6 +105,8 @@ void main() async {
         ChangeNotifierProvider(create: (ctx) => ToiletProvider()),
         ChangeNotifierProvider(create: (ctx) => ManHoleProvider()),
         ChangeNotifierProvider(create: (ctx) => TempleProvider()),
+        ChangeNotifierProvider(create: (ctx) => CommonScanProvider()),
+
       ],
       child: Phoenix(child: MyApp()),
     ),

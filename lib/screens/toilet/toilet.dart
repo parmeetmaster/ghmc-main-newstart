@@ -878,7 +878,7 @@ class _ToiletScreenState extends State<ToiletScreen> {
                       ),
                     ),
                     GridImage(
-                      images: this.images!,
+                      images: this.images,
                       context: context,
                       title: "Select Image",
                       onchange: (List<File> files) async {

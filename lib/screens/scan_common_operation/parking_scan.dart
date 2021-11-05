@@ -5,6 +5,8 @@ import 'package:file_support/file_support.dart';
 import 'package:flutter/material.dart';
 import 'package:ghmc/globals/globals.dart';
 import 'package:ghmc/model/all_drop_down_model.dart';
+import 'package:ghmc/model/core/operation_model.dart';
+import 'package:ghmc/provider/common_screen_operation/common_scan_provider.dart';
 import 'package:ghmc/provider/toilet/toilet.dart';
 import 'package:ghmc/util/m_progress_indicator.dart';
 import 'package:ghmc/widget/appbar/appbar.dart';
@@ -16,25 +18,21 @@ import 'package:image_grid/grid_image.dart';
 import 'package:provider/provider.dart';
 import 'package:ghmc/util/utils.dart';
 
-class ToiletScanScreen extends StatefulWidget {
+class ParkingScanScreen extends StatefulWidget {
   final qrdata;
+  final OperationModel operationData;
 
-  const ToiletScanScreen({Key? key, this.qrdata}) : super(key: key);
+  const ParkingScanScreen({Key? key, this.qrdata, required this.operationData})
+      : super(key: key);
 
   @override
-  _ToiletScanScreenState createState() => _ToiletScanScreenState();
+  _ParkingScanScreenState createState() => _ParkingScanScreenState();
 }
 
-class _ToiletScanScreenState extends State<ToiletScanScreen> {
+class _ParkingScanScreenState extends State<ParkingScanScreen> {
   bool? choice = null;
-  late ToiletProvider provider =
-      Provider.of<ToiletProvider>(context, listen: false);
-
-  var toiletName = TextEditingController();
-
-  var wasteQty = TextEditingController();
-
-  Toilets_scan_type? _selectedToiletType;
+  late CommonScanProvider provider =
+      Provider.of<CommonScanProvider>(context, listen: false);
 
   TextEditingController qty_no = TextEditingController();
 
@@ -50,46 +48,47 @@ class _ToiletScanScreenState extends State<ToiletScanScreen> {
   void initState() {
     super.initState();
     provider.loadCommunityItems(context);
-    provider = Provider.of<ToiletProvider>(context, listen: false);
-    provider.loadResidentDisplayData(widget.qrdata);
+    provider = Provider.of<CommonScanProvider>(context, listen: false);
+    provider.loadParkingDisplayData(widget.qrdata);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: FAppBar.getCommonAppBar(title: "Scanning Toilet Data"),
-      body: Consumer<ToiletProvider>(builder: (context, value, child) {
-        return provider.dropDowns != null && provider.scanToiletModel != null
+      appBar: FAppBar.getCommonAppBar(title: "Parking Data"),
+      body: Consumer<CommonScanProvider>(builder: (context, value, child) {
+        return provider.dropDowns != null &&
+                provider.commonParkingModel != null
             ? ListView(
                 padding: EdgeInsets.all(10),
                 children: [
                   CardSeperateRow(
-                    "Toilet Name",
-                    provider.scanToiletModel!.data!.templeName,
+                    "Parking Name",
+                    provider.commonParkingModel!.data!.parkingName,
                     fontsize: 16,
                   ),
                   SizedBox(
                     height: 5,
                   ),
                   CardSeperateRow(
-                    "Category Type",
-                    provider.scanToiletModel!.data!.dbType,
+                    "Owner Name",
+                    provider.commonParkingModel!.data!.ownerName,
                     fontsize: 16,
                   ),
                   SizedBox(
                     height: 5,
                   ),
                   CardSeperateRow(
-                    "Incharge Name",
-                    provider.scanToiletModel!.data!.inchargeName,
+                    "Address",
+                    provider.commonParkingModel!.data!.address!,
                     fontsize: 16,
                   ),
                   SizedBox(
                     height: 5,
                   ),
                   CardSeperateRow(
-                    "Land",
-                    provider.scanToiletModel!.data!.landmark,
+                    "Landmark",
+                    provider.commonParkingModel!.data!.landmarkId,
                     fontsize: 16,
                   ),
                   SizedBox(
@@ -97,7 +96,7 @@ class _ToiletScanScreenState extends State<ToiletScanScreen> {
                   ),
                   CardSeperateRow(
                     "Area",
-                    provider.scanToiletModel!.data!.area,
+                    provider.commonParkingModel!.data!.areaId,
                     fontsize: 16,
                   ),
                   SizedBox(
@@ -105,7 +104,7 @@ class _ToiletScanScreenState extends State<ToiletScanScreen> {
                   ),
                   CardSeperateRow(
                     "Ward",
-                    provider.scanToiletModel!.data!.wardName,
+                    provider.commonParkingModel!.data!.wardId,
                     fontsize: 16,
                   ),
                   SizedBox(
@@ -113,7 +112,7 @@ class _ToiletScanScreenState extends State<ToiletScanScreen> {
                   ),
                   CardSeperateRow(
                     "Circle",
-                    provider.scanToiletModel!.data!.circle,
+                    provider.commonParkingModel!.data!.circlesId,
                     fontsize: 16,
                   ),
                   SizedBox(
@@ -121,103 +120,31 @@ class _ToiletScanScreenState extends State<ToiletScanScreen> {
                   ),
                   CardSeperateRow(
                     "Zone",
-                    provider.scanToiletModel!.data!.zone,
+                    provider.commonParkingModel!.data!.zonesId,
                     fontsize: 16,
                   ),
                   SizedBox(
-                    height: 5,
+                    height: 10,
                   ),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.80,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.30,
-                          child: Text(
-                            "Type",
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        ),
-                        Text(":", style: TextStyle(fontSize: 22)),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.55,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: ShapeDecoration(
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                    width: 1.0,
-                                    style: BorderStyle.solid,
-                                    color: Colors.grey,
-                                  ),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5.0)),
-                                ),
-                              ),
-                              width: MediaQuery.of(context).size.width * 0.80,
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                                child: DropdownButton<Toilets_scan_type>(
-                                  underline: Container(
-                                    color: Colors.transparent,
-                                  ),
-                                  hint: Text('Select Toilet Type'),
-                                  isExpanded: true,
-                                  value: _selectedToiletType,
-                                  icon: const Icon(Icons.arrow_drop_down),
-                                  iconSize: 20,
-                                  elevation: 16,
-                                  style: const TextStyle(color: Colors.black),
-                                  items: provider
-                                      .dropDowns!.data!.toiletsScanType!
-                                      .map<DropdownMenuItem<Toilets_scan_type>>(
-                                          (Toilets_scan_type value) {
-                                    return DropdownMenuItem<Toilets_scan_type>(
-                                      value: value,
-                                      child: Text(
-                                        "${value.name}",
-                                        style: TextStyle(fontSize: 16),
-                                      ),
-                                    );
-                                  }).toList(),
-                                  onChanged: (newValue) async {
-                                    setState(() {
-                                      _selectedToiletType = newValue!;
-                                    });
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  if (_selectedToiletType?.name != null &&
-                      _selectedToiletType!.name == "Picking Garbage")
-                    _getPickedGarbage()
-                  else
-                    _getCleaning(),
+                  _getPickedGarbage(),
                   SizedBox(
                     height: 30,
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 18.0),
                     child: GradientButton(
-                      onclick: () async{
-                        FormData formdata= FormData.fromMap({
+                      onclick: () async {
+                        FormData formdata = FormData.fromMap({
+                          'db_type': provider.commonParkingModel?.data?.dbType,
+
                           'user_id': Globals.userData?.data?.userId ?? "",
                           'collection_id':
-                              provider.scanToiletModel?.data?.colId ?? "",
+                              provider.commonParkingModel?.data?.colId ?? "",
                           'wt_type': _weight,
                           'picked_denied':
                               choice == null || choice == false ? 0 : 1,
                           'approx_weight': qty_no.text,
                           'reason': reason.text,
-                          'operation_type': _selectedToiletType?.name ?? "",
                           'reason_type': _selectedToiletReason?.name ?? "",
                           'reason_type_description': reason.text,
                           'images': [
@@ -228,9 +155,7 @@ class _ToiletScanScreenState extends State<ToiletScanScreen> {
                               }.toList()
                           ]
                         });
-                        provider.submitScannedToiletData(formdata,context);
-
-
+                        provider.submitScannedResidentData(formdata, context);
                       },
                       title: "Submit",
                     ),
@@ -242,161 +167,6 @@ class _ToiletScanScreenState extends State<ToiletScanScreen> {
     );
   }
 
-  _getCleaning() {
-    return Container(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.30,
-                  child: Text(
-                    "Reason",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-                Text(":", style: TextStyle(fontSize: 22)),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.55,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      decoration: ShapeDecoration(
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                            width: 1.0,
-                            style: BorderStyle.solid,
-                            color: Colors.grey,
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                        ),
-                      ),
-                      width: MediaQuery.of(context).size.width * 0.80,
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                        child: DropdownButton<Toilets_scan_reason>(
-                          underline: Container(
-                            color: Colors.transparent,
-                          ),
-                          hint: Text('Select Reason'),
-                          isExpanded: true,
-                          value: _selectedToiletReason,
-                          icon: const Icon(Icons.arrow_drop_down),
-                          iconSize: 20,
-                          elevation: 16,
-                          style: const TextStyle(color: Colors.black),
-                          items: provider.dropDowns!.data!.toiletsScanReason!
-                              .map<DropdownMenuItem<Toilets_scan_reason>>(
-                                  (Toilets_scan_reason value) {
-                            return DropdownMenuItem<Toilets_scan_reason>(
-                              value: value,
-                              child: Text(
-                                "${value.name}",
-                                style: TextStyle(fontSize: 16),
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (newValue) async {
-                            setState(() {
-                              _selectedToiletReason = newValue!;
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          if (_selectedToiletReason != null &&
-              _selectedToiletReason!.name!.toLowerCase() == "damages")
-            Container(
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.30,
-                    child: Text(
-                      "Damages",
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
-                  Text(":", style: TextStyle(fontSize: 22)),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.55,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        decoration: ShapeDecoration(
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                              width: 1.0,
-                              style: BorderStyle.solid,
-                              color: Colors.grey,
-                            ),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(5.0)),
-                          ),
-                        ),
-                        width: MediaQuery.of(context).size.width * 0.80,
-                        child: TextFormField(
-                          controller: reason,
-                          keyboardType: TextInputType.multiline,
-                          maxLines: 5,
-                          decoration: new InputDecoration(
-                              border: InputBorder.none,
-                              focusedBorder: InputBorder.none,
-                              enabledBorder: InputBorder.none,
-                              errorBorder: InputBorder.none,
-                              disabledBorder: InputBorder.none,
-                              contentPadding: EdgeInsets.only(
-                                  left: 15, bottom: 11, top: 11, right: 15),
-                              hintStyle: TextStyle(fontSize: 16),
-                              hintText: "Detail about damage..."),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          SizedBox(
-            height: 20,
-          ),
-          GridImage(
-            bottomsheetTitle: "Please Take Live Picture",
-            images: this.images,
-            title: "Select Images",
-            context: context,
-            onlyCamera: true,
-            onchange: (List<File> files) async {
-              MProgressIndicator.show(context);
-              try {
-                List<File>? tempimages = [];
-                await Future.forEach(files, (e) async {
-                  print(e);
-                  File? file = await FileSupport().compressImage(e as File);
-                  tempimages.add(file!);
-                });
-                this.images.clear();
-                "${tempimages.length} are compress".toString().printwtf;
-                this.images.addAll(tempimages);
-              } catch (e) {
-                MProgressIndicator.hide();
-              }
-              MProgressIndicator.hide();
-            },
-          ),
-        ],
-      ),
-    );
-  }
 
   _getPickedGarbage() {
     return Container(

@@ -15,7 +15,7 @@ class CardSeperateRow extends StatelessWidget {
           flex: 3,
           child: Text(
             "${keyval}",
-            style: TextStyle(fontSize: 18),
+            style: TextStyle(fontSize: fontsize),
           ),
         ),
         SizedBox(

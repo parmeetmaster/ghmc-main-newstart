@@ -8,7 +8,7 @@ class MapLocationProvider extends ChangeNotifier {
   Future<ApiResponse?> vehiclesLocations() async {
     ApiResponse response = await ApiBase()
         .baseFunction(() => ApiBase().getInstance()!.post("/mapgvpbvp", data: {
-              "user_id": int.parse(Globals.userData!.data!.userId!),
+              "user_id": Globals.userData!.data!.userId!,
               "date": DateTime.now(),
             }));
     return response;

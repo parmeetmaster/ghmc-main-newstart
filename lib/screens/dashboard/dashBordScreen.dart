@@ -302,11 +302,16 @@ class _DashBoardScreenState extends State<DashBoardScreen>
     );
 
     bool operation = await DashBoardProvider.getReference(context).performQrAction(
+      context: context,
       id: widget.credentialsModel!.data!.userId!,
       qrdata: qrdata,
       latitude: current_Latitude,
       longitude: current_Longitude,
     );
+
+    if(operation==true){
+      return;
+    }
 
     MProgressIndicator.show(context);
     print("QR DATA IS : $qrdata");

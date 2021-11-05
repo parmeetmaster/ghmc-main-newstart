@@ -56,7 +56,7 @@ class Datum {
   String? landmark;
   String? latitude;
   String? longitude;
-  String? trips;
+  int? trips;
   String? color;
   String? image;
 

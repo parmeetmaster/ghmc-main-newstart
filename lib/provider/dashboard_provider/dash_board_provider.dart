@@ -7,13 +7,18 @@ import 'package:flutter/material.dart';
 import 'package:ghmc/api/api.dart';
 import 'package:ghmc/globals/constants.dart';
 import 'package:ghmc/globals/globals.dart';
+import 'package:ghmc/model/core/operation_model.dart';
 import 'package:ghmc/model/dashboard/app_bar/dashboard_location_gep_bep_model.dart';
 import 'package:ghmc/model/dashboard/drawer_authority.dart';
 import 'package:ghmc/model/dashboard/new_zone_model.dart';
 import 'package:ghmc/model/dashboard/zone_model.dart';
 import 'package:ghmc/model/driver_data_model.dart';
 import 'package:ghmc/provider/login_provider/login_provider.dart';
+import 'package:ghmc/screens/scan_common_operation/parking_scan.dart';
+import 'package:ghmc/screens/scan_common_operation/resident_scan.dart';
+import 'package:ghmc/screens/scan_common_operation/vendor_scan.dart';
 import 'package:ghmc/screens/success/success.dart';
+import 'package:ghmc/screens/toilet/toilet_scanner_screen.dart';
 import 'package:ghmc/util/location.dart';
 import 'package:ghmc/util/m_progress_indicator.dart';
 import 'package:ghmc/widget/buttons/gradeint_button.dart';
@@ -138,13 +143,8 @@ class DashBoardProvider extends ChangeNotifier {
     return response;
   }
 
-  uploadData(
-      int? active_percent,
-      int? type_of_waste,
-      QrDataModel? model,
-      String? scanid,
-      File? multipart,
-      BuildContext context) async {
+  uploadData(int? active_percent, int? type_of_waste, QrDataModel? model,
+      String? scanid, File? multipart, BuildContext context) async {
     if (multipart == null) {
       "Please select file".showSnackbar(context);
       return;
@@ -683,15 +683,35 @@ class DashBoardProvider extends ChangeNotifier {
     return response;
   }
 
-  performQrAction({String? id, String? qrdata, String? latitude, String? longitude}) async{
+  performQrAction(
+      {String? id,
+      String? qrdata,
+      String? latitude,
+      String? longitude,
+      BuildContext? context}) async {
+    try {
+      ApiResponse response = await ApiBase().baseFunction(
+          () async => ApiBase().getInstance()!.post("/operations_scan",
+              data: FormData.fromMap({
+                'user_id': Globals.userData!.data!.userId,
+                'geo_id': qrdata,
+              })));
+      OperationModel model = OperationModel.fromJson(response.completeResponse);
+       switch(model.data!.operationCode) {
+         case "TOI1":ToiletScanScreen(qrdata:qrdata,).push(context!);
+         return true;
+         case "RES1":ResidentScanScreen(qrdata:qrdata,operationData:model).push(context!);
+         return true;
+         case "PAR1":ParkingScanScreen(qrdata:qrdata,operationData:model).push(context!);
+         return true;
+         case "STREET1":VendorScanScreen(qrdata:qrdata,operationData:model).push(context!);
+         return true;
 
-    ApiResponse response = await ApiBase()
-        .baseFunction(() async => ApiBase().getInstance()!.post("/vehicle_att",
-        data: FormData.fromMap({
-          'user_id': Globals.userData!.data!.userId,
-          'geo_id': qrdata,
-        })));
+       }
 
-
+    } catch (e) {
+      return false;
+    }
+    return false;
   }
 }

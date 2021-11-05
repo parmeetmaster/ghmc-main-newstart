@@ -7,6 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:ghmc/api/api.dart';
 import 'package:ghmc/globals/globals.dart';
 import 'package:ghmc/model/all_drop_down_model.dart';
+import 'package:ghmc/model/common_operation/common_operation_parking.dart';
+import 'package:ghmc/model/common_operation/common_operation_resident.dart';
+import 'package:ghmc/model/common_operation/common_operation_vendor.dart';
 
 import 'package:ghmc/model/culvert/area_model.dart';
 import 'package:ghmc/model/toilet_model/scan_toilet_model.dart';
@@ -32,23 +35,11 @@ import 'package:ghmc/api/api.dart';
 import 'package:ghmc/model/all_drop_down_model.dart';
 import 'package:ghmc/util/extension.dart';
 
-class ToiletProvider extends ChangeNotifier{
+class CommonScanProvider extends ChangeNotifier{
   AllDropDownModel? dropDowns;
-  ScanToiletModel? scanToiletModel;
-
-  createToilet(FormData formData, BuildContext context) async {
-try{
-  ApiResponse response = await ApiBase().baseFunction(() =>
-      ApiBase().getInstance()!.post("/createtoilets", data: formData));
-  if (response.status == 200) {
-    response.message!.showSnackbar(context);
-    return response;
-  } else {
-    response.message!.showSnackbar(context);
-    return response;
-  }
-}catch(e){}
-  }
+  CommonOperationResident? commonResidentModel;
+  CommonOperationParking? commonParkingModel;
+  CommonOperationVendor? commonVendorModel;
 
 
   loadCommunityItems( BuildContext context) async {
@@ -63,17 +54,35 @@ try{
       notifyListeners();
       return response;
     }
-
-    notifyListeners();
   }
 
   void loadResidentDisplayData(qrdata)async {
     ApiResponse response = await ApiBase()
         .baseFunction(() => ApiBase().getInstance()!.post("/scan", data: {
         "user_id": Globals.userData!.data!.userId,
+         "geo_id": qrdata,
+    }));
+    commonResidentModel=CommonOperationResident.fromJson(response.completeResponse);
+    notifyListeners();
+  }
+
+  void loadParkingDisplayData(qrdata)async {
+    ApiResponse response = await ApiBase()
+        .baseFunction(() => ApiBase().getInstance()!.post("/scan", data: {
+      "user_id": Globals.userData!.data!.userId,
       "geo_id": qrdata,
     }));
-    scanToiletModel=ScanToiletModel.fromJson(response.completeResponse);
+    commonParkingModel=CommonOperationParking.fromJson(response.completeResponse);
+    notifyListeners();
+  }
+
+  void loadVendorDisplayData(qrdata)async {
+    ApiResponse response = await ApiBase()
+        .baseFunction(() => ApiBase().getInstance()!.post("/scan", data: {
+      "user_id": Globals.userData!.data!.userId,
+      "geo_id": qrdata,
+    }));
+    commonVendorModel=CommonOperationVendor.fromJson(response.completeResponse);
     notifyListeners();
   }
 
@@ -93,6 +102,21 @@ try{
 
   }
 
+  void submitScannedResidentData(FormData formdata, BuildContext context)async {
+    ApiResponse response = await ApiBase()
+        .baseFunction(() => ApiBase().getInstance()!.post("/createoperations", data: formdata));
+
+    if(response.status==200){
+      response.message!.showSnackbar(context);
+      Navigator.pop(context);
+    }else{
+      response.message!.showSnackbar(context);
+    }
+
+
+    notifyListeners();
+
+  }
 
 }
 
