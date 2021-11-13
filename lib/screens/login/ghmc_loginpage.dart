@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ghmc/globals/constants.dart';
+import 'package:ghmc/globals/globals.dart';
 import 'package:ghmc/provider/login_provider/login_provider.dart';
 import 'package:ghmc/util/utils.dart';
 
@@ -29,8 +30,13 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-_emailController.text="8328473790";
-_passwordController.text="test";
+
+    if(Globals.checkAppOnTest()){
+      _emailController.text="8328473790";
+     _passwordController.text="test";
+    }
+
+
 
     _instance = LoginProvider.getInstance(context);
     return Scaffold(

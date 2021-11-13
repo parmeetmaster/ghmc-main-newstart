@@ -21,6 +21,7 @@ import 'package:ghmc/widget/container/camera_container.dart';
 import 'package:ghmc/widget/container/map_container.dart';
 import 'package:ghmc/widget/grid/grid_image.dart';
 import 'package:ghmc/widget/loading_widget.dart';
+import 'package:ghmc/widget/pagination/pagination_covid_form.dart';
 import 'package:location_platform_interface/location_platform_interface.dart';
 import 'package:provider/provider.dart';
 
@@ -73,7 +74,6 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
 
   var shop_flat_address = TextEditingController();
 
-
   var ownerName = TextEditingController();
   var owner_mobile_phno = TextEditingController();
   var owner_aadhaar = TextEditingController();
@@ -83,27 +83,29 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
       Provider.of<CommunityHallProvider>(context, listen: false);
 
   late AddResidentProvider addResidentProvider =
-  Provider.of<AddResidentProvider>(context, listen: false);
+      Provider.of<AddResidentProvider>(context, listen: false);
 
   Type_of_house? _selected_housetype;
 
-  var wastageQty=TextEditingController();
+  var wastageQty = TextEditingController();
+
+  int formno=1;
+
+
   @override
   void initState() {
     super.initState();
     _initialisedZones();
     provider.loadCommunityItems(context);
-
-
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: FAppBar.getCommonAppBar(title: "Residents/house"),
-        body: Consumer2<AddResidentProvider,CommunityHallProvider>(
-            builder: (context, residentSnapShot,communityHallSnapshot, child) {
-          return communityHallSnapshot.dropDowns!=null && zones!=null
+        body: Consumer2<AddResidentProvider, CommunityHallProvider>(
+            builder: (context, residentSnapShot, communityHallSnapshot, child) {
+          return communityHallSnapshot.dropDowns != null && zones != null
               ? ListView(
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   children: [
@@ -430,13 +432,13 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                                       color: Colors.grey,
                                     ),
                                     borderRadius:
-                                    BorderRadius.all(Radius.circular(5.0)),
+                                        BorderRadius.all(Radius.circular(5.0)),
                                   ),
                                 ),
                                 width: MediaQuery.of(context).size.width * 0.80,
                                 child: Padding(
                                   padding:
-                                  const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                                      const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
                                   child: DropdownButton<DataItem>(
                                     underline: Container(
                                       color: Colors.transparent,
@@ -450,18 +452,18 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                                     style: const TextStyle(color: Colors.black),
                                     items: landmarks != null
                                         ? landmarks!.data!
-                                        .map<DropdownMenuItem<DataItem>>(
-                                            (DataItem value) {
-                                          return DropdownMenuItem<DataItem>(
-                                            value: value,
-                                            child: Text("${value.name}"),
-                                          );
-                                        }).toList()
+                                            .map<DropdownMenuItem<DataItem>>(
+                                                (DataItem value) {
+                                            return DropdownMenuItem<DataItem>(
+                                              value: value,
+                                              child: Text("${value.name}"),
+                                            );
+                                          }).toList()
                                         : [],
                                     onChanged: (newValue) async {
                                       setState(() {
                                         _selected_landmarks =
-                                        newValue as DataItem;
+                                            newValue as DataItem;
                                         setState(() {});
                                       });
                                     },
@@ -500,7 +502,7 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                                       color: Colors.grey,
                                     ),
                                     borderRadius:
-                                    BorderRadius.all(Radius.circular(5.0)),
+                                        BorderRadius.all(Radius.circular(5.0)),
                                   ),
                                 ),
                                 width: MediaQuery.of(context).size.width * 0.80,
@@ -554,7 +556,7 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                                       color: Colors.grey,
                                     ),
                                     borderRadius:
-                                    BorderRadius.all(Radius.circular(5.0)),
+                                        BorderRadius.all(Radius.circular(5.0)),
                                   ),
                                 ),
                                 width: MediaQuery.of(context).size.width * 0.80,
@@ -607,7 +609,7 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                                       color: Colors.grey,
                                     ),
                                     borderRadius:
-                                    BorderRadius.all(Radius.circular(5.0)),
+                                        BorderRadius.all(Radius.circular(5.0)),
                                   ),
                                 ),
                                 width: MediaQuery.of(context).size.width * 0.80,
@@ -661,7 +663,7 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                                       color: Colors.grey,
                                     ),
                                     borderRadius:
-                                    BorderRadius.all(Radius.circular(5.0)),
+                                        BorderRadius.all(Radius.circular(5.0)),
                                   ),
                                 ),
                                 width: MediaQuery.of(context).size.width * 0.80,
@@ -756,7 +758,7 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                         ],
                       ),
                     ),*/
-   // resident type
+                    // resident type
                     Container(
                       width: MediaQuery.of(context).size.width * 0.80,
                       child: Row(
@@ -783,13 +785,13 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                                       color: Colors.grey,
                                     ),
                                     borderRadius:
-                                    BorderRadius.all(Radius.circular(5.0)),
+                                        BorderRadius.all(Radius.circular(5.0)),
                                   ),
                                 ),
                                 width: MediaQuery.of(context).size.width * 0.80,
                                 child: Padding(
                                   padding:
-                                  const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                                      const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
                                   child: DropdownButton<Type_of_house>(
                                     underline: Container(
                                       color: Colors.transparent,
@@ -801,21 +803,18 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                                     iconSize: 20,
                                     elevation: 16,
                                     style: const TextStyle(color: Colors.black),
-                                    items: provider.dropDowns!
-                                        .data!.typeOfHouse!
-                                        .map<
-                                        DropdownMenuItem<
-                                            Type_of_house>>(
+                                    items: provider
+                                        .dropDowns!.data!.typeOfHouse!
+                                        .map<DropdownMenuItem<Type_of_house>>(
                                             (Type_of_house value) {
-                                          return DropdownMenuItem<
-                                              Type_of_house>(
-                                            value: value,
-                                            child: Text("${value.type}"),
-                                          );
-                                        }).toList(),
+                                      return DropdownMenuItem<Type_of_house>(
+                                        value: value,
+                                        child: Text("${value.type}"),
+                                      );
+                                    }).toList(),
                                     onChanged: (newValue) async {
                                       setState(() {
-                                       _selected_housetype = newValue;
+                                        _selected_housetype = newValue;
                                       });
                                     },
                                   ),
@@ -872,8 +871,8 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                                     iconSize: 20,
                                     elevation: 16,
                                     style: const TextStyle(color: Colors.black),
-                                    items: provider.dropDowns!
-                                        .data!.existingDisposal!
+                                    items: provider
+                                        .dropDowns!.data!.existingDisposal!
                                         .map<
                                                 DropdownMenuItem<
                                                     Existing_disposal>>(
@@ -943,8 +942,8 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                                     iconSize: 20,
                                     elevation: 16,
                                     style: const TextStyle(color: Colors.black),
-                                    items: provider.dropDowns!
-                                        .data!.qualityWaste!
+                                    items: provider
+                                        .dropDowns!.data!.qualityWaste!
                                         .map<DropdownMenuItem<Quality_waste>>(
                                             (Quality_waste value) {
                                       return DropdownMenuItem<Quality_waste>(
@@ -993,7 +992,7 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                                       color: Colors.grey,
                                     ),
                                     borderRadius:
-                                    BorderRadius.all(Radius.circular(5.0)),
+                                        BorderRadius.all(Radius.circular(5.0)),
                                   ),
                                 ),
                                 width: MediaQuery.of(context).size.width * 0.80,
@@ -1012,7 +1011,8 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                                           bottom: 11,
                                           top: 11,
                                           right: 15),
-                                      hintText: "Type Wastage Quantity here..."),
+                                      hintText:
+                                          "Type Wastage Quantity here..."),
                                 ),
                               ),
                             ),
@@ -1020,7 +1020,6 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                         ],
                       ),
                     ),
-
 
                     // camera container
                     Padding(
@@ -1031,28 +1030,37 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                         },
                       ),
                     ),
-                    GridImage(  images:   this.images! ,context: context, title:"Select Image",onchange: (List<File> files)async {
-                      MProgressIndicator.show(context);
-                      try {
-                        List<File>? tempimages = [];
-                        await Future.forEach(files,(e)async{
-                          print(e);
-                          File? file = await FileSupport().compressImage(e as File);
-                          tempimages.add(file!);
-
-                        });
-                        this.images!.clear();
-                        "${tempimages.length} are compress".toString().printwtf;
-                        this.images!.addAll(tempimages);
-                      } catch (e) {
+                    GridImage(
+                      images: this.images!,
+                      context: context,
+                      title: "Select Image",
+                      onchange: (List<File> files) async {
+                        MProgressIndicator.show(context);
+                        try {
+                          List<File>? tempimages = [];
+                          await Future.forEach(files, (e) async {
+                            print(e);
+                            File? file =
+                                await FileSupport().compressImage(e as File);
+                            tempimages.add(file!);
+                          });
+                          this.images!.clear();
+                          "${tempimages.length} are compress"
+                              .toString()
+                              .printwtf;
+                          this.images!.addAll(tempimages);
+                        } catch (e) {
+                          MProgressIndicator.hide();
+                        }
                         MProgressIndicator.hide();
-                      }
-                      MProgressIndicator.hide();
-                    },),
+                      },
+                    ),
 
                     SizedBox(
                       height: 10,
                     ),
+                    CovidFormData(),
+
                     GradientButton(
                       title: "Submit",
                       onclick: () async {
@@ -1066,23 +1074,26 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                           return;
                         }
                         FormData formData = FormData.fromMap({
-                          'user_id': Globals.userData?.data?.userId??"",
-                          'zones_id': _selected_zones?.id??"",
-                          'circles_id': _selected_circle?.id??"",
-                          'area_id': _selected_area?.id??"",
-                          'ward_id': _selected_ward?.id??"",
-                          'landmark_id': _selected_landmarks?.id??"",
+                          'user_id': Globals.userData?.data?.userId ?? "",
+                          'zones_id': _selected_zones?.id ?? "",
+                          'circles_id': _selected_circle?.id ?? "",
+                          'area_id': _selected_area?.id ?? "",
+                          'ward_id': _selected_ward?.id ?? "",
+                          'landmark_id': _selected_landmarks?.id ?? "",
                           'business_type': _selected_Business_type?.name,
                           'house_address': shop_flat_address.text,
                           'owner_name': ownerName.text,
                           'owner_mobile': owner_mobile_phno.text,
                           'owner_aadhar': owner_aadhaar.text,
                           'wastage_quantity': wastageQty.text,
-                          'type': _selected_housetype?.type??"",
-                          'existing_disposal': _selected_disposal?.disposal??"",
-                          'quality_waste': _select_quantity?.waste??"",
-                          'latitude': (this.locationData?.latitude)?.toString()??"",
-                          'longitude': (this.locationData?.longitude)?.toString()??"",
+                          'type': _selected_housetype?.type ?? "",
+                          'existing_disposal':
+                              _selected_disposal?.disposal ?? "",
+                          'quality_waste': _select_quantity?.waste ?? "",
+                          'latitude':
+                              (this.locationData?.latitude)?.toString() ?? "",
+                          'longitude':
+                              (this.locationData?.longitude)?.toString() ?? "",
                           'images': [
                             for (var file in this.images!)
                               ...{
@@ -1092,19 +1103,17 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                           ]
                         });
 
-MProgressIndicator.show(context);
-                        ApiResponse res = await addResidentProvider.performAddResident(
-                            formData, context);
+                        MProgressIndicator.show(context);
+                        ApiResponse res = await addResidentProvider
+                            .performAddResident(formData, context);
 
                         print(res.status);
                         MProgressIndicator.hide();
                         if (res.status == 200) {
-                          Timer.periodic(Duration(seconds: 2), (timer) async{
+                          Timer.periodic(Duration(seconds: 2), (timer) async {
                             timer.cancel();
                             Navigator.pop(context);
-
                           });
-
                         }
                       },
                     )

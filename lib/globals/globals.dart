@@ -13,5 +13,9 @@ class Globals {
     return authority!;
   }
 
+  static checkAppOnTest(){
+    return true;
+  }
+
   void getuser() {}
 }

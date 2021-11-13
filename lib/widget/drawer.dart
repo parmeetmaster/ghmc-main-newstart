@@ -115,27 +115,7 @@ class _MainDrawerState extends State<MainDrawer> {
                   },
                 ),
 
-              ListTile(
-                leading: Icon(
-                  Icons.local_police,
-                  color: Colors.white,
-                  size: 25,
-                ),
-                title: Text(
-                  "Test",
-                  style: TextStyle(
-                      fontSize: drawer_item_text, color: Colors.white),
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ToiletScanScreen(),
-                    ),
-                  );
-                },
-              ),
-
+         
 
               ///
               if (Globals.authority!.data!.first.complaints == true)

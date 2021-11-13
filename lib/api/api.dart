@@ -6,7 +6,7 @@ import 'package:ghmc/globals/globals.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 ///const String base_url = "http://ghmc.iotroncs.com";
-const String base_url ="http://13.233.159.132:2000";
+const String base_url ="http://13.233.105.84:2000";
 
 abstract class Status {
 // [Description("true")]

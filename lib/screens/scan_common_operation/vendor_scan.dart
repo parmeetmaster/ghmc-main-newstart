@@ -55,7 +55,7 @@ class _VendorScanScreenState extends State<VendorScanScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: FAppBar.getCommonAppBar(title: "Buisness Data"),
+      appBar: FAppBar.getCommonAppBar(title: "Street Vendor"),
       body: Consumer<CommonScanProvider>(builder: (context, value, child) {
         return provider.dropDowns != null &&
                 provider.commonVendorModel != null
@@ -202,9 +202,11 @@ class _VendorScanScreenState extends State<VendorScanScreen> {
                       enable: choice == false ? true : null)),
             ],
           ),
+          if (choice == true)
           SizedBox(
             height: 10,
           ),
+          if (choice == true)
           Container(
             width: MediaQuery.of(context).size.width,
             child: Row(
@@ -254,6 +256,7 @@ class _VendorScanScreenState extends State<VendorScanScreen> {
               ],
             ),
           ),
+          if (choice == true)
           Container(
             width: MediaQuery.of(context).size.width,
             child: Row(
@@ -371,9 +374,11 @@ class _VendorScanScreenState extends State<VendorScanScreen> {
                 ],
               ),
             ),
+          if (choice == true)
           SizedBox(
             height: 20,
           ),
+          if (choice == true)
           GridImage(
             bottomsheetTitle: "Please Take Live Picture",
             images: this.images,

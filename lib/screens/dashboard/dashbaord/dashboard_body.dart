@@ -74,9 +74,9 @@ class _UserDashBoard2State extends State<DashBoardBody> {
   }
 
   @override
-  void initState() {
+  void initState() {   super.initState();
     initialLode();
-    super.initState();
+
     Globals.userData!.data!.token!.toString().printwtf;
     /*  updateVehicleData(DateTime.now());
     getTransferStationData();*/
@@ -2585,8 +2585,7 @@ class _UserDashBoard2State extends State<DashBoardBody> {
       response.message!.showSnackbar(context);
       return;
     }
-    _dashboardGvpBepModel =
-        DashboardVehicleModel.fromJson(response.completeResponse);
+    _dashboardGvpBepModel = DashboardVehicleModel.fromJson(response.completeResponse);
 
     setState(() {});
   }

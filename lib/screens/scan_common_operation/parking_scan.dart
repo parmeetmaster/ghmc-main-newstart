@@ -55,7 +55,7 @@ class _ParkingScanScreenState extends State<ParkingScanScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: FAppBar.getCommonAppBar(title: "Parking Data"),
+      appBar: FAppBar.getCommonAppBar(title: "Parking"),
       body: Consumer<CommonScanProvider>(builder: (context, value, child) {
         return provider.dropDowns != null &&
                 provider.commonParkingModel != null
@@ -142,7 +142,7 @@ class _ParkingScanScreenState extends State<ParkingScanScreen> {
                               provider.commonParkingModel?.data?.colId ?? "",
                           'wt_type': _weight,
                           'picked_denied':
-                              choice == null || choice == false ? 0 : 1,
+                              choice == null?"": choice == false ? 0 : 1,
                           'approx_weight': qty_no.text,
                           'reason': reason.text,
                           'reason_type': _selectedToiletReason?.name ?? "",
@@ -201,9 +201,11 @@ class _ParkingScanScreenState extends State<ParkingScanScreen> {
                       enable: choice == false ? true : null)),
             ],
           ),
+          if (choice == true)
           SizedBox(
             height: 10,
           ),
+          if (choice == true)
           Container(
             width: MediaQuery.of(context).size.width,
             child: Row(
@@ -253,6 +255,7 @@ class _ParkingScanScreenState extends State<ParkingScanScreen> {
               ],
             ),
           ),
+          if (choice == true)
           Container(
             width: MediaQuery.of(context).size.width,
             child: Row(
@@ -370,9 +373,11 @@ class _ParkingScanScreenState extends State<ParkingScanScreen> {
                 ],
               ),
             ),
+          if (choice == true)
           SizedBox(
             height: 20,
           ),
+          if (choice == true)
           GridImage(
             bottomsheetTitle: "Please Take Live Picture",
             images: this.images,

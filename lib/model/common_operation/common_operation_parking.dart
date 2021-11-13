@@ -63,11 +63,11 @@ class Data {
     parkingName = json['parking_name'];
     ownerName = json['owner_name'];
     address = json['address'];
-    zonesId = json['zones_id'];
-    circlesId = json['circles_id'];
-    wardId = json['ward_id'];
-    landmarkId = json['landmark_id'];
-    areaId = json['area_id'];
+    zonesId = json['zone'];
+    circlesId = json['circle'];
+    wardId = json['ward_name'];
+    landmarkId = json['landmark'];
+    areaId = json['area'];
     colId = json['col_id'];
   }
   String? dbType;
@@ -87,11 +87,11 @@ class Data {
     map['parking_name'] = parkingName;
     map['owner_name'] = ownerName;
     map['address'] = address;
-    map['zones_id'] = zonesId;
-    map['circles_id'] = circlesId;
-    map['ward_id'] = wardId;
-    map['landmark_id'] = landmarkId;
-    map['area_id'] = areaId;
+    map['zone'] = zonesId;
+    map['circle'] = circlesId;
+    map['ward_name'] = wardId;
+    map['landmark'] = landmarkId;
+    map['area'] = areaId;
     map['col_id'] = colId;
     return map;
   }

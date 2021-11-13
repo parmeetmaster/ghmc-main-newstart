@@ -14,6 +14,7 @@ import 'package:ghmc/widget/buttons/border_grey_button.dart';
 import 'package:ghmc/widget/buttons/gradeint_button.dart';
 import 'package:ghmc/widget/card_seperate_row.dart';
 import 'package:ghmc/widget/loading_widget.dart';
+import 'package:ghmc/widget/pagination/pagination_covid_form.dart';
 import 'package:image_grid/grid_image.dart';
 import 'package:provider/provider.dart';
 import 'package:ghmc/util/utils.dart';
@@ -55,7 +56,7 @@ class _ResidentScanScreenState extends State<ResidentScanScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: FAppBar.getCommonAppBar(title: "Resident Data"),
+      appBar: FAppBar.getCommonAppBar(title: "Residents/house"),
       body: Consumer<CommonScanProvider>(builder: (context, value, child) {
         return provider.dropDowns != null &&
                 provider.commonResidentModel != null
@@ -72,7 +73,7 @@ class _ResidentScanScreenState extends State<ResidentScanScreen> {
                   ),
                   CardSeperateRow(
                     "Address",
-                    provider.commonResidentModel!.data!.dbType,
+                    provider.commonResidentModel!.data!.houseAddress,
                     fontsize: 16,
                   ),
                   SizedBox(
@@ -201,9 +202,11 @@ class _ResidentScanScreenState extends State<ResidentScanScreen> {
                       enable: choice == false ? true : null)),
             ],
           ),
+          if (choice == true)
           SizedBox(
             height: 10,
           ),
+          if (choice == true)
           Container(
             width: MediaQuery.of(context).size.width,
             child: Row(
@@ -253,6 +256,7 @@ class _ResidentScanScreenState extends State<ResidentScanScreen> {
               ],
             ),
           ),
+          if (choice == true)
           Container(
             width: MediaQuery.of(context).size.width,
             child: Row(
@@ -370,9 +374,11 @@ class _ResidentScanScreenState extends State<ResidentScanScreen> {
                 ],
               ),
             ),
+          if (choice == true)
           SizedBox(
             height: 20,
           ),
+          if (choice == true)
           GridImage(
             bottomsheetTitle: "Please Take Live Picture",
             images: this.images,
@@ -397,6 +403,9 @@ class _ResidentScanScreenState extends State<ResidentScanScreen> {
               MProgressIndicator.hide();
             },
           ),
+
+
+
         ],
       ),
     );
