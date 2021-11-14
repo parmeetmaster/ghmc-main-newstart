@@ -14,7 +14,7 @@ class CovidFormData extends StatefulWidget {
 
 class _CovidFormDataState extends State<CovidFormData> {
   int activecell = 0;
-  List<CovidSubFormModel> covidModel = [];
+  static List<CovidSubFormModel> covidModel = [];
   List<Widget> subForms = [];
   TextStyle hintStyle = TextStyle(fontSize: 14);
   double fontSize = 14;
@@ -23,6 +23,8 @@ class _CovidFormDataState extends State<CovidFormData> {
   @override
   void initState() {
     super.initState();
+    covidModel = []; //todo reove when not required
+
     for (int i = 0; i < 1; i++) {
       covidModel.add(CovidSubFormModel());
     }
@@ -31,13 +33,17 @@ class _CovidFormDataState extends State<CovidFormData> {
   @override
   void dispose() {
     mtimer!.cancel();
+    covidModel = []; //todo reove when not required
     super.dispose();
   }
 
   TextEditingController firstdose = new TextEditingController();
   TextEditingController seconddose = new TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    firstdose.text = covidModel[activecell].firstDostDate ?? "";
+    seconddose.text = covidModel[activecell].secondDoseDate ?? "";
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -62,10 +68,23 @@ class _CovidFormDataState extends State<CovidFormData> {
                       height: 10,
                     ),
                     Align(
-                      child: Text(
-                        "Submit Member ${activecell + 1} Detail",
-                        style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.w600),
+                      child: Row(
+                        children: [
+                          Text(
+                            "Submit Member ${activecell + 1} Detail",
+                            style: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.w600),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.cancel),
+                            color: Colors.red,
+                            onPressed: () {
+                              setState(() {
+                                covidModel.removeAt(activecell);
+                              });
+                            },
+                          )
+                        ],
                       ),
                       alignment: Alignment.centerLeft,
                     ),
@@ -474,27 +493,23 @@ class _CovidFormDataState extends State<CovidFormData> {
                                 ),
                                 width: MediaQuery.of(context).size.width * 0.90,
                                 child: TextFormField(
+                                  controller: firstdose,
+                                  //initialValue:  covidModel[activecell].firstDostDate,
                                   onTap: () async {
-                                    DateTime? time = await showDatePicker(
+                                    await showDatePicker(
                                       context: context,
                                       initialDate: DateTime.now(),
                                       firstDate: DateTime(2020),
                                       lastDate: DateTime.now(),
                                     ).then((value) async {
-
                                       setState(() {
-                                        if(value==null)return;
-                                     /*   firstdose.text =
-                                            "${value!.day.toString()}-${value.month.toString()}-${value.year.toString()}";
-                                        */covidModel[activecell].firstDostDate =
-                                        "${value.day.toString()}-${value.month.toString()}-${value.year.toString()}";
+                                        if (value == null) return;
+                                        firstdose.text =
+                                            "${value.day.toString()}-${value.month.toString()}-${value.year.toString()}";
+                                        covidModel[activecell].firstDostDate =
+                                            "${value.day.toString()}-${value.month.toString()}-${value.year.toString()}";
                                       });
                                     });
-                                  },
-                                  controller: firstdose,
-                                  // initialValue: covidModel[activecell].firstDostDate,
-                                  onChanged: (s) {
-                                    //   covidModel[activecell].firstDostDate = s;
                                   },
                                   keyboardType: TextInputType.none,
                                   decoration: new InputDecoration(
@@ -612,11 +627,12 @@ class _CovidFormDataState extends State<CovidFormData> {
                                       color: Colors.grey,
                                     ),
                                     borderRadius:
-                                    BorderRadius.all(Radius.circular(5.0)),
+                                        BorderRadius.all(Radius.circular(5.0)),
                                   ),
                                 ),
                                 width: MediaQuery.of(context).size.width * 0.90,
                                 child: TextFormField(
+                                  controller: seconddose,
                                   onTap: () async {
                                     DateTime? time = await showDatePicker(
                                       context: context,
@@ -625,15 +641,14 @@ class _CovidFormDataState extends State<CovidFormData> {
                                       lastDate: DateTime.now(),
                                     ).then((value) async {
                                       setState(() {
-                                        if(value==null)return;
-                                    /*    seconddose.text =
+                                        if (value == null) return;
+                                        /*    seconddose.text =
                                         "${value!.day.toString()}-${value.month.toString()}-${value.year.toString()}";*/
                                         covidModel[activecell].secondDoseDate =
-                                        "${value.day.toString()}-${value.month.toString()}-${value.year.toString()}";
+                                            "${value.day.toString()}-${value.month.toString()}-${value.year.toString()}";
                                       });
                                     });
                                   },
-                                  controller: seconddose,
                                   // initialValue: covidModel[activecell].firstDostDate,
                                   onChanged: (s) {
                                     //   covidModel[activecell].firstDostDate = s;
@@ -669,14 +684,11 @@ class _CovidFormDataState extends State<CovidFormData> {
     );
   }
 
-  Widget _getNumberBox(int index, int activeCell) {
+  Widget _getNumberBox(int index, int mactiveCell) {
     return GestureDetector(
       onTap: () {
         setState(() {
           activecell = index;
-          firstdose.clear();
-          seconddose.clear();
-
 
           print(activecell);
         });
