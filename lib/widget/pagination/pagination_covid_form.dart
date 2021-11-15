@@ -78,8 +78,11 @@ class _CovidFormDataState extends State<CovidFormData> {
   }
 
   getMemberData() async {
-    provider.getMemberUsingUuid(widget.uuid, widget.resident_opr);
-
+    List<CovidSubFormModel>? ls= await provider.getMemberUsingUuid(widget.uuid, widget.resident_opr);
+  setState(() {
+    covidModel=[];
+    covidModel.addAll(ls!);
+  });
 
   }
 
@@ -110,13 +113,16 @@ class _CovidFormDataState extends State<CovidFormData> {
               alignment: WrapAlignment.start,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
+
+
+                if(covidModel.isNotEmpty)
                 ...covidModel
                     .mapIndexed((e, index) => _getNumberBox(index, activecell)),
                 //  _getNumberBox(2),
                 getAddMore()
               ],
             ),
-
+            if(covidModel.isNotEmpty)
             ...covidModel.mapIndexed((e, i) => activecell == i
                 ? Column(
                     children: [
@@ -488,13 +494,13 @@ class _CovidFormDataState extends State<CovidFormData> {
                                       ),
                                       hint: Text('Select Vaccination'),
                                       isExpanded: true,
-                                      value: covidModel[activecell].vaccineType,
+                                      value: covidModel[activecell].vaccineType!.toLowerCase(),
                                       icon: const Icon(Icons.arrow_drop_down),
                                       iconSize: 20,
                                       elevation: 16,
                                       style:
                                           const TextStyle(color: Colors.black),
-                                      items: ["Covaxin", "Covi-Shield"]
+                                      items: ["Covaxin".toLowerCase(), "Covi-Shield".toLowerCase()]
                                           .map<DropdownMenuItem<String>>(
                                               (String value) {
                                         return DropdownMenuItem<String>(
@@ -505,7 +511,7 @@ class _CovidFormDataState extends State<CovidFormData> {
                                       onChanged: (newValue) async {
                                         setState(() {
                                           covidModel[activecell].vaccineType =
-                                              newValue;
+                                              newValue!.toLowerCase();
                                         });
                                       },
                                     ),
@@ -558,24 +564,24 @@ class _CovidFormDataState extends State<CovidFormData> {
                                       hint: Text('Select Status'),
                                       isExpanded: true,
                                       value:
-                                          covidModel[activecell].firstDoseYesNo,
+                                          covidModel[activecell].firstDoseYesNo!.toLowerCase(),
                                       icon: const Icon(Icons.arrow_drop_down),
                                       iconSize: 20,
                                       elevation: 16,
                                       style:
                                           const TextStyle(color: Colors.black),
-                                      items: ["Yes", "No"]
+                                      items: ["Yes".toLowerCase(), "No".toLowerCase()]
                                           .map<DropdownMenuItem<String>>(
                                               (String value) {
                                         return DropdownMenuItem<String>(
-                                          value: value,
+                                          value: value.toLowerCase(),
                                           child: Text("${value}"),
                                         );
                                       }).toList(),
                                       onChanged: (newValue) async {
                                         setState(() {
                                           covidModel[activecell]
-                                              .firstDoseYesNo = newValue;
+                                              .firstDoseYesNo = newValue!.toLowerCase();
                                         });
                                       },
                                     ),
@@ -700,24 +706,24 @@ class _CovidFormDataState extends State<CovidFormData> {
                                       hint: Text('Select Status'),
                                       isExpanded: true,
                                       value: covidModel[activecell]
-                                          .secondDoseYesNo,
+                                          .secondDoseYesNo!.toLowerCase(),
                                       icon: const Icon(Icons.arrow_drop_down),
                                       iconSize: 20,
                                       elevation: 16,
                                       style:
                                           const TextStyle(color: Colors.black),
-                                      items: ["Yes", "No"]
+                                      items: ["Yes".toLowerCase(), "No".toLowerCase()]
                                           .map<DropdownMenuItem<String>>(
                                               (String value) {
                                         return DropdownMenuItem<String>(
                                           value: value,
-                                          child: Text("${value}"),
+                                          child: Text("${value.toLowerCase()}"),
                                         );
                                       }).toList(),
                                       onChanged: (newValue) async {
                                         setState(() {
                                           covidModel[activecell]
-                                              .secondDoseYesNo = newValue;
+                                              .secondDoseYesNo = newValue!.toLowerCase();
                                         });
                                       },
                                     ),

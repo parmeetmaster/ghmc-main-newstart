@@ -144,7 +144,7 @@ class ResidentProvider extends ChangeNotifier {
               aadhar: element.aadhar.toString(),
               age: element.age.toString(),
               family_member_no: element.familyMemberNo,
-              vaccineType: element.vaccineType,
+              vaccineType: element.vaccineType.toLowerCase(),
               firstDoseYesNo: element.firstDoseYesNo,
               firstDostDate: element.firstDostDate,
               secondDoseYesNo: element.secondDoseYesNo,
