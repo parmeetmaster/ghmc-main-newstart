@@ -32,8 +32,8 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
 
     if(Globals.checkAppOnTest()){
-      _emailController.text="8328473790";
-     _passwordController.text="test";
+      _emailController.text="9347280791";
+     _passwordController.text="9347280791";
     }
 
 

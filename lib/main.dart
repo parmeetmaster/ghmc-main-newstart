@@ -98,7 +98,7 @@ void main() async {
         ChangeNotifierProvider(create: (ctx) => MapLocationProvider()),
         ChangeNotifierProvider(create: (ctx) => ComplexBuildingProvider()),
         ChangeNotifierProvider(create: (ctx) => CommunityHallProvider()),
-        ChangeNotifierProvider(create: (ctx) => AddResidentProvider()),
+        ChangeNotifierProvider(create: (ctx) => ResidentProvider()),
         ChangeNotifierProvider(create: (ctx) => CreateStreetVendorProvider()),
         ChangeNotifierProvider(create: (ctx) => OpenPlaceProvider()),
         ChangeNotifierProvider(create: (ctx) => AddParkingProvider()),

@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:ghmc/api/api.dart';
 import 'package:ghmc/model/all_drop_down_model.dart';
+import 'package:ghmc/model/resident/resident_uuid_model.dart';
 import 'package:ghmc/util/extension.dart';
 
 class CommunityHallProvider extends ChangeNotifier {
@@ -36,4 +37,8 @@ class CommunityHallProvider extends ChangeNotifier {
 
     notifyListeners();
   }
+
+
+
+
 }

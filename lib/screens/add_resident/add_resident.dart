@@ -7,12 +7,15 @@ import 'package:flutter/material.dart';
 import 'package:ghmc/api/api.dart';
 import 'package:ghmc/globals/globals.dart';
 import 'package:ghmc/model/all_drop_down_model.dart';
+import 'package:ghmc/model/covid_form_model.dart';
 
 import 'package:ghmc/model/culvert/area_model.dart';
 import 'package:ghmc/provider/add_resident/add_resident_provider.dart';
 import 'package:ghmc/provider/community_hall/community_hall.dart';
 import 'package:ghmc/provider/complex_building/complex_building.dart';
 import 'package:ghmc/provider/culvert/culvert_provider.dart';
+import 'package:ghmc/screens/add_resident/search_resident.dart';
+import 'package:ghmc/screens/scan_common_operation/resident_scan.dart';
 import 'package:ghmc/util/extension.dart';
 import 'package:ghmc/util/m_progress_indicator.dart';
 import 'package:ghmc/widget/appbar/appbar.dart';
@@ -27,9 +30,14 @@ import 'package:provider/provider.dart';
 
 import 'package:ghmc/util/utils.dart';
 
+enum RESIDENT_OPR { update, insert }
+
 @immutable
 class AddResidentScreen extends StatefulWidget {
-  AddResidentScreen({Key? key}) : super(key: key);
+  RESIDENT_OPR? resident_opr;
+  String? uuid;
+
+  AddResidentScreen({Key? key, this.resident_opr, this.uuid}) : super(key: key);
 
   @override
   _AddResidentScreenState createState() => _AddResidentScreenState();
@@ -41,7 +49,6 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
   CulvertDataModel? wards;
   CulvertDataModel? areas;
   CulvertDataModel? landmarks;
-
   DataItem? _selected_zones;
   DataItem? _selected_circle;
   DataItem? _selected_ward;
@@ -82,28 +89,34 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
   late CommunityHallProvider provider =
       Provider.of<CommunityHallProvider>(context, listen: false);
 
-  late AddResidentProvider addResidentProvider =
-      Provider.of<AddResidentProvider>(context, listen: false);
+  late ResidentProvider residentProvider =
+      Provider.of<ResidentProvider>(context, listen: false);
 
   Type_of_house? _selected_housetype;
 
   var wastageQty = TextEditingController();
 
-  int formno=1;
-
+  int formno = 1;
 
   @override
   void initState() {
     super.initState();
     _initialisedZones();
     provider.loadCommunityItems(context);
+    residentProvider.getUuidFromApi(context);
+
+
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: FAppBar.getCommonAppBar(title: "Residents/house"),
-        body: Consumer2<AddResidentProvider, CommunityHallProvider>(
+        appBar: FAppBar.getAppBarWithSearch(
+            title: "Search Resident Details",
+            onclick: () {
+              SearchResident().push(context);
+            }),
+        body: Consumer2<ResidentProvider, CommunityHallProvider>(
             builder: (context, residentSnapShot, communityHallSnapshot, child) {
           return communityHallSnapshot.dropDowns != null && zones != null
               ? ListView(
@@ -1059,20 +1072,32 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                     SizedBox(
                       height: 10,
                     ),
-                    CovidFormData(),
+
+                    CovidFormData(
+                      controller: residentProvider.covidFormController,
+                        resident_opr: widget.resident_opr,uuid:widget.uuid
+
+                    ),
 
                     GradientButton(
                       title: "Submit",
                       onclick: () async {
+                        bool coviddata = await residentProvider
+                            .submitCovidDataFirstTime(context);
+
                         if (this.locationData == null) {
                           "Please choose location first".showSnackbar(context);
                           return;
                         }
-
                         if (this.images!.length > 5) {
                           "Only max 5 images are allowed".showSnackbar(context);
                           return;
                         }
+
+                        if (coviddata == false) {
+                          return;
+                        }
+
                         FormData formData = FormData.fromMap({
                           'user_id': Globals.userData?.data?.userId ?? "",
                           'zones_id': _selected_zones?.id ?? "",
@@ -1104,7 +1129,7 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                         });
 
                         MProgressIndicator.show(context);
-                        ApiResponse res = await addResidentProvider
+                        ApiResponse res = await residentProvider
                             .performAddResident(formData, context);
 
                         print(res.status);
