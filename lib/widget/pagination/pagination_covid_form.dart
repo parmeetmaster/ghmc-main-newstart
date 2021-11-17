@@ -48,6 +48,11 @@ class _CovidFormDataState extends State<CovidFormData> {
   double fontSize = 14;
   Timer? mtimer;
 
+  var vaccinationTypes=[
+    "Covaxin".toLowerCase(),
+    "Covi-Shield".toLowerCase()
+  ];
+
   List<CovidSubFormModel> getCovidFormData() {
     return covidModel;
   }
@@ -96,11 +101,26 @@ class _CovidFormDataState extends State<CovidFormData> {
 
   TextEditingController firstdose = new TextEditingController();
   TextEditingController seconddose = new TextEditingController();
+  TextEditingController name = new TextEditingController();
+  TextEditingController age = new TextEditingController();
+  TextEditingController phoneNumber = new TextEditingController();
+  TextEditingController adhhaar = new TextEditingController();
+  TextEditingController firstDoseDate = new TextEditingController();
+  TextEditingController secondDoseDate = new TextEditingController();
+
+  //TextEditingController name = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     firstdose.text = covidModel[activecell].firstDostDate ?? "";
     seconddose.text = covidModel[activecell].secondDoseDate ?? "";
+    name.text = covidModel[activecell].name ?? "";
+    age.text = covidModel[activecell].age ?? "";
+    phoneNumber.text = covidModel[activecell].mobile ?? "";
+    adhhaar.text = covidModel[activecell].aadhar ?? "";
+    firstDoseDate.text = covidModel[activecell].firstDostDate ?? "";
+    secondDoseDate.text = covidModel[activecell].secondDoseDate ?? "";
+
     covidModel[activecell].memeberNo = activecell.toString();
     return Theme(
       data: ThemeData(backgroundColor: Colors.purple),
@@ -147,7 +167,7 @@ class _CovidFormDataState extends State<CovidFormData> {
                                           if (covidModel.isNotEmpty &&
                                               covidModel.length > 1) {
                                             covidModel.removeAt(activecell);
-                                         //   covidModel.removeAt(activecell);
+                                            //   covidModel.removeAt(activecell);
                                           }
 
                                           setState(() {
@@ -195,7 +215,7 @@ class _CovidFormDataState extends State<CovidFormData> {
                                     width: MediaQuery.of(context).size.width *
                                         0.90,
                                     child: TextFormField(
-                                      initialValue: covidModel[activecell].name,
+                                      controller: name,
                                       onChanged: (s) {
                                         covidModel[activecell].name = s;
                                       },
@@ -321,7 +341,7 @@ class _CovidFormDataState extends State<CovidFormData> {
                                     width: MediaQuery.of(context).size.width *
                                         0.90,
                                     child: TextFormField(
-                                      initialValue: covidModel[activecell].age,
+                                      controller: age,
                                       onChanged: (s) {
                                         covidModel[activecell].age = s;
                                       },
@@ -385,6 +405,7 @@ class _CovidFormDataState extends State<CovidFormData> {
                                         covidModel[activecell].mobile = s;
                                       },
                                       keyboardType: TextInputType.number,
+                                      controller: phoneNumber,
                                       decoration: new InputDecoration(
                                           border: InputBorder.none,
                                           hintStyle: hintStyle,
@@ -440,8 +461,7 @@ class _CovidFormDataState extends State<CovidFormData> {
                                     width: MediaQuery.of(context).size.width *
                                         0.90,
                                     child: TextFormField(
-                                      initialValue:
-                                          covidModel[activecell].aadhar,
+                                      controller: adhhaar,
                                       onChanged: (s) {
                                         covidModel[activecell].aadhar = s;
                                       },
@@ -467,8 +487,6 @@ class _CovidFormDataState extends State<CovidFormData> {
                           ),
                         ),
                         //vaccination Type
-                        if (widget.resident_opr !=
-                            RESIDENT_OPR.update) //todo remove
                           Container(
                             width: MediaQuery.of(context).size.width * 0.90,
                             child: Row(
@@ -521,10 +539,7 @@ class _CovidFormDataState extends State<CovidFormData> {
                                           elevation: 16,
                                           style: const TextStyle(
                                               color: Colors.black),
-                                          items: [
-                                            "Covaxin".toLowerCase(),
-                                            "Covi-Shield".toLowerCase()
-                                          ].map<DropdownMenuItem<String>>(
+                                          items: this.vaccinationTypes.map<DropdownMenuItem<String>>(
                                               (String value) {
                                             return DropdownMenuItem<String>(
                                               value: value,
