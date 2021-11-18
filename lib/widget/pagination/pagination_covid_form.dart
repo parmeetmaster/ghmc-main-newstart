@@ -44,7 +44,7 @@ class CovidFormData extends StatefulWidget {
 
 class _CovidFormDataState extends State<CovidFormData> {
   int activecell = 0;
-  static List<CovidSubFormModel> covidModel = [];
+
   List<Widget> subForms = [];
   TextStyle hintStyle = TextStyle(fontSize: 14);
   double fontSize = 14;
@@ -57,28 +57,28 @@ class _CovidFormDataState extends State<CovidFormData> {
   ];
 
   List<CovidSubFormModel> getCovidFormData() {
-    return covidModel;
+    return provider.covidModel;
   }
 
   void addCovidData(List<CovidSubFormModel> ls) {
     setState(() {
-      covidModel.addAll(ls);
+      provider.covidModel.addAll(ls);
     });
   }
 
   late final ResidentProvider provider;
 
   void clearList(){
-    covidModel.clear();
+    provider.covidModel.clear();
   }
 
   @override
   void initState() {
     super.initState();
-   // covidModel = []; //todo reove when not required
-
+   // provider.covidModel = []; //todo reove when not required
+    provider = Provider.of<ResidentProvider>(context, listen: false);
     for (int i = 0; i < 1; i++) {
-      covidModel.add(CovidSubFormModel());
+      provider.covidModel.add(CovidSubFormModel());
     }
 
     if (widget.controller != null) {
@@ -86,7 +86,7 @@ class _CovidFormDataState extends State<CovidFormData> {
       widget.controller!.addCovidData = addCovidData;
       widget.controller!.clear=clearList;
     }
-    provider = Provider.of<ResidentProvider>(context, listen: false);
+provider.notifyListeners();
 
     if (widget.resident_opr == RESIDENT_OPR.update) getMemberData();
   }
@@ -95,15 +95,15 @@ class _CovidFormDataState extends State<CovidFormData> {
     List<CovidSubFormModel>? ls =
         await provider.getMemberUsingUuid(widget.uuid, widget.resident_opr);
     setState(() {
-      covidModel = [];
-      covidModel.addAll(ls!);
+      provider.covidModel = [];
+      provider.covidModel.addAll(ls!);
     });
   }
 
   @override
   void dispose() {
     //  mtimer!.cancel();
-    covidModel = []; //todo reove when not required
+    provider.covidModel = []; //todo reove when not required
     super.dispose();
   }
 
@@ -120,759 +120,763 @@ class _CovidFormDataState extends State<CovidFormData> {
 
   @override
   Widget build(BuildContext context) {
-    firstdose.text = covidModel[activecell].firstDostDate ?? "";
-    seconddose.text = covidModel[activecell].secondDoseDate ?? "";
-    name.text = covidModel[activecell].name ?? "";
-    age.text = covidModel[activecell].age ?? "";
-    phoneNumber.text = covidModel[activecell].mobile ?? "";
-    adhhaar.text = covidModel[activecell].aadhar ?? "";
-    firstDoseDate.text = covidModel[activecell].firstDostDate ?? "";
-    secondDoseDate.text = covidModel[activecell].secondDoseDate ?? "";
+    firstdose.text = provider.covidModel[activecell].firstDostDate ?? "";
+    seconddose.text = provider.covidModel[activecell].secondDoseDate ?? "";
+    name.text = provider.covidModel[activecell].name ?? "";
+    age.text = provider.covidModel[activecell].age ?? "";
+    phoneNumber.text = provider.covidModel[activecell].mobile ?? "";
+    adhhaar.text = provider.covidModel[activecell].aadhar ?? "";
+    firstDoseDate.text = provider.covidModel[activecell].firstDostDate ?? "";
+    secondDoseDate.text = provider.covidModel[activecell].secondDoseDate ?? "";
 
-    covidModel[activecell].memeberNo = activecell.toString();
-    return Theme(
-      data: ThemeData(backgroundColor: Colors.purple),
-      child: Container(
-        decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
+    provider.covidModel[activecell].memeberNo = activecell.toString();
+    return Consumer<ResidentProvider>(
+      builder: (context, snapshot,child) {
+        return Theme(
+          data: ThemeData(backgroundColor: Colors.purple),
+          child: Container(
+            decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
 
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Wrap(
-                alignment: WrapAlignment.start,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
-                  if (covidModel.isNotEmpty)
-                    ...covidModel.mapIndexed(
-                        (e, index) => _getNumberBox(index, activecell)),
-                  //  _getNumberBox(2),
-                  getAddMore()
-                ],
-              ),
-            ),
-            if (covidModel.isNotEmpty)
-              ...covidModel.mapIndexed((e, i) => activecell == i
-                  ? Column(
-                      children: [
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Align(
-                          child: Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: Text(
-                                  "Submit Member ${activecell + 1} Detail",
-                                  style: TextStyle(
-                                      fontSize: 14, fontWeight: FontWeight.w600),
-                                ),
-                              ),
-                              activecell != 0
-                                  ? widget.resident_opr!=RESIDENT_OPR.update? IconButton(
-                                      icon: Icon(Icons.cancel),
-                                      color: Colors.red,
-                                      onPressed: () async {
-                                        await provider.removeMember(
-                                            covidModel[activecell]);
-                                        setState(() {
-                                          if (covidModel.isNotEmpty &&
-                                              covidModel.length > 1) {
-                                            covidModel.removeAt(activecell);
-                                            //   covidModel.removeAt(activecell);
-                                          }
-
-                                          setState(() {
-                                            activecell = covidModel
-                                                .indexOf(covidModel.first);
-                                          });
-                                        });
-                                      },
-                                    ):SizedBox()
-                                  : SizedBox()
-                            ],
-                          ),
-                          alignment: Alignment.centerLeft,
-                        ),
-                        //name
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.90,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.20,
-                                child: Text(
-                                  "Name",
-                                  style: TextStyle(fontSize: fontSize),
-                                ),
-                              ),
-                              Text(':'),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.60,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    decoration: ShapeDecoration(
-                                      shape: RoundedRectangleBorder(
-                                        side: BorderSide(
-                                          width: 1.0,
-                                          style: BorderStyle.solid,
-                                          color: Colors.grey,
-                                        ),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5.0)),
-                                      ),
-                                    ),
-                                    width: MediaQuery.of(context).size.width *
-                                        0.90,
-                                    child: TextFormField(
-                                      controller: name,
-                                      onChanged: (s) {
-                                        covidModel[activecell].name = s;
-                                      },
-                                      decoration: new InputDecoration(
-                                          border: InputBorder.none,
-                                          hintStyle: hintStyle,
-                                          focusedBorder: InputBorder.none,
-                                          enabledBorder: InputBorder.none,
-                                          errorBorder: InputBorder.none,
-                                          disabledBorder: InputBorder.none,
-                                          contentPadding: EdgeInsets.only(
-                                              left: 15,
-                                              bottom: 11,
-                                              top: 11,
-                                              right: 15),
-                                          hintText: "Type name here..."),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Wrap(
+                    alignment: WrapAlignment.start,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      if (provider.covidModel.isNotEmpty)
+                        ...provider.covidModel.mapIndexed(
+                            (e, index) => _getNumberBox(index, activecell)),
+                      //  _getNumberBox(2),
+                      getAddMore()
+                    ],
+                  ),
+                ),
+                if (provider.covidModel.isNotEmpty)
+                  ...provider.covidModel.mapIndexed((e, i) => activecell == i
+                      ? Column(
+                          children: [
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Align(
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(5.0),
+                                    child: Text(
+                                      "Submit Member ${activecell + 1} Detail",
+                                      style: TextStyle(
+                                          fontSize: 14, fontWeight: FontWeight.w600),
                                     ),
                                   ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        //gender
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.90,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.20,
-                                child: Text(
-                                  "Gender ",
-                                  style: TextStyle(fontSize: fontSize),
-                                ),
-                              ),
-                              Text(':'),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.60,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    decoration: ShapeDecoration(
-                                      shape: RoundedRectangleBorder(
-                                        side: BorderSide(
-                                          width: 1.0,
-                                          style: BorderStyle.solid,
-                                          color: Colors.grey,
-                                        ),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5.0)),
-                                      ),
-                                    ),
-                                    width: MediaQuery.of(context).size.width *
-                                        0.90,
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          8.0, 0, 0, 0),
-                                      child: DropdownButton<String>(
-                                        underline: Container(
-                                          color: Colors.transparent,
-                                        ),
-                                        hint: Text('Select Gender'),
-                                        isExpanded: true,
-                                        value: covidModel[activecell].gender,
-                                        icon: const Icon(Icons.arrow_drop_down),
-                                        iconSize: 20,
-                                        elevation: 16,
-                                        style: const TextStyle(
-                                            color: Colors.black),
-                                        items: ["Male", "Female"]
-                                            .map<DropdownMenuItem<String>>(
-                                                (String value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value,
-                                            child: Text("${value}"),
-                                          );
-                                        }).toList(),
-                                        onChanged: (newValue) async {
-                                          setState(() {
-                                            covidModel[activecell].gender =
-                                                newValue;
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        //age
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.90,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.20,
-                                child: Text(
-                                  "Age",
-                                  style: TextStyle(fontSize: fontSize),
-                                ),
-                              ),
-                              Text(':'),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.60,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    decoration: ShapeDecoration(
-                                      shape: RoundedRectangleBorder(
-                                        side: BorderSide(
-                                          width: 1.0,
-                                          style: BorderStyle.solid,
-                                          color: Colors.grey,
-                                        ),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5.0)),
-                                      ),
-                                    ),
-                                    width: MediaQuery.of(context).size.width *
-                                        0.90,
-                                    child: TextFormField(
-                                      controller: age,
-                                      onChanged: (s) {
-                                        covidModel[activecell].age = s;
-                                      },
-                                      keyboardType: TextInputType.number,
-                                      decoration: new InputDecoration(
-                                          border: InputBorder.none,
-                                          hintStyle: hintStyle,
-                                          focusedBorder: InputBorder.none,
-                                          enabledBorder: InputBorder.none,
-                                          errorBorder: InputBorder.none,
-                                          disabledBorder: InputBorder.none,
-                                          contentPadding: EdgeInsets.only(
-                                              left: 15,
-                                              bottom: 11,
-                                              top: 11,
-                                              right: 15),
-                                          hintText: "Type Age here..."),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        //phno
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.90,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.20,
-                                child: Text(
-                                  "Phone Number",
-                                  style: TextStyle(fontSize: fontSize),
-                                ),
-                              ),
-                              Text(':'),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.60,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    decoration: ShapeDecoration(
-                                      shape: RoundedRectangleBorder(
-                                        side: BorderSide(
-                                          width: 1.0,
-                                          style: BorderStyle.solid,
-                                          color: Colors.grey,
-                                        ),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5.0)),
-                                      ),
-                                    ),
-                                    width: MediaQuery.of(context).size.width *
-                                        0.90,
-                                    child: TextFormField(
-                                      onChanged: (s) {
-                                        covidModel[activecell].mobile = s;
-                                      },
-                                      keyboardType: TextInputType.number,
-                                      controller: phoneNumber,
-                                      decoration: new InputDecoration(
-                                          border: InputBorder.none,
-                                          hintStyle: hintStyle,
-                                          focusedBorder: InputBorder.none,
-                                          enabledBorder: InputBorder.none,
-                                          errorBorder: InputBorder.none,
-                                          disabledBorder: InputBorder.none,
-                                          contentPadding: EdgeInsets.only(
-                                              left: 15,
-                                              bottom: 11,
-                                              top: 11,
-                                              right: 15),
-                                          hintText:
-                                              "Type Phone number here..."),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        //adhhaar
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.90,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.20,
-                                child: Text(
-                                  "Adhaar",
-                                  style: TextStyle(fontSize: fontSize),
-                                ),
-                              ),
-                              Text(':'),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.60,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    decoration: ShapeDecoration(
-                                      shape: RoundedRectangleBorder(
-                                        side: BorderSide(
-                                          width: 1.0,
-                                          style: BorderStyle.solid,
-                                          color: Colors.grey,
-                                        ),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5.0)),
-                                      ),
-                                    ),
-                                    width: MediaQuery.of(context).size.width *
-                                        0.90,
-                                    child: TextFormField(
-                                      controller: adhhaar,
-                                      onChanged: (s) {
-                                        covidModel[activecell].aadhar = s;
-                                      },
-                                      keyboardType: TextInputType.number,
-                                      decoration: new InputDecoration(
-                                          border: InputBorder.none,
-                                          hintStyle: hintStyle,
-                                          focusedBorder: InputBorder.none,
-                                          enabledBorder: InputBorder.none,
-                                          errorBorder: InputBorder.none,
-                                          disabledBorder: InputBorder.none,
-                                          contentPadding: EdgeInsets.only(
-                                              left: 15,
-                                              bottom: 11,
-                                              top: 11,
-                                              right: 15),
-                                          hintText: "Type Adhaar here..."),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        //vaccination Type
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.90,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.20,
-                                  child: Text(
-                                    "Vaccination Type ",
-                                    style: TextStyle(fontSize: fontSize),
-                                  ),
-                                ),
-                                Text(':'),
-                                Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.60,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      decoration: ShapeDecoration(
-                                        shape: RoundedRectangleBorder(
-                                          side: BorderSide(
-                                            width: 1.0,
-                                            style: BorderStyle.solid,
-                                            color: Colors.grey,
-                                          ),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(5.0)),
-                                        ),
-                                      ),
-                                      width: MediaQuery.of(context).size.width *
-                                          0.90,
-                                      child: Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            8.0, 0, 0, 0),
-                                        child: DropdownButton<String>(
-                                          underline: Container(
-                                            color: Colors.transparent,
-                                          ),
-                                          hint: Text('Select Vaccination'),
-                                          isExpanded: true,
-                                          value: covidModel[activecell]
-                                                  .vaccineType
-                                                  ??
-                                              null,
-                                          icon:
-                                              const Icon(Icons.arrow_drop_down),
-                                          iconSize: 20,
-                                          elevation: 16,
-                                          style: const TextStyle(
-                                              color: Colors.black),
-                                          items: this.vaccinationTypes.map<DropdownMenuItem<String>>(
-                                              (String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text("${value}"),
-                                            );
-                                          }).toList(),
-                                          onChanged: (newValue) async {
+                                  activecell != 0
+                                      ? widget.resident_opr!=RESIDENT_OPR.update? IconButton(
+                                          icon: Icon(Icons.cancel),
+                                          color: Colors.red,
+                                          onPressed: () async {
+                                            await provider.removeMember(
+                                                provider.covidModel[activecell]);
                                             setState(() {
-                                              covidModel[activecell]
-                                                      .vaccineType =
-                                                  newValue;
+                                              if (provider.covidModel.isNotEmpty &&
+                                                  provider.covidModel.length > 1) {
+                                                provider.covidModel.removeAt(activecell);
+                                                //   provider.covidModel.removeAt(activecell);
+                                              }
+
+                                              setState(() {
+                                                activecell = provider.covidModel
+                                                    .indexOf(provider.covidModel.first);
+                                              });
                                             });
                                           },
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                                        ):SizedBox()
+                                      : SizedBox()
+                                ],
+                              ),
+                              alignment: Alignment.centerLeft,
                             ),
-                          ),
-
-                        //First Dose
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.90,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.20,
-                                child: Text(
-                                  "Is first Dose Completed ",
-                                  style: TextStyle(fontSize: fontSize),
-                                ),
-                              ),
-                              Text(':'),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.60,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    decoration: ShapeDecoration(
-                                      shape: RoundedRectangleBorder(
-                                        side: BorderSide(
-                                          width: 1.0,
-                                          style: BorderStyle.solid,
-                                          color: Colors.grey,
-                                        ),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5.0)),
-                                      ),
+                            //name
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.90,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    width: MediaQuery.of(context).size.width * 0.20,
+                                    child: Text(
+                                      "Name",
+                                      style: TextStyle(fontSize: fontSize),
                                     ),
-                                    width: MediaQuery.of(context).size.width *
-                                        0.90,
+                                  ),
+                                  Text(':'),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width * 0.60,
                                     child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          8.0, 0, 0, 0),
-                                      child: DropdownButton<String>(
-                                        underline: Container(
-                                          color: Colors.transparent,
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        decoration: ShapeDecoration(
+                                          shape: RoundedRectangleBorder(
+                                            side: BorderSide(
+                                              width: 1.0,
+                                              style: BorderStyle.solid,
+                                              color: Colors.grey,
+                                            ),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5.0)),
+                                          ),
                                         ),
-                                        hint: Text('Select Status'),
-                                        isExpanded: true,
-                                        value: covidModel[activecell]
-                                            .firstDoseYesNo,
-                                        icon: const Icon(Icons.arrow_drop_down),
-                                        iconSize: 20,
-                                        elevation: 16,
-                                        style: const TextStyle(
-                                            color: Colors.black),
-                                        items: ["Yes", "No"]
-                                            .map<DropdownMenuItem<String>>(
-                                                (String value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value,
-                                            child: Text("${value}"),
-                                          );
-                                        }).toList(),
-                                        onChanged: (newValue) async {
-                                          setState(() {
-                                            covidModel[activecell]
-                                                .firstDoseYesNo = newValue;
-                                          });
-                                        },
+                                        width: MediaQuery.of(context).size.width *
+                                            0.90,
+                                        child: TextFormField(
+                                          controller: name,
+                                          onChanged: (s) {
+                                            provider.covidModel[activecell].name = s;
+                                          },
+                                          decoration: new InputDecoration(
+                                              border: InputBorder.none,
+                                              hintStyle: hintStyle,
+                                              focusedBorder: InputBorder.none,
+                                              enabledBorder: InputBorder.none,
+                                              errorBorder: InputBorder.none,
+                                              disabledBorder: InputBorder.none,
+                                              contentPadding: EdgeInsets.only(
+                                                  left: 15,
+                                                  bottom: 11,
+                                                  top: 11,
+                                                  right: 15),
+                                              hintText: "Type name here..."),
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ),
-                        //dose 1 date
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.90,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.20,
-                                child: Text(
-                                  "Dose 1 date",
-                                  style: TextStyle(fontSize: fontSize),
-                                ),
-                              ),
-                              Text(':'),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.60,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    decoration: ShapeDecoration(
-                                      shape: RoundedRectangleBorder(
-                                        side: BorderSide(
-                                          width: 1.0,
-                                          style: BorderStyle.solid,
-                                          color: Colors.grey,
-                                        ),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5.0)),
-                                      ),
-                                    ),
-                                    width: MediaQuery.of(context).size.width *
-                                        0.90,
-                                    child: TextFormField(
-                                      controller: firstdose,
-                                      //initialValue:  covidModel[activecell].firstDostDate,
-                                      onTap: () async {
-                                        await showDatePicker(
-                                          context: context,
-                                          initialDate: DateTime.now(),
-                                          firstDate: DateTime(2020),
-                                          lastDate: DateTime.now(),
-                                        ).then((value) async {
-                                          setState(() {
-                                            if (value == null) return;
-                                            firstdose.text =
-                                                "${value.day.toString()}-${value.month.toString()}-${value.year.toString()}";
-                                            covidModel[activecell]
-                                                    .firstDostDate =
-                                                "${value.day.toString()}-${value.month.toString()}-${value.year.toString()}";
-                                          });
-                                        });
-                                      },
-                                      keyboardType: TextInputType.none,
-                                      decoration: new InputDecoration(
-                                          border: InputBorder.none,
-                                          hintStyle: hintStyle,
-                                          focusedBorder: InputBorder.none,
-                                          enabledBorder: InputBorder.none,
-                                          errorBorder: InputBorder.none,
-                                          disabledBorder: InputBorder.none,
-                                          contentPadding: EdgeInsets.only(
-                                              left: 15,
-                                              bottom: 11,
-                                              top: 11,
-                                              right: 15),
-                                          hintText: "Select date here..."),
+                            ),
+                            //gender
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.90,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    width: MediaQuery.of(context).size.width * 0.20,
+                                    child: Text(
+                                      "Gender ",
+                                      style: TextStyle(fontSize: fontSize),
                                     ),
                                   ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        //Second dose
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.90,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.20,
-                                child: Text(
-                                  "Is Second Dose Completed ",
-                                  style: TextStyle(fontSize: fontSize),
-                                ),
-                              ),
-                              Text(':'),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.60,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    decoration: ShapeDecoration(
-                                      shape: RoundedRectangleBorder(
-                                        side: BorderSide(
-                                          width: 1.0,
-                                          style: BorderStyle.solid,
-                                          color: Colors.grey,
-                                        ),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5.0)),
-                                      ),
-                                    ),
-                                    width: MediaQuery.of(context).size.width *
-                                        0.90,
+                                  Text(':'),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width * 0.60,
                                     child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          8.0, 0, 0, 0),
-                                      child: DropdownButton<String>(
-                                        underline: Container(
-                                          color: Colors.transparent,
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        decoration: ShapeDecoration(
+                                          shape: RoundedRectangleBorder(
+                                            side: BorderSide(
+                                              width: 1.0,
+                                              style: BorderStyle.solid,
+                                              color: Colors.grey,
+                                            ),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5.0)),
+                                          ),
                                         ),
-                                        hint: Text('Select Status'),
-                                        isExpanded: true,
-                                        value: covidModel[activecell]
-                                            .secondDoseYesNo,
-                                        icon: const Icon(Icons.arrow_drop_down),
-                                        iconSize: 20,
-                                        elevation: 16,
-                                        style: const TextStyle(
-                                            color: Colors.black),
-                                        items: ["Yes", "No"]
-                                            .map<DropdownMenuItem<String>>(
-                                                (String value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value,
-                                            child: Text("${value}"),
-                                          );
-                                        }).toList(),
-                                        onChanged: (newValue) async {
-                                          setState(() {
-                                            covidModel[activecell]
-                                                .secondDoseYesNo = newValue;
-                                          });
-                                        },
+                                        width: MediaQuery.of(context).size.width *
+                                            0.90,
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              8.0, 0, 0, 0),
+                                          child: DropdownButton<String>(
+                                            underline: Container(
+                                              color: Colors.transparent,
+                                            ),
+                                            hint: Text('Select Gender'),
+                                            isExpanded: true,
+                                            value: provider.covidModel[activecell].gender,
+                                            icon: const Icon(Icons.arrow_drop_down),
+                                            iconSize: 20,
+                                            elevation: 16,
+                                            style: const TextStyle(
+                                                color: Colors.black),
+                                            items: ["Male", "Female"]
+                                                .map<DropdownMenuItem<String>>(
+                                                    (String value) {
+                                              return DropdownMenuItem<String>(
+                                                value: value,
+                                                child: Text("${value}"),
+                                              );
+                                            }).toList(),
+                                            onChanged: (newValue) async {
+                                              setState(() {
+                                                provider.covidModel[activecell].gender =
+                                                    newValue;
+                                              });
+                                            },
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ),
-                        //dose 2 date
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.90,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.20,
-                                child: Text(
-                                  "Dose 2 date",
-                                  style: TextStyle(fontSize: fontSize),
-                                ),
-                              ),
-                              Text(':'),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.60,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    decoration: ShapeDecoration(
-                                      shape: RoundedRectangleBorder(
-                                        side: BorderSide(
-                                          width: 1.0,
-                                          style: BorderStyle.solid,
-                                          color: Colors.grey,
-                                        ),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5.0)),
-                                      ),
-                                    ),
-                                    width: MediaQuery.of(context).size.width *
-                                        0.90,
-                                    child: TextFormField(
-                                      controller: seconddose,
-                                      onTap: () async {
-                                        DateTime? time = await showDatePicker(
-                                          context: context,
-                                          initialDate: DateTime.now(),
-                                          firstDate: DateTime(2020),
-                                          lastDate: DateTime.now(),
-                                        ).then((value) async {
-                                          setState(() {
-                                            if (value == null) return;
-                                            /*    seconddose.text =
-                                          "${value!.day.toString()}-${value.month.toString()}-${value.year.toString()}";*/
-                                            covidModel[activecell]
-                                                    .secondDoseDate =
-                                                "${value.day.toString()}-${value.month.toString()}-${value.year.toString()}";
-                                          });
-                                        });
-                                      },
-                                      // initialValue: covidModel[activecell].firstDostDate,
-                                      onChanged: (s) {
-                                        //   covidModel[activecell].firstDostDate = s;
-                                      },
-                                      keyboardType: TextInputType.none,
-                                      decoration: new InputDecoration(
-                                          border: InputBorder.none,
-                                          hintStyle: hintStyle,
-                                          focusedBorder: InputBorder.none,
-                                          enabledBorder: InputBorder.none,
-                                          errorBorder: InputBorder.none,
-                                          disabledBorder: InputBorder.none,
-                                          contentPadding: EdgeInsets.only(
-                                              left: 15,
-                                              bottom: 11,
-                                              top: 11,
-                                              right: 15),
-                                          hintText: "Select date here..."),
+                            ),
+                            //age
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.90,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    width: MediaQuery.of(context).size.width * 0.20,
+                                    child: Text(
+                                      "Age",
+                                      style: TextStyle(fontSize: fontSize),
                                     ),
                                   ),
-                                ),
+                                  Text(':'),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width * 0.60,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        decoration: ShapeDecoration(
+                                          shape: RoundedRectangleBorder(
+                                            side: BorderSide(
+                                              width: 1.0,
+                                              style: BorderStyle.solid,
+                                              color: Colors.grey,
+                                            ),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5.0)),
+                                          ),
+                                        ),
+                                        width: MediaQuery.of(context).size.width *
+                                            0.90,
+                                        child: TextFormField(
+                                          controller: age,
+                                          onChanged: (s) {
+                                            provider.covidModel[activecell].age = s;
+                                          },
+                                          keyboardType: TextInputType.number,
+                                          decoration: new InputDecoration(
+                                              border: InputBorder.none,
+                                              hintStyle: hintStyle,
+                                              focusedBorder: InputBorder.none,
+                                              enabledBorder: InputBorder.none,
+                                              errorBorder: InputBorder.none,
+                                              disabledBorder: InputBorder.none,
+                                              contentPadding: EdgeInsets.only(
+                                                  left: 15,
+                                                  bottom: 11,
+                                                  top: 11,
+                                                  right: 15),
+                                              hintText: "Type Age here..."),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    )
-                  : SizedBox())
+                            ),
+                            //phno
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.90,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    width: MediaQuery.of(context).size.width * 0.20,
+                                    child: Text(
+                                      "Phone Number",
+                                      style: TextStyle(fontSize: fontSize),
+                                    ),
+                                  ),
+                                  Text(':'),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width * 0.60,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        decoration: ShapeDecoration(
+                                          shape: RoundedRectangleBorder(
+                                            side: BorderSide(
+                                              width: 1.0,
+                                              style: BorderStyle.solid,
+                                              color: Colors.grey,
+                                            ),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5.0)),
+                                          ),
+                                        ),
+                                        width: MediaQuery.of(context).size.width *
+                                            0.90,
+                                        child: TextFormField(
+                                          onChanged: (s) {
+                                            provider.covidModel[activecell].mobile = s;
+                                          },
+                                          keyboardType: TextInputType.number,
+                                          controller: phoneNumber,
+                                          decoration: new InputDecoration(
+                                              border: InputBorder.none,
+                                              hintStyle: hintStyle,
+                                              focusedBorder: InputBorder.none,
+                                              enabledBorder: InputBorder.none,
+                                              errorBorder: InputBorder.none,
+                                              disabledBorder: InputBorder.none,
+                                              contentPadding: EdgeInsets.only(
+                                                  left: 15,
+                                                  bottom: 11,
+                                                  top: 11,
+                                                  right: 15),
+                                              hintText:
+                                                  "Type Phone number here..."),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
 
-            ///
-          ],
-        ),
-      ),
+                            //adhhaar
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.90,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    width: MediaQuery.of(context).size.width * 0.20,
+                                    child: Text(
+                                      "Adhaar",
+                                      style: TextStyle(fontSize: fontSize),
+                                    ),
+                                  ),
+                                  Text(':'),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width * 0.60,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        decoration: ShapeDecoration(
+                                          shape: RoundedRectangleBorder(
+                                            side: BorderSide(
+                                              width: 1.0,
+                                              style: BorderStyle.solid,
+                                              color: Colors.grey,
+                                            ),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5.0)),
+                                          ),
+                                        ),
+                                        width: MediaQuery.of(context).size.width *
+                                            0.90,
+                                        child: TextFormField(
+                                          controller: adhhaar,
+                                          onChanged: (s) {
+                                            provider.covidModel[activecell].aadhar = s;
+                                          },
+                                          keyboardType: TextInputType.number,
+                                          decoration: new InputDecoration(
+                                              border: InputBorder.none,
+                                              hintStyle: hintStyle,
+                                              focusedBorder: InputBorder.none,
+                                              enabledBorder: InputBorder.none,
+                                              errorBorder: InputBorder.none,
+                                              disabledBorder: InputBorder.none,
+                                              contentPadding: EdgeInsets.only(
+                                                  left: 15,
+                                                  bottom: 11,
+                                                  top: 11,
+                                                  right: 15),
+                                              hintText: "Type Adhaar here..."),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            //vaccination Type
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.90,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      width:
+                                          MediaQuery.of(context).size.width * 0.20,
+                                      child: Text(
+                                        "Vaccination Type ",
+                                        style: TextStyle(fontSize: fontSize),
+                                      ),
+                                    ),
+                                    Text(':'),
+                                    Container(
+                                      width:
+                                          MediaQuery.of(context).size.width * 0.60,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Container(
+                                          decoration: ShapeDecoration(
+                                            shape: RoundedRectangleBorder(
+                                              side: BorderSide(
+                                                width: 1.0,
+                                                style: BorderStyle.solid,
+                                                color: Colors.grey,
+                                              ),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(5.0)),
+                                            ),
+                                          ),
+                                          width: MediaQuery.of(context).size.width *
+                                              0.90,
+                                          child: Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                8.0, 0, 0, 0),
+                                            child: DropdownButton<String>(
+                                              underline: Container(
+                                                color: Colors.transparent,
+                                              ),
+                                              hint: Text('Select Vaccination'),
+                                              isExpanded: true,
+                                              value: provider.covidModel[activecell]
+                                                      .vaccineType
+                                                      ??
+                                                  null,
+                                              icon:
+                                                  const Icon(Icons.arrow_drop_down),
+                                              iconSize: 20,
+                                              elevation: 16,
+                                              style: const TextStyle(
+                                                  color: Colors.black),
+                                              items: this.vaccinationTypes.map<DropdownMenuItem<String>>(
+                                                  (String value) {
+                                                return DropdownMenuItem<String>(
+                                                  value: value,
+                                                  child: Text("${value}"),
+                                                );
+                                              }).toList(),
+                                              onChanged: (newValue) async {
+                                                setState(() {
+                                                  provider.covidModel[activecell]
+                                                          .vaccineType =
+                                                      newValue;
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                            //First Dose
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.90,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    width: MediaQuery.of(context).size.width * 0.20,
+                                    child: Text(
+                                      "Is first Dose Completed ",
+                                      style: TextStyle(fontSize: fontSize),
+                                    ),
+                                  ),
+                                  Text(':'),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width * 0.60,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        decoration: ShapeDecoration(
+                                          shape: RoundedRectangleBorder(
+                                            side: BorderSide(
+                                              width: 1.0,
+                                              style: BorderStyle.solid,
+                                              color: Colors.grey,
+                                            ),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5.0)),
+                                          ),
+                                        ),
+                                        width: MediaQuery.of(context).size.width *
+                                            0.90,
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              8.0, 0, 0, 0),
+                                          child: DropdownButton<String>(
+                                            underline: Container(
+                                              color: Colors.transparent,
+                                            ),
+                                            hint: Text('Select Status'),
+                                            isExpanded: true,
+                                            value: provider.covidModel[activecell]
+                                                .firstDoseYesNo,
+                                            icon: const Icon(Icons.arrow_drop_down),
+                                            iconSize: 20,
+                                            elevation: 16,
+                                            style: const TextStyle(
+                                                color: Colors.black),
+                                            items: ["Yes", "No"]
+                                                .map<DropdownMenuItem<String>>(
+                                                    (String value) {
+                                              return DropdownMenuItem<String>(
+                                                value: value,
+                                                child: Text("${value}"),
+                                              );
+                                            }).toList(),
+                                            onChanged: (newValue) async {
+                                              setState(() {
+                                                provider.covidModel[activecell]
+                                                    .firstDoseYesNo = newValue;
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            //dose 1 date
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.90,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    width: MediaQuery.of(context).size.width * 0.20,
+                                    child: Text(
+                                      "Dose 1 date",
+                                      style: TextStyle(fontSize: fontSize),
+                                    ),
+                                  ),
+                                  Text(':'),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width * 0.60,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        decoration: ShapeDecoration(
+                                          shape: RoundedRectangleBorder(
+                                            side: BorderSide(
+                                              width: 1.0,
+                                              style: BorderStyle.solid,
+                                              color: Colors.grey,
+                                            ),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5.0)),
+                                          ),
+                                        ),
+                                        width: MediaQuery.of(context).size.width *
+                                            0.90,
+                                        child: TextFormField(
+                                          controller: firstdose,
+                                          //initialValue:  provider.covidModel[activecell].firstDostDate,
+                                          onTap: () async {
+                                            await showDatePicker(
+                                              context: context,
+                                              initialDate: DateTime.now(),
+                                              firstDate: DateTime(2020),
+                                              lastDate: DateTime.now(),
+                                            ).then((value) async {
+                                              setState(() {
+                                                if (value == null) return;
+                                                firstdose.text =
+                                                    "${value.day.toString()}-${value.month.toString()}-${value.year.toString()}";
+                                                provider.covidModel[activecell]
+                                                        .firstDostDate =
+                                                    "${value.day.toString()}-${value.month.toString()}-${value.year.toString()}";
+                                              });
+                                            });
+                                          },
+                                          keyboardType: TextInputType.none,
+                                          decoration: new InputDecoration(
+                                              border: InputBorder.none,
+                                              hintStyle: hintStyle,
+                                              focusedBorder: InputBorder.none,
+                                              enabledBorder: InputBorder.none,
+                                              errorBorder: InputBorder.none,
+                                              disabledBorder: InputBorder.none,
+                                              contentPadding: EdgeInsets.only(
+                                                  left: 15,
+                                                  bottom: 11,
+                                                  top: 11,
+                                                  right: 15),
+                                              hintText: "Select date here..."),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            //Second dose
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.90,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    width: MediaQuery.of(context).size.width * 0.20,
+                                    child: Text(
+                                      "Is Second Dose Completed ",
+                                      style: TextStyle(fontSize: fontSize),
+                                    ),
+                                  ),
+                                  Text(':'),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width * 0.60,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        decoration: ShapeDecoration(
+                                          shape: RoundedRectangleBorder(
+                                            side: BorderSide(
+                                              width: 1.0,
+                                              style: BorderStyle.solid,
+                                              color: Colors.grey,
+                                            ),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5.0)),
+                                          ),
+                                        ),
+                                        width: MediaQuery.of(context).size.width *
+                                            0.90,
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              8.0, 0, 0, 0),
+                                          child: DropdownButton<String>(
+                                            underline: Container(
+                                              color: Colors.transparent,
+                                            ),
+                                            hint: Text('Select Status'),
+                                            isExpanded: true,
+                                            value: provider.covidModel[activecell]
+                                                .secondDoseYesNo,
+                                            icon: const Icon(Icons.arrow_drop_down),
+                                            iconSize: 20,
+                                            elevation: 16,
+                                            style: const TextStyle(
+                                                color: Colors.black),
+                                            items: ["Yes", "No"]
+                                                .map<DropdownMenuItem<String>>(
+                                                    (String value) {
+                                              return DropdownMenuItem<String>(
+                                                value: value,
+                                                child: Text("${value}"),
+                                              );
+                                            }).toList(),
+                                            onChanged: (newValue) async {
+                                              setState(() {
+                                                provider.covidModel[activecell]
+                                                    .secondDoseYesNo = newValue;
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            //dose 2 date
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.90,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    width: MediaQuery.of(context).size.width * 0.20,
+                                    child: Text(
+                                      "Dose 2 date",
+                                      style: TextStyle(fontSize: fontSize),
+                                    ),
+                                  ),
+                                  Text(':'),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width * 0.60,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        decoration: ShapeDecoration(
+                                          shape: RoundedRectangleBorder(
+                                            side: BorderSide(
+                                              width: 1.0,
+                                              style: BorderStyle.solid,
+                                              color: Colors.grey,
+                                            ),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5.0)),
+                                          ),
+                                        ),
+                                        width: MediaQuery.of(context).size.width *
+                                            0.90,
+                                        child: TextFormField(
+                                          controller: seconddose,
+                                          onTap: () async {
+                                            DateTime? time = await showDatePicker(
+                                              context: context,
+                                              initialDate: DateTime.now(),
+                                              firstDate: DateTime(2020),
+                                              lastDate: DateTime.now(),
+                                            ).then((value) async {
+                                              setState(() {
+                                                if (value == null) return;
+                                                /*    seconddose.text =
+                                              "${value!.day.toString()}-${value.month.toString()}-${value.year.toString()}";*/
+                                                provider.covidModel[activecell]
+                                                        .secondDoseDate =
+                                                    "${value.day.toString()}-${value.month.toString()}-${value.year.toString()}";
+                                              });
+                                            });
+                                          },
+                                          // initialValue: provider.covidModel[activecell].firstDostDate,
+                                          onChanged: (s) {
+                                            //   provider.covidModel[activecell].firstDostDate = s;
+                                          },
+                                          keyboardType: TextInputType.none,
+                                          decoration: new InputDecoration(
+                                              border: InputBorder.none,
+                                              hintStyle: hintStyle,
+                                              focusedBorder: InputBorder.none,
+                                              enabledBorder: InputBorder.none,
+                                              errorBorder: InputBorder.none,
+                                              disabledBorder: InputBorder.none,
+                                              contentPadding: EdgeInsets.only(
+                                                  left: 15,
+                                                  bottom: 11,
+                                                  top: 11,
+                                                  right: 15),
+                                              hintText: "Select date here..."),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        )
+                      : SizedBox())
+
+                ///
+              ],
+            ),
+          ),
+        );
+      }
     );
   }
 
@@ -902,7 +906,7 @@ class _CovidFormDataState extends State<CovidFormData> {
     return GestureDetector(
       onTap: () {
         setState(() {
-          covidModel.add(new CovidSubFormModel());
+          provider.covidModel.add(new CovidSubFormModel());
         });
       },
       child: Container(
