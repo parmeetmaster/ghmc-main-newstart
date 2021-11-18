@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:ghmc/api/api.dart';
 import 'package:ghmc/globals/globals.dart';
 import 'package:ghmc/model/all_drop_down_model.dart';
+import 'package:ghmc/model/common_operation/common_operation_manhole.dart';
 import 'package:ghmc/model/common_operation/common_operation_parking.dart';
 import 'package:ghmc/model/common_operation/common_operation_resident.dart';
 import 'package:ghmc/model/common_operation/common_operation_vendor.dart';
@@ -40,7 +41,7 @@ class CommonScanProvider extends ChangeNotifier{
   CommonOperationResident? commonResidentModel;
   CommonOperationParking? commonParkingModel;
   CommonOperationVendor? commonVendorModel;
-
+  CommonOperationManhole? commonOperationManholeModel;
 
   loadCommunityItems( BuildContext context) async {
     ApiResponse response = await ApiBase().baseFunction(() =>
@@ -65,6 +66,18 @@ class CommonScanProvider extends ChangeNotifier{
     commonResidentModel=CommonOperationResident.fromJson(response.completeResponse);
     notifyListeners();
   }
+
+
+  void loadManholeDisplayData(qrdata)async {
+    ApiResponse response = await ApiBase()
+        .baseFunction(() => ApiBase().getInstance()!.post("/scan", data: {
+      "user_id": Globals.userData!.data!.userId,
+      "geo_id": qrdata,
+    }));
+    commonOperationManholeModel=CommonOperationManhole.fromJson(response.completeResponse);
+    notifyListeners();
+  }
+
 
   void loadParkingDisplayData(qrdata)async {
     ApiResponse response = await ApiBase()

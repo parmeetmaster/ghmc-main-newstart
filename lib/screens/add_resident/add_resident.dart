@@ -7,28 +7,23 @@ import 'package:flutter/material.dart';
 import 'package:ghmc/api/api.dart';
 import 'package:ghmc/globals/globals.dart';
 import 'package:ghmc/model/all_drop_down_model.dart';
-import 'package:ghmc/model/covid_form_model.dart';
-
 import 'package:ghmc/model/culvert/area_model.dart';
 import 'package:ghmc/provider/add_resident/add_resident_provider.dart';
 import 'package:ghmc/provider/community_hall/community_hall.dart';
-import 'package:ghmc/provider/complex_building/complex_building.dart';
 import 'package:ghmc/provider/culvert/culvert_provider.dart';
 import 'package:ghmc/screens/add_resident/search_resident.dart';
-import 'package:ghmc/screens/scan_common_operation/resident_scan.dart';
 import 'package:ghmc/util/extension.dart';
 import 'package:ghmc/util/m_progress_indicator.dart';
 import 'package:ghmc/widget/appbar/appbar.dart';
 import 'package:ghmc/widget/buttons/gradeint_button.dart';
-import 'package:ghmc/widget/container/camera_container.dart';
 import 'package:ghmc/widget/container/map_container.dart';
 import 'package:ghmc/widget/grid/grid_image.dart';
 import 'package:ghmc/widget/loading_widget.dart';
 import 'package:ghmc/widget/pagination/pagination_covid_form.dart';
 import 'package:location_platform_interface/location_platform_interface.dart';
 import 'package:provider/provider.dart';
-
 import 'package:ghmc/util/utils.dart';
+
 
 enum RESIDENT_OPR { update, insert }
 
@@ -649,8 +644,17 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                         ],
                       ),
                     ),
+
+                    CovidFormData(
+                        controller: residentProvider.covidFormController,
+                        resident_opr: widget.resident_opr,uuid:widget.uuid
+
+                    ),
+
+
+
 //owner adhaar
-                    Container(
+                 /*   Container(
                       width: MediaQuery.of(context).size.width * 0.80,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -702,7 +706,7 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                           ),
                         ],
                       ),
-                    ),
+                    ),*/
 
 /*
                     Container(
@@ -1073,11 +1077,7 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                       height: 10,
                     ),
 
-                    CovidFormData(
-                      controller: residentProvider.covidFormController,
-                        resident_opr: widget.resident_opr,uuid:widget.uuid
 
-                    ),
 
                     GradientButton(
                       title: "Submit",
@@ -1085,6 +1085,10 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                         bool coviddata = await residentProvider
                             .submitCovidDataFirstTime(context);
 
+                        if (coviddata == false) {
+                          "Something error in member form".showSnackbar(context);
+                          return;
+                        }
                         if (this.locationData == null) {
                           "Please choose location first".showSnackbar(context);
                           return;
@@ -1094,9 +1098,7 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                           return;
                         }
 
-                        if (coviddata == false) {
-                          return;
-                        }
+
 
                         FormData formData = FormData.fromMap({
                           'user_id': Globals.userData?.data?.userId ?? "",
@@ -1109,7 +1111,7 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                           'house_address': shop_flat_address.text,
                           'owner_name': ownerName.text,
                           'owner_mobile': owner_mobile_phno.text,
-                          'owner_aadhar': owner_aadhaar.text,
+                       //   'owner_aadhar': owner_aadhaar.text,
                           'wastage_quantity': wastageQty.text,
                           'type': _selected_housetype?.type ?? "",
                           'existing_disposal':

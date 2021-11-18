@@ -53,7 +53,7 @@ class ResidentProvider extends ChangeNotifier {
           await covidFormController.getCovidFamilyData!();
       "This is data size from covid form${covidFamilyArray.length}".printinfo;
       int memberindex = 0;
-      await getUuidFromApi(context);
+
 
       await Future.forEach(covidFamilyArray, (element) async {
         CovidSubFormModel subelement = element as CovidSubFormModel;

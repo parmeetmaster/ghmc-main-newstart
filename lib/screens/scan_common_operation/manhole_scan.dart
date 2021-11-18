@@ -18,18 +18,18 @@ import 'package:image_grid/grid_image.dart';
 import 'package:provider/provider.dart';
 import 'package:ghmc/util/utils.dart';
 
-class ParkingScanScreen extends StatefulWidget {
+class ManholeScanScreen extends StatefulWidget {
   final qrdata;
   final OperationModel operationData;
 
-  const ParkingScanScreen({Key? key, this.qrdata, required this.operationData})
+  const ManholeScanScreen({Key? key, this.qrdata, required this.operationData})
       : super(key: key);
 
   @override
-  _ParkingScanScreenState createState() => _ParkingScanScreenState();
+  _ManholeScanScreenState createState() => _ManholeScanScreenState();
 }
 
-class _ParkingScanScreenState extends State<ParkingScanScreen> {
+class _ManholeScanScreenState extends State<ManholeScanScreen> {
   bool? choice = null;
   late CommonScanProvider provider =
       Provider.of<CommonScanProvider>(context, listen: false);
@@ -49,30 +49,30 @@ class _ParkingScanScreenState extends State<ParkingScanScreen> {
     super.initState();
     provider.loadCommunityItems(context);
     provider = Provider.of<CommonScanProvider>(context, listen: false);
-    provider.loadParkingDisplayData(widget.qrdata);
+    provider.loadManholeDisplayData(widget.qrdata);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: FAppBar.getCommonAppBar(title: "Parking"),
+      appBar: FAppBar.getCommonAppBar(title: "Manhole"),
       body: Consumer<CommonScanProvider>(builder: (context, value, child) {
         return provider.dropDowns != null &&
-                provider.commonParkingModel != null
+                provider.commonOperationManholeModel != null
             ? ListView(
                 padding: EdgeInsets.all(10),
                 children: [
                   CardSeperateRow(
-                    "Parking Name",
-                    provider.commonParkingModel!.data!.parkingName,
+                    "Name",
+                    provider.commonOperationManholeModel!.data!.manHoleName,
                     fontsize: 16,
                   ),
                   SizedBox(
                     height: 5,
                   ),
                   CardSeperateRow(
-                    "Owner Name",
-                    provider.commonParkingModel!.data!.ownerName,
+                    "Type",
+                    provider.commonOperationManholeModel!.data!.type,
                     fontsize: 16,
                   ),
                   SizedBox(
@@ -80,7 +80,7 @@ class _ParkingScanScreenState extends State<ParkingScanScreen> {
                   ),
                   CardSeperateRow(
                     "Address",
-                    provider.commonParkingModel!.data!.address!,
+                    provider.commonOperationManholeModel!.data!.address!,
                     fontsize: 16,
                   ),
                   SizedBox(
@@ -88,7 +88,7 @@ class _ParkingScanScreenState extends State<ParkingScanScreen> {
                   ),
                   CardSeperateRow(
                     "Landmark",
-                    provider.commonParkingModel!.data!.landmarkId,
+                    provider.commonOperationManholeModel!.data!.landmark,
                     fontsize: 16,
                   ),
                   SizedBox(
@@ -96,7 +96,7 @@ class _ParkingScanScreenState extends State<ParkingScanScreen> {
                   ),
                   CardSeperateRow(
                     "Area",
-                    provider.commonParkingModel!.data!.areaId,
+                    provider.commonOperationManholeModel!.data!.area,
                     fontsize: 16,
                   ),
                   SizedBox(
@@ -104,7 +104,7 @@ class _ParkingScanScreenState extends State<ParkingScanScreen> {
                   ),
                   CardSeperateRow(
                     "Ward",
-                    provider.commonParkingModel!.data!.wardId,
+                    provider.commonOperationManholeModel!.data!.wardName,
                     fontsize: 16,
                   ),
                   SizedBox(
@@ -112,7 +112,7 @@ class _ParkingScanScreenState extends State<ParkingScanScreen> {
                   ),
                   CardSeperateRow(
                     "Circle",
-                    provider.commonParkingModel!.data!.circlesId,
+                    provider.commonOperationManholeModel!.data!.circle,
                     fontsize: 16,
                   ),
                   SizedBox(
@@ -120,7 +120,7 @@ class _ParkingScanScreenState extends State<ParkingScanScreen> {
                   ),
                   CardSeperateRow(
                     "Zone",
-                    provider.commonParkingModel!.data!.zonesId,
+                    provider.commonOperationManholeModel!.data!.zone,
                     fontsize: 16,
                   ),
                   SizedBox(
@@ -135,10 +135,10 @@ class _ParkingScanScreenState extends State<ParkingScanScreen> {
                     child: GradientButton(
                       onclick: () async {
                         FormData formdata = FormData.fromMap({
-                          'db_type': provider.commonParkingModel?.data?.dbType,
+                          'db_type': provider.commonOperationManholeModel?.data?.dbType,
                           'user_id': Globals.userData?.data?.userId ?? "",
                           'collection_id':
-                              provider.commonParkingModel?.data?.colId ?? "",
+                              provider.commonOperationManholeModel?.data?.colId ?? "",
                           'wt_type': _weight,
                           'picked_denied':
                               choice == null?"": choice == false ? 0 : 1,

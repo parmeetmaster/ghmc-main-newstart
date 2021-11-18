@@ -125,21 +125,26 @@ class _CovidFormDataState extends State<CovidFormData> {
     return Theme(
       data: ThemeData(backgroundColor: Colors.purple),
       child: Container(
+        decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
+
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Wrap(
-              alignment: WrapAlignment.start,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                if (covidModel.isNotEmpty)
-                  ...covidModel.mapIndexed(
-                      (e, index) => _getNumberBox(index, activecell)),
-                //  _getNumberBox(2),
-                getAddMore()
-              ],
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Wrap(
+                alignment: WrapAlignment.start,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  if (covidModel.isNotEmpty)
+                    ...covidModel.mapIndexed(
+                        (e, index) => _getNumberBox(index, activecell)),
+                  //  _getNumberBox(2),
+                  getAddMore()
+                ],
+              ),
             ),
             if (covidModel.isNotEmpty)
               ...covidModel.mapIndexed((e, i) => activecell == i
@@ -151,10 +156,13 @@ class _CovidFormDataState extends State<CovidFormData> {
                         Align(
                           child: Row(
                             children: [
-                              Text(
-                                "Submit Member ${activecell + 1} Detail",
-                                style: TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.w600),
+                              Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: Text(
+                                  "Submit Member ${activecell + 1} Detail",
+                                  style: TextStyle(
+                                      fontSize: 14, fontWeight: FontWeight.w600),
+                                ),
                               ),
                               activecell != 0
                                   ? IconButton(

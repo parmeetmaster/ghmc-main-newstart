@@ -37,10 +37,10 @@ abstract class FAppBar {
   static getAppBarWithSearch({String title = "",Function? onclick}) {
     return AppBar(
       actions: [
-        IconButton(onPressed: (){
+      /*  IconButton(onPressed: (){
           onclick!();
         }, icon:Icon(Icons.search)),
-        SizedBox(width: 10,)
+        SizedBox(width: 10,)*/
       ],
       flexibleSpace: Container(
         decoration: BoxDecoration(

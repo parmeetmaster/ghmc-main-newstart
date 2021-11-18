@@ -14,6 +14,8 @@ import 'package:ghmc/model/dashboard/new_zone_model.dart';
 import 'package:ghmc/model/dashboard/zone_model.dart';
 import 'package:ghmc/model/driver_data_model.dart';
 import 'package:ghmc/provider/login_provider/login_provider.dart';
+import 'package:ghmc/screens/manhole/manhole.dart';
+import 'package:ghmc/screens/scan_common_operation/manhole_scan.dart';
 import 'package:ghmc/screens/scan_common_operation/parking_scan.dart';
 import 'package:ghmc/screens/scan_common_operation/resident_scan.dart';
 import 'package:ghmc/screens/scan_common_operation/vendor_scan.dart';
@@ -706,6 +708,10 @@ class DashBoardProvider extends ChangeNotifier {
          return true;
          case "STREET1":VendorScanScreen(qrdata:qrdata,operationData:model).push(context!);
          return true;
+         case "MANHOLE1":ManholeScanScreen(qrdata:qrdata,operationData:model).push(context!);
+         return true;
+
+
 
        }
 
