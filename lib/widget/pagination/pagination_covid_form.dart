@@ -77,9 +77,9 @@ class _CovidFormDataState extends State<CovidFormData> {
     super.initState();
    // provider.covidModel = []; //todo reove when not required
     provider = Provider.of<ResidentProvider>(context, listen: false);
-    for (int i = 0; i < 1; i++) {
+       if(provider.covidModel.isEmpty)
       provider.covidModel.add(CovidSubFormModel());
-    }
+
 
     if (widget.controller != null) {
       widget.controller!.getCovidFamilyData = getCovidFormData;

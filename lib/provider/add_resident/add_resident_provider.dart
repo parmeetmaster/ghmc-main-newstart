@@ -52,7 +52,7 @@ class ResidentProvider extends ChangeNotifier {
   }
 
   getUuidFromApi(BuildContext context, String? uuid) async {
-    if (uuid != null || uuid!.isNotEmpty) {
+    if (uuid != null) {
       residentFirstTimeUuidModel = ResidentUuidModel();
       residentFirstTimeUuidModel!.data = uuid;
       "Api is not called due to update".printerror;
@@ -74,7 +74,7 @@ class ResidentProvider extends ChangeNotifier {
   }
 
   Future<bool> submitCovidDataFirstTime(BuildContext context) async {
-    try {
+  try {
       List<CovidSubFormModel> covidFamilyArray =
           await covidFormController.getCovidFamilyData!();
       "This is data size from covid form${covidFamilyArray.length}".printinfo;
