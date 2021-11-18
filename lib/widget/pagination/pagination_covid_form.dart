@@ -49,8 +49,9 @@ class _CovidFormDataState extends State<CovidFormData> {
   Timer? mtimer;
 
   var vaccinationTypes=[
-    "Covaxin".toLowerCase(),
-    "Covi-Shield".toLowerCase()
+    "Covaxin",
+    "Covishield",
+    "Sputnik"
   ];
 
   List<CovidSubFormModel> getCovidFormData() {
@@ -78,7 +79,7 @@ class _CovidFormDataState extends State<CovidFormData> {
       widget.controller!.getCovidFamilyData = getCovidFormData;
       widget.controller!.addCovidData = addCovidData;
     }
-    provider = Provider.of<ResidentProvider>(context, listen: false);
+
 
     if (widget.resident_opr == RESIDENT_OPR.update) getMemberData();
   }
@@ -165,7 +166,7 @@ class _CovidFormDataState extends State<CovidFormData> {
                                 ),
                               ),
                               activecell != 0
-                                  ? IconButton(
+                                  ? widget.resident_opr!=RESIDENT_OPR.update? IconButton(
                                       icon: Icon(Icons.cancel),
                                       color: Colors.red,
                                       onPressed: () async {
@@ -184,7 +185,7 @@ class _CovidFormDataState extends State<CovidFormData> {
                                           });
                                         });
                                       },
-                                    )
+                                    ):SizedBox()
                                   : SizedBox()
                             ],
                           ),
@@ -407,8 +408,6 @@ class _CovidFormDataState extends State<CovidFormData> {
                                     width: MediaQuery.of(context).size.width *
                                         0.90,
                                     child: TextFormField(
-                                      initialValue:
-                                          covidModel[activecell].mobile,
                                       onChanged: (s) {
                                         covidModel[activecell].mobile = s;
                                       },
@@ -539,7 +538,7 @@ class _CovidFormDataState extends State<CovidFormData> {
                                           isExpanded: true,
                                           value: covidModel[activecell]
                                                   .vaccineType
-                                                  ?.toLowerCase() ??
+                                                  ??
                                               null,
                                           icon:
                                               const Icon(Icons.arrow_drop_down),
@@ -558,7 +557,7 @@ class _CovidFormDataState extends State<CovidFormData> {
                                             setState(() {
                                               covidModel[activecell]
                                                       .vaccineType =
-                                                  newValue!.toLowerCase();
+                                                  newValue;
                                             });
                                           },
                                         ),

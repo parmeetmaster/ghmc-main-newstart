@@ -4,6 +4,7 @@ import 'package:ghmc/api/api.dart';
 import 'package:ghmc/globals/globals.dart';
 import 'package:ghmc/model/covid_form_model.dart';
 import 'package:ghmc/model/resident/resident_member_model.dart';
+import 'package:ghmc/model/resident/resident_pre_submit_detial_model.dart';
 import 'package:ghmc/model/resident/resident_search_response_model.dart';
 import 'package:ghmc/model/resident/resident_uuid_model.dart';
 import 'package:ghmc/screens/add_resident/add_resident.dart';
@@ -15,7 +16,8 @@ class ResidentProvider extends ChangeNotifier {
   ResidentUuidModel? residentFirstTimeUuidModel;
   ResidentSearchResponseModel? residentSearchResponseModel;
   CovidFormController covidFormController = new CovidFormController();
-
+  ResidentPreSubmitDetialModel? prefillModel;
+  List<CovidSubFormModel> covidModel = [];
   performAddResident(FormData formData, BuildContext context) async {
     try {
       formData.fields.add(MapEntry("uuid", residentFirstTimeUuidModel!.data!));
@@ -32,7 +34,31 @@ class ResidentProvider extends ChangeNotifier {
     } catch (e) {}
   }
 
-  getUuidFromApi(BuildContext context) async {
+  getPrefillResidentDetails(BuildContext context, uuid) async {
+    ApiResponse response = await ApiBase().baseFunction(() => ApiBase()
+        .getInstance()!
+        .post("/residential_details",
+            data: FormData.fromMap({'uuid': uuid??""})));
+    if (response.status == 200) {
+      prefillModel =
+          ResidentPreSubmitDetialModel.fromJson(response.completeResponse);
+      notifyListeners();
+      return response;
+    } else {
+      response.message!.showSnackbar(context);
+      notifyListeners();
+      return response;
+    }
+  }
+
+  getUuidFromApi(BuildContext context, String? uuid) async {
+    if (uuid != null || uuid!.isNotEmpty) {
+      residentFirstTimeUuidModel = ResidentUuidModel();
+      residentFirstTimeUuidModel!.data = uuid;
+      "Api is not called due to update".printerror;
+      return;
+    }
+
     ApiResponse response = await ApiBase()
         .baseFunction(() => ApiBase().getInstance()!.get("/getuuid"));
     if (response.status == 200) {
@@ -52,14 +78,49 @@ class ResidentProvider extends ChangeNotifier {
       List<CovidSubFormModel> covidFamilyArray =
           await covidFormController.getCovidFamilyData!();
       "This is data size from covid form${covidFamilyArray.length}".printinfo;
-      int memberindex = 0;
 
+      for (int i = 0; i < covidFamilyArray.length; i++) {
+        CovidSubFormModel subelement = covidFamilyArray[i];
+        if (subelement.secondDoseDate!.isEmpty) {
+          "Second dose date wont empty".showSnackbar(context);
+
+          return false;
+        } else if (subelement.name!.isEmpty) {
+          "Name wont empty".showSnackbar(context);
+          return false;
+        } else if (subelement.firstDostDate!.isEmpty) {
+          "Fiest dose date wont empty".showSnackbar(context);
+          return false;
+        } else if (subelement.aadhar!.isEmpty) {
+          "Adhaar wont empty".showSnackbar(context);
+          return false;
+        } else if (subelement.mobile!.isEmpty) {
+          "Mobile date wont empty".showSnackbar(context);
+          return false;
+        } else if (subelement.vaccineType!.isEmpty) {
+          "Vaccine Type wont empty".showSnackbar(context);
+          return false;
+        } else if (subelement.age!.isEmpty) {
+          "Age wont empty".showSnackbar(context);
+          return false;
+        } else if (subelement.gender!.isEmpty) {
+          "Gender wont empty".showSnackbar(context);
+          return false;
+        }
+      }
+
+      int memberindex = 0;
 
       await Future.forEach(covidFamilyArray, (element) async {
         CovidSubFormModel subelement = element as CovidSubFormModel;
         subelement.uuid = residentFirstTimeUuidModel!.data!;
         subelement.user_id = Globals.userData!.data!.userId!;
-        subelement.family_member_no = Uuid().v4();
+
+        if (subelement.family_member_no == null ||
+            subelement.family_member_no!.isEmpty) {
+          subelement.family_member_no = Uuid().v4();
+        }
+
         ApiResponse response = await ApiBase().baseFunction(() => ApiBase()
             .getInstance()!
             .post("/family_members",
@@ -117,7 +178,8 @@ class ResidentProvider extends ChangeNotifier {
     }
   }
 
-  Future<List<CovidSubFormModel>?> getMemberUsingUuid(String? uuid, RESIDENT_OPR? resident_opr) async {
+  Future<List<CovidSubFormModel>?> getMemberUsingUuid(
+      String? uuid, RESIDENT_OPR? resident_opr) async {
     ResidentMemberModel residentMemberModel;
 
     try {
@@ -125,15 +187,16 @@ class ResidentProvider extends ChangeNotifier {
         return null;
       } else if (resident_opr == RESIDENT_OPR.update) {
         residentFirstTimeUuidModel = ResidentUuidModel(data: uuid);
-        ApiResponse response = await ApiBase().baseFunction(
-            () => ApiBase().getInstance()!.post("/get_all_family",data: {"uuid":uuid}));
+        ApiResponse response = await ApiBase().baseFunction(() => ApiBase()
+            .getInstance()!
+            .post("/get_all_family", data: {"uuid": uuid}));
         if (response.status == 200) {
           residentMemberModel =
               ResidentMemberModel.fromJson(response.completeResponse);
           List<CovidSubFormModel> covidData = [];
           int i = 0;
-       await   Future.forEach(residentMemberModel.data!, (e) {
-            CovidElement element =e as CovidElement;
+          await Future.forEach(residentMemberModel.data!, (e) {
+            CovidElement element = e as CovidElement;
             covidData.add(CovidSubFormModel(
               user_id: element.userId,
               uuid: element.uuid,
@@ -152,7 +215,7 @@ class ResidentProvider extends ChangeNotifier {
             ));
           });
 
-       return covidData;
+          return covidData;
 
           notifyListeners();
         } else {
@@ -165,10 +228,5 @@ class ResidentProvider extends ChangeNotifier {
     }
   }
 
-  removeMember(CovidSubFormModel covidModel) {
-
-
-
-
-  }
+  removeMember(CovidSubFormModel covidModel) {}
 }
