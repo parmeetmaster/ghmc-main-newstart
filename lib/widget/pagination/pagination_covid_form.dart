@@ -86,7 +86,7 @@ class _CovidFormDataState extends State<CovidFormData> {
       widget.controller!.addCovidData = addCovidData;
       widget.controller!.clear=clearList;
     }
-provider.notifyListeners();
+    provider.notifyListeners();
 
     if (widget.resident_opr == RESIDENT_OPR.update) getMemberData();
   }
@@ -103,7 +103,7 @@ provider.notifyListeners();
   @override
   void dispose() {
     //  mtimer!.cancel();
-    provider.covidModel = []; //todo reove when not required
+    //provider.covidModel = []; //todo reove when not required
     super.dispose();
   }
 
