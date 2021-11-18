@@ -1409,7 +1409,7 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                         "Something error in member form"
                             .showSnackbar(context);
                         return;
-                      }else if(coviddata == true) {
+                      }else if(coviddata == true && widget.resident_opr==RESIDENT_OPR.update )  {
                         "Form update Successfully".showSnackbar(context);
                         DashBoardScreen().  pushAndPopTillFirst(context);
                         return;
