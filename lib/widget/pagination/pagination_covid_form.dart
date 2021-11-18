@@ -79,7 +79,7 @@ class _CovidFormDataState extends State<CovidFormData> {
       widget.controller!.getCovidFamilyData = getCovidFormData;
       widget.controller!.addCovidData = addCovidData;
     }
-
+    provider = Provider.of<ResidentProvider>(context, listen: false);
 
     if (widget.resident_opr == RESIDENT_OPR.update) getMemberData();
   }
