@@ -10,16 +10,18 @@ import 'package:ghmc/util/utils.dart';
 import 'package:provider/provider.dart';
 
 typedef List<CovidSubFormModel> CovidTypeDef();
+typedef void CovidClearDef();
 typedef CovidTypeDefInsert<Null> = void Function(List<CovidSubFormModel>);
 
 class CovidFormController {
   CovidTypeDef? getCovidFamilyData;
   CovidTypeDefInsert? addCovidData;
-
+  CovidClearDef? clear;
   void dispose() {
     //Remove any data that's will cause a memory leak/render errors in here
     addCovidData = null;
     getCovidFamilyData = null;
+    clear=null;
   }
 }
 
@@ -66,10 +68,14 @@ class _CovidFormDataState extends State<CovidFormData> {
 
   late final ResidentProvider provider;
 
+  void clearList(){
+    covidModel.clear();
+  }
+
   @override
   void initState() {
     super.initState();
-    covidModel = []; //todo reove when not required
+   // covidModel = []; //todo reove when not required
 
     for (int i = 0; i < 1; i++) {
       covidModel.add(CovidSubFormModel());
@@ -78,6 +84,7 @@ class _CovidFormDataState extends State<CovidFormData> {
     if (widget.controller != null) {
       widget.controller!.getCovidFamilyData = getCovidFormData;
       widget.controller!.addCovidData = addCovidData;
+      widget.controller!.clear=clearList;
     }
     provider = Provider.of<ResidentProvider>(context, listen: false);
 
