@@ -18,6 +18,7 @@ class ResidentProvider extends ChangeNotifier {
   CovidFormController covidFormController = new CovidFormController();
   ResidentPreSubmitDetialModel? prefillModel;
   List<CovidSubFormModel> covidModel = [];
+
   performAddResident(FormData formData, BuildContext context) async {
     try {
       formData.fields.add(MapEntry("uuid", residentFirstTimeUuidModel!.data!));
@@ -38,7 +39,7 @@ class ResidentProvider extends ChangeNotifier {
     ApiResponse response = await ApiBase().baseFunction(() => ApiBase()
         .getInstance()!
         .post("/residential_details",
-            data: FormData.fromMap({'uuid': uuid??""})));
+            data: FormData.fromMap({'uuid': uuid ?? ""})));
     if (response.status == 200) {
       prefillModel =
           ResidentPreSubmitDetialModel.fromJson(response.completeResponse);
@@ -74,67 +75,84 @@ class ResidentProvider extends ChangeNotifier {
   }
 
   Future<bool> submitCovidDataFirstTime(BuildContext context) async {
-  try {
-      List<CovidSubFormModel> covidFamilyArray =
-          await covidFormController.getCovidFamilyData!();
-      "This is data size from covid form${covidFamilyArray.length}".printinfo;
+    try {
+    List<CovidSubFormModel> covidFamilyArray =
+        await covidFormController.getCovidFamilyData!();
+    "This is data size from covid form${covidFamilyArray.length}".printinfo;
 
-      for (int i = 0; i < covidFamilyArray.length; i++) {
-        CovidSubFormModel subelement = covidFamilyArray[i];
-        if (subelement.secondDoseDate!.isEmpty) {
-          "Second dose date wont empty".showSnackbar(context);
+/*    for (int i = 0; i < covidFamilyArray.length; i++) {
+      CovidSubFormModel subelement = copyOf(covidFamilyArray[i]);
 
-          return false;
-        } else if (subelement.name!.isEmpty) {
-          "Name wont empty".showSnackbar(context);
-          return false;
-        } else if (subelement.firstDostDate!.isEmpty) {
-          "Fiest dose date wont empty".showSnackbar(context);
-          return false;
-        } else if (subelement.aadhar!.isEmpty) {
-          "Adhaar wont empty".showSnackbar(context);
-          return false;
-        } else if (subelement.mobile!.isEmpty) {
-          "Mobile date wont empty".showSnackbar(context);
-          return false;
-        } else if (subelement.vaccineType!.isEmpty) {
-          "Vaccine Type wont empty".showSnackbar(context);
-          return false;
-        } else if (subelement.age!.isEmpty) {
-          "Age wont empty".showSnackbar(context);
-          return false;
-        } else if (subelement.gender!.isEmpty) {
-          "Gender wont empty".showSnackbar(context);
-          return false;
-        }
+      String member = "Member $i " ;
+
+
+   *//*   if (subelement.name!.isEmpty) {
+        "${member}Name wont empty".showSnackbar(context);
+        return false;
+      } else if (subelement.firstDostDate!.isEmpty) {
+        "${member}First dose date wont empty".showSnackbar(context);
+        return false;
+      } else if (subelement.aadhar!.isEmpty) {
+        "${member}Adhaar wont empty".showSnackbar(context);
+        return false;
+      } else if (subelement.mobile!.isEmpty) {
+        "${member}Mobile date wont empty".showSnackbar(context);
+        return false;
+      } else if (subelement.vaccineType == null ||
+          subelement.vaccineType!.isEmpty) {
+        "${member}Vaccine Type wont empty".showSnackbar(context);
+        return false;
+      } else if (subelement.age!.isEmpty) {
+        "${member}Age wont empty".showSnackbar(context);
+        return false;
+      } else if (subelement.gender!.isEmpty) {
+        "${member}Gender wont empty".showSnackbar(context);
+        return false;
+      }*//*
+    }*/
+
+    int memberindex = 0;
+
+    await Future.forEach(covidFamilyArray, (element) async {
+      CovidSubFormModel subelement =copyOf(element as CovidSubFormModel);
+
+
+
+      subelement.secondDoseYesNo??="";
+      subelement.firstDoseYesNo??="";
+      subelement.secondDoseDate??="";
+      subelement.firstDoseYesNo??="";
+      subelement.vaccineType??="";
+      subelement.name??="";
+      subelement.age??="";
+      subelement.mobile??="";
+      subelement.aadhar??="";
+
+      subelement.gender??="";
+
+      subelement.uuid = residentFirstTimeUuidModel!.data!;
+      subelement.user_id = Globals.userData!.data!.userId!;
+
+      if (subelement.family_member_no == null ||
+          subelement.family_member_no!.isEmpty) {
+        subelement.family_member_no = Uuid().v4();
       }
 
-      int memberindex = 0;
-
-      await Future.forEach(covidFamilyArray, (element) async {
-        CovidSubFormModel subelement = element as CovidSubFormModel;
-        subelement.uuid = residentFirstTimeUuidModel!.data!;
-        subelement.user_id = Globals.userData!.data!.userId!;
-
-        if (subelement.family_member_no == null ||
-            subelement.family_member_no!.isEmpty) {
-          subelement.family_member_no = Uuid().v4();
-        }
-
-        ApiResponse response = await ApiBase().baseFunction(() => ApiBase()
-            .getInstance()!
-            .post("/family_members",
-                data: FormData.fromMap((subelement.toJson()))));
-        if (response.status == 200) {
-          "${memberindex} family data added";
-        } else {
-          "${response.message!} in Member ${memberindex + 1} form"
-              .showSnackbar(context);
-          return false;
-        }
-        memberindex++;
-      });
-    } catch (e) {
+      ApiResponse response = await ApiBase().baseFunction(() => ApiBase()
+          .getInstance()!
+          .post("/family_members",
+              data: FormData.fromMap((subelement.toJson()))));
+      if (response.status == 200) {
+        "${memberindex} family data added";
+      } else {
+        "${response.message!} in Member ${memberindex + 1} form"
+            .showSnackbar(context);
+        return false;
+      }
+      memberindex++;
+    });
+      } catch (e) {
+    e.toString().printerror;
       e.toString().showSnackbar(context);
       return false;
     }
@@ -201,17 +219,17 @@ class ResidentProvider extends ChangeNotifier {
               user_id: element.userId,
               uuid: element.uuid,
               memeberNo: (i++).toString(),
-              name: element.name,
-              gender: element.gender,
-              mobile: element.mobile.toString(),
-              aadhar: element.aadhar.toString(),
-              age: element.age.toString(),
+              name: element.name ?? "",
+              gender: element.gender ?? "",
+              mobile: element.mobile?.toString() ?? "",
+              aadhar: element.aadhar?.toString() ?? "",
+              age: element.age?.toString() ?? "",
               family_member_no: element.familyMemberNo,
-              vaccineType: element.vaccineType,
-              firstDoseYesNo: element.firstDoseYesNo,
-              firstDostDate: element.firstDostDate,
-              secondDoseYesNo: element.secondDoseYesNo,
-              secondDoseDate: element.secondDoseDate,
+              vaccineType: element.vaccineType ?? "",
+              firstDoseYesNo: element.firstDoseYesNo ?? "",
+              firstDostDate: element.firstDostDate ?? "",
+              secondDoseYesNo: element.secondDoseYesNo ?? "",
+              secondDoseDate: element.secondDoseDate ?? "",
             ));
           });
 
@@ -229,4 +247,10 @@ class ResidentProvider extends ChangeNotifier {
   }
 
   removeMember(CovidSubFormModel covidModel) {}
+
+  CovidSubFormModel copyOf(CovidSubFormModel covidFamilyArray) {
+    CovidSubFormModel model =
+        CovidSubFormModel.fromJson(covidFamilyArray.toJson());
+    return model;
+  }
 }

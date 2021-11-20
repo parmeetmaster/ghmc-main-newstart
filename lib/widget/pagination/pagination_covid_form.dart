@@ -136,7 +136,6 @@ class _CovidFormDataState extends State<CovidFormData> {
           data: ThemeData(backgroundColor: Colors.purple),
           child: Container(
             decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
-
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisAlignment: MainAxisAlignment.start,

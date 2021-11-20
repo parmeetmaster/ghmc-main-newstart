@@ -104,6 +104,15 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
     if (widget.resident_opr == RESIDENT_OPR.update) {
       residentProvider.getPrefillResidentDetails(context, widget.uuid);
     }
+    _refreshTemporary();
+
+  }
+  _refreshTemporary(){
+    Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        timer.cancel();
+      });
+    });
   }
 
   @override
@@ -757,6 +766,126 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                             ),
                           ),
 
+                    widget.resident_opr == RESIDENT_OPR.update
+                        ? SizedBox()
+                        : Container(
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width:
+                            MediaQuery.of(context).size.width * 0.20,
+                            child: Text(
+                              "18+ members",
+                              style: TextStyle(fontSize: fontSize),
+                            ),
+                          ),
+                          Text(':'),
+                          Container(
+                            width:
+                            MediaQuery.of(context).size.width * 0.60,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1.0,
+                                      style: BorderStyle.solid,
+                                      color: Colors.grey,
+                                    ),
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(5.0)),
+                                  ),
+                                ),
+                                width: MediaQuery.of(context).size.width *
+                                    0.80,
+                                child: TextFormField(
+                                  controller: eighteenabove,
+                                  keyboardType: TextInputType.number,
+                                  decoration: new InputDecoration(
+                                      border: InputBorder.none,
+                                      hintStyle: hintStyle,
+                                      focusedBorder: InputBorder.none,
+                                      enabledBorder: InputBorder.none,
+                                      errorBorder: InputBorder.none,
+                                      disabledBorder: InputBorder.none,
+                                      contentPadding: EdgeInsets.only(
+                                          left: 15,
+                                          bottom: 11,
+                                          top: 11,
+                                          right: 15),
+                                      hintText:
+                                      "Type number of member above age 18"),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    widget.resident_opr == RESIDENT_OPR.update
+                        ? SizedBox()
+                        : Container(
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width:
+                            MediaQuery.of(context).size.width * 0.20,
+                            child: Text(
+                              "Property No.",
+                              style: TextStyle(fontSize: fontSize),
+                            ),
+                          ),
+                          Text(':'),
+                          Container(
+                            width:
+                            MediaQuery.of(context).size.width * 0.60,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1.0,
+                                      style: BorderStyle.solid,
+                                      color: Colors.grey,
+                                    ),
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(5.0)),
+                                  ),
+                                ),
+                                width: MediaQuery.of(context).size.width *
+                                    0.80,
+                                child: TextFormField(
+                                  controller: propertyNo,
+                                  keyboardType: TextInputType.number,
+                                  decoration: new InputDecoration(
+                                      border: InputBorder.none,
+                                      hintStyle: hintStyle,
+                                      focusedBorder: InputBorder.none,
+                                      enabledBorder: InputBorder.none,
+                                      errorBorder: InputBorder.none,
+                                      disabledBorder: InputBorder.none,
+                                      contentPadding: EdgeInsets.only(
+                                          left: 15,
+                                          bottom: 11,
+                                          top: 11,
+                                          right: 15),
+                                      hintText:
+                                      "Property Number"),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+
                     CovidFormData(
                         controller: residentProvider.covidFormController,
                         resident_opr: widget.resident_opr,
@@ -1180,124 +1309,6 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                             ),
                           ),
 
-                    widget.resident_opr == RESIDENT_OPR.update
-                        ? SizedBox()
-                        : Container(
-                            width: MediaQuery.of(context).size.width * 0.80,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.20,
-                                  child: Text(
-                                    "18+ members",
-                                    style: TextStyle(fontSize: fontSize),
-                                  ),
-                                ),
-                                Text(':'),
-                                Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.60,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      decoration: ShapeDecoration(
-                                        shape: RoundedRectangleBorder(
-                                          side: BorderSide(
-                                            width: 1.0,
-                                            style: BorderStyle.solid,
-                                            color: Colors.grey,
-                                          ),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(5.0)),
-                                        ),
-                                      ),
-                                      width: MediaQuery.of(context).size.width *
-                                          0.80,
-                                      child: TextFormField(
-                                        controller: eighteenabove,
-                                        keyboardType: TextInputType.number,
-                                        decoration: new InputDecoration(
-                                            border: InputBorder.none,
-                                            hintStyle: hintStyle,
-                                            focusedBorder: InputBorder.none,
-                                            enabledBorder: InputBorder.none,
-                                            errorBorder: InputBorder.none,
-                                            disabledBorder: InputBorder.none,
-                                            contentPadding: EdgeInsets.only(
-                                                left: 15,
-                                                bottom: 11,
-                                                top: 11,
-                                                right: 15),
-                                            hintText:
-                                                "Type number of member above age 18"),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                    widget.resident_opr == RESIDENT_OPR.update
-                        ? SizedBox()
-                        : Container(
-                            width: MediaQuery.of(context).size.width * 0.80,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.20,
-                                  child: Text(
-                                    "Property No.",
-                                    style: TextStyle(fontSize: fontSize),
-                                  ),
-                                ),
-                                Text(':'),
-                                Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.60,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      decoration: ShapeDecoration(
-                                        shape: RoundedRectangleBorder(
-                                          side: BorderSide(
-                                            width: 1.0,
-                                            style: BorderStyle.solid,
-                                            color: Colors.grey,
-                                          ),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(5.0)),
-                                        ),
-                                      ),
-                                      width: MediaQuery.of(context).size.width *
-                                          0.80,
-                                      child: TextFormField(
-                                        controller: propertyNo,
-                                        keyboardType: TextInputType.number,
-                                        decoration: new InputDecoration(
-                                            border: InputBorder.none,
-                                            hintStyle: hintStyle,
-                                            focusedBorder: InputBorder.none,
-                                            enabledBorder: InputBorder.none,
-                                            errorBorder: InputBorder.none,
-                                            disabledBorder: InputBorder.none,
-                                            contentPadding: EdgeInsets.only(
-                                                left: 15,
-                                                bottom: 11,
-                                                top: 11,
-                                                right: 15),
-                                            hintText:
-                                                "Type number of member above age 18"),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
 
                     // camera container
                     widget.resident_opr == RESIDENT_OPR.update
