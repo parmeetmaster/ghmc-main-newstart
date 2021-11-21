@@ -31,6 +31,7 @@ import 'package:ghmc/util/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'globals/constants.dart';
+import 'provider/covid/covid_provider.dart';
 import 'provider/support/support.dart';
 
 import 'dart:async';
@@ -84,7 +85,6 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-    
         ChangeNotifierProvider(create: (ctx) => LoginProvider()),
         ChangeNotifierProvider(create: (ctx) => DashBoardProvider()),
         ChangeNotifierProvider(create: (ctx) => AddVehicleProvider()),
@@ -106,7 +106,7 @@ void main() async {
         ChangeNotifierProvider(create: (ctx) => ManHoleProvider()),
         ChangeNotifierProvider(create: (ctx) => TempleProvider()),
         ChangeNotifierProvider(create: (ctx) => CommonScanProvider()),
-
+        ChangeNotifierProvider(create: (ctx) => CovidProvider()),
       ],
       child: Phoenix(child: MyApp()),
     ),

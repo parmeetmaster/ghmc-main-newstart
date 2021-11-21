@@ -1,3 +1,5 @@
+
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:ghmc/api/api.dart';
@@ -12,7 +14,7 @@ import 'package:ghmc/util/extension.dart';
 import 'package:ghmc/widget/pagination/pagination_covid_form.dart';
 import 'package:uuid/uuid.dart';
 
-class ResidentProvider extends ChangeNotifier {
+class CovidProvider extends ChangeNotifier {
   ResidentUuidModel? residentFirstTimeUuidModel;
   ResidentSearchResponseModel? residentSearchResponseModel;
   CovidFormController covidFormController = new CovidFormController();
@@ -39,7 +41,7 @@ class ResidentProvider extends ChangeNotifier {
     ApiResponse response = await ApiBase().baseFunction(() => ApiBase()
         .getInstance()!
         .post("/residential_details",
-            data: FormData.fromMap({'uuid': uuid ?? ""})));
+        data: FormData.fromMap({'uuid': uuid ?? ""})));
     if (response.status == 200) {
       prefillModel =
           ResidentPreSubmitDetialModel.fromJson(response.completeResponse);
@@ -75,54 +77,55 @@ class ResidentProvider extends ChangeNotifier {
   }
 
   Future<bool> submitCovidDataFirstTime(BuildContext context) async {
-    try {
-    List<CovidSubFormModel> covidFamilyArray =
-        await covidFormController.getCovidFamilyData!();
-    "This is data size from covid form${covidFamilyArray.length}".printinfo;
+/*    try {*/
+      List<CovidSubFormModel> covidFamilyArray=this.covidModel;
+      "This is data size from covid form${covidFamilyArray.length}".printinfo;
 
-    int memberindex = 0;
+      int memberindex = 0;
 
-    await Future.forEach(covidFamilyArray, (element) async {
-      CovidSubFormModel subelement =copyOf(element as CovidSubFormModel);
+      await Future.forEach(covidFamilyArray, (element) async {
+        CovidSubFormModel subelement =copyOf(element as CovidSubFormModel);
 
-      subelement.secondDoseYesNo??="";
-      subelement.firstDoseYesNo??="";
-      subelement.secondDoseDate??="";
-      subelement.firstDoseYesNo??="";
-      subelement.vaccineType??="";
-      subelement.name??="";
-      subelement.age??="";
-      subelement.mobile??="";
-      subelement.aadhar??="";
+        subelement.secondDoseYesNo??="";
+        subelement.firstDoseYesNo??="";
+        subelement.secondDoseDate??="";
+        subelement.firstDoseYesNo??="";
+        subelement.vaccineType??="";
+        subelement.name??="";
+        subelement.age??="";
+        subelement.mobile??="";
+        subelement.aadhar??="";
 
-      subelement.gender??="";
+        subelement.gender??="";
 
-      subelement.uuid = residentFirstTimeUuidModel!.data!;
-      subelement.user_id = Globals.userData!.data!.userId!;
 
-      if (subelement.family_member_no == null ||
-          subelement.family_member_no!.isEmpty) {
-        subelement.family_member_no = Uuid().v4();
-      }
+        subelement.uuid = residentFirstTimeUuidModel!.data!;
+        subelement.user_id = Globals.userData!.data!.userId!;
 
-      ApiResponse response = await ApiBase().baseFunction(() => ApiBase()
-          .getInstance()!
-          .post("/family_members",
-              data: FormData.fromMap((subelement.toJson()))));
-      if (response.status == 200) {
-        "${memberindex} family data added";
-      } else {
-        "${response.message!} in Member ${memberindex + 1} form"
-            .showSnackbar(context);
-        return false;
-      }
-      memberindex++;
-    });
-      } catch (e) {
-    e.toString().printerror;
+        // create id if not exist
+        if (subelement.family_member_no == null ||
+            subelement.family_member_no!.isEmpty) {
+          subelement.family_member_no = Uuid().v4();
+        }
+
+        ApiResponse response = await ApiBase().baseFunction(() => ApiBase()
+            .getInstance()!
+            .post("/family_members",
+            data: FormData.fromMap((subelement.toJson()))));
+        if (response.status == 200) {
+          "${memberindex} family data added";
+        } else {
+          "${response.message!} in Member ${memberindex + 1} form"
+              .showSnackbar(context);
+          return false;
+        }
+        memberindex++;
+      });
+/*    } catch (e) {
+      e.toString().printerror;
       e.toString().showSnackbar(context);
       return false;
-    }
+    }*/
     residentUpdate();
     return true;
   }
@@ -150,7 +153,7 @@ class ResidentProvider extends ChangeNotifier {
       ApiResponse response = await ApiBase().baseFunction(() => ApiBase()
           .getInstance()!
           .post("/residential_family_update",
-              data: {'uuid': residentFirstTimeUuidModel!.data!}));
+          data: {'uuid': residentFirstTimeUuidModel!.data!}));
       if (response.status == 200) {
         residentSearchResponseModel =
             ResidentSearchResponseModel.fromJson(response.completeResponse);
@@ -217,7 +220,7 @@ class ResidentProvider extends ChangeNotifier {
 
   CovidSubFormModel copyOf(CovidSubFormModel covidFamilyArray) {
     CovidSubFormModel model =
-        CovidSubFormModel.fromJson(covidFamilyArray.toJson());
+    CovidSubFormModel.fromJson(covidFamilyArray.toJson());
     return model;
   }
 }

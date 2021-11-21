@@ -24,6 +24,8 @@ import 'package:ghmc/screens/vehicleHistory/logHistory.dart';
 import 'package:ghmc/screens/gvp_bep/gvp_bvp_list.dart';
 import 'package:ghmc/screens/password_screen/password_screen.dart';
 
+import 'covid_screen/covid_screen.dart';
+
 class MainDrawer extends StatefulWidget {
   const MainDrawer({Key? key}) : super(key: key);
 
@@ -98,6 +100,9 @@ class _MainDrawerState extends State<MainDrawer> {
               ),
 
               ///
+
+
+
               if (Globals.authority!.data!.first.home == true)
                 ListTile(
                   leading: Icon(
@@ -115,7 +120,26 @@ class _MainDrawerState extends State<MainDrawer> {
                   },
                 ),
 
-         
+              ListTile(
+                leading: Icon(
+                  Icons.local_police,
+                  color: Colors.white,
+                  size: 25,
+                ),
+                title: Text(
+                  "Complex Test",
+                  style: TextStyle(
+                      fontSize: drawer_item_text, color: Colors.white),
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CovidScreen(),
+                    ),
+                  );
+                },
+              ),
 
               ///
               if (Globals.authority!.data!.first.complaints == true)
