@@ -84,8 +84,6 @@ class ResidentProvider extends ChangeNotifier {
 
     int memberindex = 0;
     bool isAnyError=false;
-
-
     await Future.forEach(covidFamilyArray, (element) async {
       CovidSubFormModel subelement =copyOf(element as CovidSubFormModel);
 
@@ -124,6 +122,7 @@ class ResidentProvider extends ChangeNotifier {
       memberindex++;
     });
     if(isAnyError==true){
+      deleteFamilyMember(residentFirstTimeUuidModel!.data!);
       return false;
     }
       } catch (e) {
@@ -135,6 +134,24 @@ class ResidentProvider extends ChangeNotifier {
     residentUpdate();
     return true;
   }
+
+
+  deleteFamilyMember(String uuid) async {
+    ApiResponse response = await ApiBase().baseFunction(() => ApiBase()
+        .getInstance()!
+        .post("/del_family_member",
+        data: FormData.fromMap({'uuid': uuid})));
+    if (response.status == 200) {
+      prefillModel =
+          ResidentPreSubmitDetialModel.fromJson(response.completeResponse);
+      notifyListeners();
+      return response;
+    } else {
+      return response;
+    }
+  }
+
+
 
   Future<ApiResponse> searchResident(String phno, BuildContext context) async {
     this.residentSearchResponseModel = null;

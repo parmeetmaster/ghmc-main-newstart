@@ -24,20 +24,19 @@ class ComplexBuildingProvider extends ChangeNotifier {
   }
 
   uploadComplexBuildingDetails(FormData data, BuildContext context) async {
-  try{
-    ApiResponse response = await ApiBase().baseFunction(() =>
-        ApiBase().getInstance()!.post("/createcomplex_build_two", data: data));
-    if (response.status == 200) {
-      response.message!.showSnackbar(context);
-      return response;
-    } else {
-      response.message!.showSnackbar(context);
-      return response;
-    }
+    try {
+      ApiResponse response = await ApiBase().baseFunction(() => ApiBase()
+          .getInstance()!
+          .post("/createcomplex_build_two", data: data));
+      if (response.status == 200) {
+        response.message!.showSnackbar(context);
+        return response;
+      } else {
+        response.message!.showSnackbar(context);
+        return response;
+      }
+    } catch (e) {}
   }
-  catch(e){}
-  }
-
 
   dispose() {
     circleComplexAccessModel = null;

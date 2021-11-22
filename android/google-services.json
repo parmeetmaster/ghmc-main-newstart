@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "532773844629",
-    "project_id": "ghmc-52bcd",
-    "storage_bucket": "ghmc-52bcd.appspot.com"
+    "project_number": "323665058188",
+    "project_id": "ghmc-d1ce3",
+    "storage_bucket": "ghmc-d1ce3.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:532773844629:android:7e7e85a157e21dee46cd9c",
+        "mobilesdk_app_id": "1:323665058188:android:28c4f71e9d2572ffc49ea9",
         "android_client_info": {
-          "package_name": "com.iotroncs.ghmc"
+          "package_name": "com.telangana.iotroncs"
         }
       },
       "oauth_client": [
         {
-          "client_id": "532773844629-ju5k1a8ml4r1e17h4mgq33sl92d9ic5j.apps.googleusercontent.com",
+          "client_id": "323665058188-fj8n9249scu70k0ls237moilqthnjfcg.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB60Gyl8gwW5CC9NitMau75O3zEgI4MzO8"
+          "current_key": "AIzaSyCyTe9ZjnXK4XnOUe-FMIKQLrrIogRQSyo"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "532773844629-ju5k1a8ml4r1e17h4mgq33sl92d9ic5j.apps.googleusercontent.com",
+              "client_id": "323665058188-fj8n9249scu70k0ls237moilqthnjfcg.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

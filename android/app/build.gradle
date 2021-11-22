@@ -42,7 +42,7 @@ android {
 /* New addon during development ref parmeet*/
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.iotroncs.ghmc"
+        applicationId "com.telangana.iotroncs"
         minSdkVersion 21
         targetSdkVersion 30
         multiDexEnabled true

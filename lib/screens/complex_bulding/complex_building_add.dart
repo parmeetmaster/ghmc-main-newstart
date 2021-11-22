@@ -44,6 +44,8 @@ class _ComplexBuildingAddState extends State<ComplexBuildingAdd> {
 
   var landmark = TextEditingController();
   var name = TextEditingController();
+  var propertyno = TextEditingController();
+  var eighteenabove = TextEditingController();
   var address = TextEditingController();
   var floors = TextEditingController();
   String? _selectedbasement;
@@ -711,6 +713,103 @@ class _ComplexBuildingAddState extends State<ComplexBuildingAdd> {
                     ],
                   ),
                 ),
+                //property no
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.80,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.18,
+                        child: Text(
+                          "Property No",
+                          style: TextStyle(fontSize: fontSize),
+                        ),
+                      ),
+                      Text(':'),
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.60,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            decoration: ShapeDecoration(
+                              shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                  width: 1.0,
+                                  style: BorderStyle.solid,
+                                  color: Colors.grey,
+                                ),
+                                borderRadius:
+                                BorderRadius.all(Radius.circular(5.0)),
+                              ),
+                            ),
+                            width: MediaQuery.of(context).size.width * 0.80,
+                            child: TextFormField(
+                              controller: propertyno,
+                              decoration: new InputDecoration(
+                                  border: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  errorBorder: InputBorder.none,
+                                  disabledBorder: InputBorder.none,
+                                  contentPadding: EdgeInsets.only(
+                                      left: 15, bottom: 11, top: 11, right: 15),
+                                  hintText: "Enter Property no here..."),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.80,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.18,
+                        child: Text(
+                          "Eigteen Above",
+                          style: TextStyle(fontSize: fontSize),
+                        ),
+                      ),
+                      Text(':'),
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.60,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            decoration: ShapeDecoration(
+                              shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                  width: 1.0,
+                                  style: BorderStyle.solid,
+                                  color: Colors.grey,
+                                ),
+                                borderRadius:
+                                BorderRadius.all(Radius.circular(5.0)),
+                              ),
+                            ),
+                            width: MediaQuery.of(context).size.width * 0.80,
+                            child: TextFormField(
+                              controller: eighteenabove,
+                              decoration: new InputDecoration(
+                                  border: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  errorBorder: InputBorder.none,
+                                  disabledBorder: InputBorder.none,
+                                  contentPadding: EdgeInsets.only(
+                                      left: 15, bottom: 11, top: 11, right: 15),
+                                  hintText: "Enter no here..."),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: MapContainer(
@@ -760,6 +859,8 @@ class _ComplexBuildingAddState extends State<ComplexBuildingAdd> {
                       'basements': this._selectedbasement ?? "",
                       'ground_floors': this._selectedGroundFloor ?? "",
                       'floors': floors.text,
+                      'propertyno': propertyno.text,
+                      'eighteenabove': eighteenabove.text,
                       'latitude': this.locationData?.latitude?.toString() ?? "",
                       'longitude':
                           this.locationData?.longitude?.toString() ?? ""

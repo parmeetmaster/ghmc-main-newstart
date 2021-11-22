@@ -89,6 +89,7 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset:false,
         appBar: FAppBar.getCommonAppBar(title: "Complex/Building Add Flat"),
         body: Consumer<ComplexBuildingProvider>(
             builder: (context, snapshot, child) {
@@ -1049,7 +1050,7 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                                         await CovidScreen().push(context);
                                     if (covidResponse != null) {
                                       setState(() {
-                                        uuid = covidResponse!["count"].toString();
+                                        uuid = covidResponse!["uuid"].toString();
                                         covidResponse.toString().printwtf;
                                         this.familyMembercount.text =
                                             covidResponse!["count"].toString();
@@ -1172,7 +1173,7 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                           'complex_id': widget.id,
                           'resident_type': this._selected_housetype?.type ?? "",
                           'uuid': this.uuid ?? "",
-                          'property_no': this.property_no.text,
+                          'propertyno': this.property_no.text,
                           'images': [
                             for (var file in this.images!)
                               ...{

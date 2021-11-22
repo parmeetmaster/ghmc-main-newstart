@@ -63,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(height: 50.0),
                 Center(
                   child: Image.asset(
-                    "assets/images/GHMC.png",
+                    "assets/images/main_logo.png",
                     height: MediaQuery.of(context).size.height * 0.30,
                     width: MediaQuery.of(context).size.width * 0.70,
                   ),

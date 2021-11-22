@@ -126,6 +126,7 @@ class CovidProvider extends ChangeNotifier {
       });
 
       if(isAnyError==true){
+        deleteFamilyMember(residentFirstTimeUuidModel!.data!);
         return false;
       }
 
@@ -138,6 +139,21 @@ class CovidProvider extends ChangeNotifier {
     residentUpdate();
     return true;
   }
+
+
+  deleteFamilyMember(String uuid) async {
+    ApiResponse response = await ApiBase().baseFunction(() => ApiBase()
+        .getInstance()!
+        .post("/del_family_member",
+        data: FormData.fromMap({'uuid': uuid})));
+    if (response.status == 200) {
+
+
+    } else {
+
+    }
+  }
+
 
   Future<ApiResponse> searchResident(String phno, BuildContext context) async {
     this.residentSearchResponseModel = null;

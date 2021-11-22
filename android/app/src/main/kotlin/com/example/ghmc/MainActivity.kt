@@ -1,4 +1,4 @@
-package com.iotroncs.ghmc
+package com.telangana.iotroncs
 
 import io.flutter.embedding.android.FlutterActivity
 
