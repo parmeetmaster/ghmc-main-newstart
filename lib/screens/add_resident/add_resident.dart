@@ -25,7 +25,7 @@ import 'package:location_platform_interface/location_platform_interface.dart';
 import 'package:provider/provider.dart';
 import 'package:ghmc/util/utils.dart';
 
-enum RESIDENT_OPR { update, insert }
+
 
 @immutable
 class AddResidentScreen extends StatefulWidget {

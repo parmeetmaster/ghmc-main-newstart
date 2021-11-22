@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ghmc/provider/complex_building/complex_building.dart';
+import 'package:ghmc/screens/complex_bulding/search_complex_resident.dart';
 import 'package:ghmc/widget/appbar/appbar.dart';
 import 'package:ghmc/util/utils.dart';
 import 'package:ghmc/widget/card_seperate_row.dart';
@@ -30,8 +31,11 @@ class _ComplexBuildingState extends State<ComplexBuilding> {
   Widget build(BuildContext context) {
     final provider = Provider.of<ComplexBuildingProvider>(context);
     return Scaffold(
-      appBar: FAppBar.getAppBarWithPlus(
+      appBar: FAppBar.getAppBarWithPlusSearch(
           title: "Complex Building",
+          onSearch: (){
+            SearchComplexResident().push(context);
+          },
           onclick: () {
             ComplexBuildingAdd().push(context);
           }),

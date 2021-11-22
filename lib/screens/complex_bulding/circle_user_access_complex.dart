@@ -9,6 +9,7 @@ import 'package:ghmc/model/complex_building/complex_add_model.dart';
 import 'package:ghmc/model/culvert/area_model.dart';
 import 'package:ghmc/provider/community_hall/community_hall.dart';
 import 'package:ghmc/provider/complex_building/complex_building.dart';
+import 'package:ghmc/provider/covid/covid_provider.dart';
 import 'package:ghmc/provider/culvert/culvert_provider.dart';
 import 'package:ghmc/util/extension.dart';
 import 'package:ghmc/util/m_progress_indicator.dart';
@@ -16,6 +17,7 @@ import 'package:ghmc/widget/appbar/appbar.dart';
 import 'package:ghmc/widget/buttons/gradeint_button.dart';
 import 'package:ghmc/widget/container/camera_container.dart';
 import 'package:ghmc/widget/container/map_container.dart';
+import 'package:ghmc/widget/covid_screen/covid_screen.dart';
 import 'package:ghmc/widget/grid/grid_image.dart';
 import 'package:ghmc/widget/loading_widget.dart';
 import 'package:location_platform_interface/location_platform_interface.dart';
@@ -44,6 +46,7 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
   var floors = TextEditingController();
   String? _selectedbasement;
   String? _selectedGroundFloor;
+  String? uuid;
 
   LocationData? locationData;
 
@@ -63,15 +66,17 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
   var shop_flat_address = TextEditingController();
 
   var owner_name = TextEditingController();
-
+  var property_no = TextEditingController();
   var owner_mobile_phno = TextEditingController();
   var owner_aadhaar = TextEditingController();
   Existing_disposal? _selected_disposal;
   late CommunityHallProvider comprovider =
       Provider.of<CommunityHallProvider>(context, listen: false);
   var wastageQty = TextEditingController();
+  var familyMembercount = TextEditingController();
 
   alldrop.Type_of_house? _selected_housetype;
+  Map<String, dynamic>? covidResponse;
 
   @override
   void initState() {
@@ -84,7 +89,7 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: FAppBar.getCommonAppBar(title: "Complex/Building"),
+        appBar: FAppBar.getCommonAppBar(title: "Complex/Building Add Flat"),
         body: Consumer<ComplexBuildingProvider>(
             builder: (context, snapshot, child) {
           return provider.complexAddModelDropDown != null
@@ -955,6 +960,134 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                         ],
                       ),
                     ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.20,
+                            child: Text(
+                              "Enter Property No.",
+                              style: TextStyle(fontSize: fontSize),
+                            ),
+                          ),
+                          Text(':'),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.64,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1.0,
+                                      style: BorderStyle.solid,
+                                      color: Colors.grey,
+                                    ),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                ),
+                                width: MediaQuery.of(context).size.width * 0.80,
+                                child: TextFormField(
+                                  controller: property_no,
+                                  decoration: new InputDecoration(
+                                      border: InputBorder.none,
+                                      hintStyle: hintStyle,
+                                      focusedBorder: InputBorder.none,
+                                      enabledBorder: InputBorder.none,
+                                      errorBorder: InputBorder.none,
+                                      disabledBorder: InputBorder.none,
+                                      contentPadding: EdgeInsets.only(
+                                          left: 15,
+                                          bottom: 11,
+                                          top: 11,
+                                          right: 15),
+                                      hintText: "Type Property Number here..."),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    //Add Quantity
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.20,
+                            child: Text("Add Family Member Data",
+                              style: TextStyle(fontSize: fontSize),
+                            ),
+                          ),
+                          Text(':'),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.64,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1.0,
+                                      style: BorderStyle.solid,
+                                      color: Colors.grey,
+                                    ),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                ),
+                                width: MediaQuery.of(context).size.width * 0.80,
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    covidResponse =
+                                        await CovidScreen().push(context);
+                                    if (covidResponse != null) {
+                                      setState(() {
+                                        uuid = covidResponse!["count"].toString();
+                                        covidResponse.toString().printwtf;
+                                        this.familyMembercount.text =
+                                            covidResponse!["count"].toString();
+                                      });
+                                    }
+                                  },
+                                  child: Container(
+                                    height: 30,
+                                    decoration:
+                                        BoxDecoration(color: Colors.purple),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            this.familyMembercount.text.isNotEmpty
+                                                ? "${covidResponse!["count"]} Member added"
+                                                : "Add Members",
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
 
                     // camera container
                     Padding(
@@ -965,24 +1098,31 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                         },
                       ),
                     ),
-                    GridImage(  images:   this.images! ,context: context, title:"Select Image",onchange: (List<File> files)async {
-                      MProgressIndicator.show(context);
-                      try {
-                        List<File>? tempimages = [];
-                        await Future.forEach(files,(e)async{
-                          print(e);
-                          File? file = await FileSupport().compressImage(e as File);
-                          tempimages.add(file!);
-
-                        });
-                        this.images!.clear();
-                        "${tempimages.length} are compress".toString().printwtf;
-                        this.images!.addAll(tempimages);
-                      } catch (e) {
+                    GridImage(
+                      images: this.images!,
+                      context: context,
+                      title: "Select Image",
+                      onchange: (List<File> files) async {
+                        MProgressIndicator.show(context);
+                        try {
+                          List<File>? tempimages = [];
+                          await Future.forEach(files, (e) async {
+                            print(e);
+                            File? file =
+                                await FileSupport().compressImage(e as File);
+                            tempimages.add(file!);
+                          });
+                          this.images!.clear();
+                          "${tempimages.length} are compress"
+                              .toString()
+                              .printwtf;
+                          this.images!.addAll(tempimages);
+                        } catch (e) {
+                          MProgressIndicator.hide();
+                        }
                         MProgressIndicator.hide();
-                      }
-                      MProgressIndicator.hide();
-                    },),
+                      },
+                    ),
 
                     SizedBox(
                       height: 10,
@@ -995,6 +1135,12 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                           return;
                         }
 
+                        if (uuid == null) {
+                          "No member is added pls add least one member"
+                              .showSnackbar(context);
+                          return;
+                        }
+
                         if (this.images!.length > 5) {
                           "Only max 5 images are allowed".showSnackbar(context);
                           return;
@@ -1002,7 +1148,7 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
 
                         FormData formData = FormData.fromMap({
                           'user_id': Globals.userData!.data!.userId!,
-                          'floor': this._selected_floor??"",
+                          'floor': this._selected_floor ?? "",
                           'floor_no': this.floors.text,
                           'category': this._selected_category_type?.name ?? "",
                           'business_type':
@@ -1025,6 +1171,8 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                           'longitude': (this.locationData?.latitude).toString(),
                           'complex_id': widget.id,
                           'resident_type': this._selected_housetype?.type ?? "",
+                          'uuid': this.uuid ?? "",
+                          'property_no': this.property_no.text,
                           'images': [
                             for (var file in this.images!)
                               ...{
@@ -1042,6 +1190,9 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                             .uploadComplexBuildingDetails(formData, context);
                         print(res.status);
                         if (res.status == 200) {
+                          // new clear
+                       final   provider = Provider.of<CovidProvider>(context, listen: false);
+                          provider.covidModel.clear();
                           Navigator.pop(context);
                         }
                         MProgressIndicator.hide();

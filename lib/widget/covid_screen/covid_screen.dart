@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get_rx/src/rx_typedefs/rx_typedefs.dart';
+import 'package:ghmc/globals/globals.dart';
 import 'package:ghmc/model/covid_form_model.dart';
 import 'package:ghmc/provider/add_resident/add_resident_provider.dart';
 import 'package:ghmc/provider/covid/covid_provider.dart';
@@ -557,419 +558,522 @@ class _CovidScreenState extends State<CovidScreen> {
                                   ],
                                 ),
                               ),
-                              //vaccination Type
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.90,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.20,
-                                      child: Text(
-                                        "Vaccination Type ",
-                                        style: TextStyle(fontSize: fontSize),
-                                      ),
-                                    ),
-                                    Text(':'),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.60,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Container(
-                                          decoration: ShapeDecoration(
-                                            shape: RoundedRectangleBorder(
-                                              side: BorderSide(
-                                                width: 1.0,
-                                                style: BorderStyle.solid,
-                                                color: Colors.grey,
-                                              ),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(5.0)),
-                                            ),
-                                          ),
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.90,
-                                          child: Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                8.0, 0, 0, 0),
-                                            child: DropdownButton<String>(
-                                              underline: Container(
-                                                color: Colors.transparent,
-                                              ),
-                                              hint: Text('Select Vaccination'),
-                                              isExpanded: true,
-                                              value: provider
-                                                      .covidModel[activecell]
-                                                      .vaccineType ??
-                                                  null,
-                                              icon: const Icon(
-                                                  Icons.arrow_drop_down),
-                                              iconSize: 20,
-                                              elevation: 16,
-                                              style: const TextStyle(
-                                                  color: Colors.black),
-                                              items: this.vaccinationTypes.map<
-                                                      DropdownMenuItem<String>>(
-                                                  (String value) {
-                                                return DropdownMenuItem<String>(
-                                                  value: value,
-                                                  child: Text("${value}"),
-                                                );
-                                              }).toList(),
-                                              onChanged: (newValue) async {
-                                                setState(() {
-                                                  provider
-                                                      .covidModel[activecell]
-                                                      .vaccineType = newValue;
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
 
-                              //First Dose
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.90,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                              // Vacination is done or not
+                              _getVaccinationStatusWidget(activecell),
+
+                              if (provider
+                                      .covidModel[activecell].vaccine_yes_no ==
+                                  "Yes")
+                                Column(
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
+                                    //vaccination Type
                                     Container(
                                       width: MediaQuery.of(context).size.width *
-                                          0.20,
-                                      child: Text(
-                                        "Is first Dose Completed ",
-                                        style: TextStyle(fontSize: fontSize),
-                                      ),
-                                    ),
-                                    Text(':'),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.60,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Container(
-                                          decoration: ShapeDecoration(
-                                            shape: RoundedRectangleBorder(
-                                              side: BorderSide(
-                                                width: 1.0,
-                                                style: BorderStyle.solid,
-                                                color: Colors.grey,
-                                              ),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(5.0)),
+                                          0.90,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.20,
+                                            child: Text(
+                                              "Vaccination Type ",
+                                              style:
+                                                  TextStyle(fontSize: fontSize),
                                             ),
                                           ),
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.90,
-                                          child: Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                8.0, 0, 0, 0),
-                                            child: DropdownButton<String>(
-                                              underline: Container(
-                                                color: Colors.transparent,
+                                          Text(':'),
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.60,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Container(
+                                                decoration: ShapeDecoration(
+                                                  shape: RoundedRectangleBorder(
+                                                    side: BorderSide(
+                                                      width: 1.0,
+                                                      style: BorderStyle.solid,
+                                                      color: Colors.grey,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                5.0)),
+                                                  ),
+                                                ),
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.90,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(
+                                                          8.0, 0, 0, 0),
+                                                  child: DropdownButton<String>(
+                                                    underline: Container(
+                                                      color: Colors.transparent,
+                                                    ),
+                                                    hint: Text(
+                                                        'Select Vaccination'),
+                                                    isExpanded: true,
+                                                    value: provider
+                                                            .covidModel[
+                                                                activecell]
+                                                            .vaccineType ??
+                                                        null,
+                                                    icon: const Icon(
+                                                        Icons.arrow_drop_down),
+                                                    iconSize: 20,
+                                                    elevation: 16,
+                                                    style: const TextStyle(
+                                                        color: Colors.black),
+                                                    items: this
+                                                        .vaccinationTypes
+                                                        .map<
+                                                            DropdownMenuItem<
+                                                                String>>((String
+                                                            value) {
+                                                      return DropdownMenuItem<
+                                                          String>(
+                                                        value: value,
+                                                        child: Text("${value}"),
+                                                      );
+                                                    }).toList(),
+                                                    onChanged:
+                                                        (newValue) async {
+                                                      setState(() {
+                                                        provider
+                                                                .covidModel[
+                                                                    activecell]
+                                                                .vaccineType =
+                                                            newValue;
+                                                      });
+                                                    },
+                                                  ),
+                                                ),
                                               ),
-                                              hint: Text('Select Status'),
-                                              isExpanded: true,
-                                              value: provider
-                                                  .covidModel[activecell]
-                                                  .firstDoseYesNo,
-                                              icon: const Icon(
-                                                  Icons.arrow_drop_down),
-                                              iconSize: 20,
-                                              elevation: 16,
-                                              style: const TextStyle(
-                                                  color: Colors.black),
-                                              items: [
-                                                "Yes",
-                                                "No"
-                                              ].map<DropdownMenuItem<String>>(
-                                                  (String value) {
-                                                return DropdownMenuItem<String>(
-                                                  value: value,
-                                                  child: Text("${value}"),
-                                                );
-                                              }).toList(),
-                                              onChanged: (newValue) async {
-                                                setState(() {
-                                                  provider
-                                                      .covidModel[activecell]
-                                                      .firstDoseYesNo = newValue;
-                                                });
-                                              },
                                             ),
                                           ),
-                                        ),
+                                        ],
                                       ),
                                     ),
-                                  ],
-                                ),
-                              ),
-                              //dose 1 date
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.90,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
+
+                                    //First Dose
                                     Container(
                                       width: MediaQuery.of(context).size.width *
-                                          0.20,
-                                      child: Text(
-                                        "Dose 1 date",
-                                        style: TextStyle(fontSize: fontSize),
-                                      ),
-                                    ),
-                                    Text(':'),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.60,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Container(
-                                          decoration: ShapeDecoration(
-                                            shape: RoundedRectangleBorder(
-                                              side: BorderSide(
-                                                width: 1.0,
-                                                style: BorderStyle.solid,
-                                                color: Colors.grey,
-                                              ),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(5.0)),
+                                          0.90,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.20,
+                                            child: Text(
+                                              "Is first Dose Completed ",
+                                              style:
+                                                  TextStyle(fontSize: fontSize),
                                             ),
                                           ),
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.90,
-                                          child: TextFormField(
-                                            controller: firstdose,
-                                            //initialValue:  provider.covidModel[activecell].firstDostDate,
-                                            onTap: () async {
-                                              await showDatePicker(
-                                                context: context,
-                                                initialDate: DateTime.now(),
-                                                firstDate: DateTime(2020),
-                                                lastDate: DateTime.now(),
-                                              ).then((value) async {
-                                                setState(() {
-                                                  if (value == null) return;
-                                                  firstdose.text =
-                                                      "${value.day.toString()}-${value.month.toString()}-${value.year.toString()}";
-                                                  provider
-                                                          .covidModel[activecell]
-                                                          .firstDostDate =
-                                                      "${value.day.toString()}-${value.month.toString()}-${value.year.toString()}";
-                                                });
-                                              });
-                                            },
-                                            keyboardType: TextInputType.none,
-                                            decoration: new InputDecoration(
-                                                border: InputBorder.none,
-                                                hintStyle: hintStyle,
-                                                focusedBorder: InputBorder.none,
-                                                enabledBorder: InputBorder.none,
-                                                errorBorder: InputBorder.none,
-                                                disabledBorder:
-                                                    InputBorder.none,
-                                                contentPadding: EdgeInsets.only(
-                                                    left: 15,
-                                                    bottom: 11,
-                                                    top: 11,
-                                                    right: 15),
-                                                hintText:
-                                                    "Select date here..."),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              //Second dose
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.90,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.20,
-                                      child: Text(
-                                        "Is Second Dose Completed ",
-                                        style: TextStyle(fontSize: fontSize),
-                                      ),
-                                    ),
-                                    Text(':'),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.60,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Container(
-                                          decoration: ShapeDecoration(
-                                            shape: RoundedRectangleBorder(
-                                              side: BorderSide(
-                                                width: 1.0,
-                                                style: BorderStyle.solid,
-                                                color: Colors.grey,
+                                          Text(':'),
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.60,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Container(
+                                                decoration: ShapeDecoration(
+                                                  shape: RoundedRectangleBorder(
+                                                    side: BorderSide(
+                                                      width: 1.0,
+                                                      style: BorderStyle.solid,
+                                                      color: Colors.grey,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                5.0)),
+                                                  ),
+                                                ),
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.90,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(
+                                                          8.0, 0, 0, 0),
+                                                  child: DropdownButton<String>(
+                                                    underline: Container(
+                                                      color: Colors.transparent,
+                                                    ),
+                                                    hint: Text('Select Status'),
+                                                    isExpanded: true,
+                                                    value: provider
+                                                        .covidModel[activecell]
+                                                        .firstDoseYesNo,
+                                                    icon: const Icon(
+                                                        Icons.arrow_drop_down),
+                                                    iconSize: 20,
+                                                    elevation: 16,
+                                                    style: const TextStyle(
+                                                        color: Colors.black),
+                                                    items: ["Yes", "No"].map<
+                                                            DropdownMenuItem<
+                                                                String>>(
+                                                        (String value) {
+                                                      return DropdownMenuItem<
+                                                          String>(
+                                                        value: value,
+                                                        child: Text("${value}"),
+                                                      );
+                                                    }).toList(),
+                                                    onChanged:
+                                                        (newValue) async {
+                                                      setState(() {
+                                                        provider
+                                                                .covidModel[
+                                                                    activecell]
+                                                                .firstDoseYesNo =
+                                                            newValue;
+                                                      });
+                                                    },
+                                                  ),
+                                                ),
                                               ),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(5.0)),
                                             ),
                                           ),
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.90,
-                                          child: Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                8.0, 0, 0, 0),
-                                            child: DropdownButton<String>(
-                                              underline: Container(
-                                                color: Colors.transparent,
-                                              ),
-                                              hint: Text('Select Status'),
-                                              isExpanded: true,
-                                              value: provider
-                                                  .covidModel[activecell]
-                                                  .secondDoseYesNo,
-                                              icon: const Icon(
-                                                  Icons.arrow_drop_down),
-                                              iconSize: 20,
-                                              elevation: 16,
-                                              style: const TextStyle(
-                                                  color: Colors.black),
-                                              items: [
-                                                "Yes",
-                                                "No"
-                                              ].map<DropdownMenuItem<String>>(
-                                                  (String value) {
-                                                return DropdownMenuItem<String>(
-                                                  value: value,
-                                                  child: Text("${value}"),
-                                                );
-                                              }).toList(),
-                                              onChanged: (newValue) async {
-                                                setState(() {
-                                                  provider
-                                                          .covidModel[activecell]
-                                                          .secondDoseYesNo =
-                                                      newValue;
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                        ),
+                                        ],
                                       ),
                                     ),
-                                  ],
-                                ),
-                              ),
-                              //dose 2 date
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.90,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
+                                    //dose 1 date
                                     Container(
                                       width: MediaQuery.of(context).size.width *
-                                          0.20,
-                                      child: Text(
-                                        "Dose 2 date",
-                                        style: TextStyle(fontSize: fontSize),
-                                      ),
-                                    ),
-                                    Text(':'),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.60,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Container(
-                                          decoration: ShapeDecoration(
-                                            shape: RoundedRectangleBorder(
-                                              side: BorderSide(
-                                                width: 1.0,
-                                                style: BorderStyle.solid,
-                                                color: Colors.grey,
-                                              ),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(5.0)),
+                                          0.90,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.20,
+                                            child: Text(
+                                              "Dose 1 date",
+                                              style:
+                                                  TextStyle(fontSize: fontSize),
                                             ),
                                           ),
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.90,
-                                          child: TextFormField(
-                                            controller: seconddose,
-                                            onTap: () async {
-                                              DateTime? time =
-                                                  await showDatePicker(
-                                                context: context,
-                                                initialDate: DateTime.now(),
-                                                firstDate: DateTime(2020),
-                                                lastDate: DateTime.now(),
-                                              ).then((value) async {
-                                                setState(() {
-                                                  if (value == null) return;
-                                                  /*    seconddose.text =
+                                          Text(':'),
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.60,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Container(
+                                                decoration: ShapeDecoration(
+                                                  shape: RoundedRectangleBorder(
+                                                    side: BorderSide(
+                                                      width: 1.0,
+                                                      style: BorderStyle.solid,
+                                                      color: Colors.grey,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                5.0)),
+                                                  ),
+                                                ),
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.90,
+                                                child: TextFormField(
+                                                  controller: firstdose,
+                                                  //initialValue:  provider.covidModel[activecell].firstDostDate,
+                                                  onTap: () async {
+                                                    await showDatePicker(
+                                                      context: context,
+                                                      initialDate:
+                                                          DateTime.now(),
+                                                      firstDate: DateTime(2020),
+                                                      lastDate: DateTime.now(),
+                                                    ).then((value) async {
+                                                      setState(() {
+                                                        if (value == null)
+                                                          return;
+                                                        firstdose.text =
+                                                            "${value.day.toString()}-${value.month.toString()}-${value.year.toString()}";
+                                                        provider
+                                                                .covidModel[
+                                                                    activecell]
+                                                                .firstDostDate =
+                                                            "${value.day.toString()}-${value.month.toString()}-${value.year.toString()}";
+                                                      });
+                                                    });
+                                                  },
+                                                  keyboardType:
+                                                      TextInputType.none,
+                                                  decoration: new InputDecoration(
+                                                      border: InputBorder.none,
+                                                      hintStyle: hintStyle,
+                                                      focusedBorder:
+                                                          InputBorder.none,
+                                                      enabledBorder:
+                                                          InputBorder.none,
+                                                      errorBorder:
+                                                          InputBorder.none,
+                                                      disabledBorder:
+                                                          InputBorder.none,
+                                                      contentPadding:
+                                                          EdgeInsets.only(
+                                                              left: 15,
+                                                              bottom: 11,
+                                                              top: 11,
+                                                              right: 15),
+                                                      hintText:
+                                                          "Select date here..."),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    //Second dose
+                                    Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.90,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.20,
+                                            child: Text(
+                                              "Is Second Dose Completed ",
+                                              style:
+                                                  TextStyle(fontSize: fontSize),
+                                            ),
+                                          ),
+                                          Text(':'),
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.60,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Container(
+                                                decoration: ShapeDecoration(
+                                                  shape: RoundedRectangleBorder(
+                                                    side: BorderSide(
+                                                      width: 1.0,
+                                                      style: BorderStyle.solid,
+                                                      color: Colors.grey,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                5.0)),
+                                                  ),
+                                                ),
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.90,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(
+                                                          8.0, 0, 0, 0),
+                                                  child: DropdownButton<String>(
+                                                    underline: Container(
+                                                      color: Colors.transparent,
+                                                    ),
+                                                    hint: Text('Select Status'),
+                                                    isExpanded: true,
+                                                    value: provider
+                                                        .covidModel[activecell]
+                                                        .secondDoseYesNo,
+                                                    icon: const Icon(
+                                                        Icons.arrow_drop_down),
+                                                    iconSize: 20,
+                                                    elevation: 16,
+                                                    style: const TextStyle(
+                                                        color: Colors.black),
+                                                    items: ["Yes", "No"].map<
+                                                            DropdownMenuItem<
+                                                                String>>(
+                                                        (String value) {
+                                                      return DropdownMenuItem<
+                                                          String>(
+                                                        value: value,
+                                                        child: Text("${value}"),
+                                                      );
+                                                    }).toList(),
+                                                    onChanged:
+                                                        (newValue) async {
+                                                      setState(() {
+                                                        provider
+                                                                .covidModel[
+                                                                    activecell]
+                                                                .secondDoseYesNo =
+                                                            newValue;
+                                                      });
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    //dose 2 date
+                                    Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.90,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.20,
+                                            child: Text(
+                                              "Dose 2 date",
+                                              style:
+                                                  TextStyle(fontSize: fontSize),
+                                            ),
+                                          ),
+                                          Text(':'),
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.60,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Container(
+                                                decoration: ShapeDecoration(
+                                                  shape: RoundedRectangleBorder(
+                                                    side: BorderSide(
+                                                      width: 1.0,
+                                                      style: BorderStyle.solid,
+                                                      color: Colors.grey,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                5.0)),
+                                                  ),
+                                                ),
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.90,
+                                                child: TextFormField(
+                                                  controller: seconddose,
+                                                  onTap: () async {
+                                                    DateTime? time =
+                                                        await showDatePicker(
+                                                      context: context,
+                                                      initialDate:
+                                                          DateTime.now(),
+                                                      firstDate: DateTime(2020),
+                                                      lastDate: DateTime.now(),
+                                                    ).then((value) async {
+                                                      setState(() {
+                                                        if (value == null)
+                                                          return;
+                                                        /*    seconddose.text =
                                                 "${value!.day.toString()}-${value.month.toString()}-${value.year.toString()}";*/
-                                                  provider
-                                                          .covidModel[activecell]
-                                                          .secondDoseDate =
-                                                      "${value.day.toString()}-${value.month.toString()}-${value.year.toString()}";
-                                                });
-                                              });
-                                            },
-                                            // initialValue: provider.covidModel[activecell].firstDostDate,
-                                            onChanged: (s) {
-                                              //   provider.covidModel[activecell].firstDostDate = s;
-                                            },
-                                            keyboardType: TextInputType.none,
-                                            decoration: new InputDecoration(
-                                                border: InputBorder.none,
-                                                hintStyle: hintStyle,
-                                                focusedBorder: InputBorder.none,
-                                                enabledBorder: InputBorder.none,
-                                                errorBorder: InputBorder.none,
-                                                disabledBorder:
-                                                    InputBorder.none,
-                                                contentPadding: EdgeInsets.only(
-                                                    left: 15,
-                                                    bottom: 11,
-                                                    top: 11,
-                                                    right: 15),
-                                                hintText:
-                                                    "Select date here..."),
+                                                        provider
+                                                                .covidModel[
+                                                                    activecell]
+                                                                .secondDoseDate =
+                                                            "${value.day.toString()}-${value.month.toString()}-${value.year.toString()}";
+                                                      });
+                                                    });
+                                                  },
+                                                  // initialValue: provider.covidModel[activecell].firstDostDate,
+                                                  onChanged: (s) {
+                                                    //   provider.covidModel[activecell].firstDostDate = s;
+                                                  },
+                                                  keyboardType:
+                                                      TextInputType.none,
+                                                  decoration: new InputDecoration(
+                                                      border: InputBorder.none,
+                                                      hintStyle: hintStyle,
+                                                      focusedBorder:
+                                                          InputBorder.none,
+                                                      enabledBorder:
+                                                          InputBorder.none,
+                                                      errorBorder:
+                                                          InputBorder.none,
+                                                      disabledBorder:
+                                                          InputBorder.none,
+                                                      contentPadding:
+                                                          EdgeInsets.only(
+                                                              left: 15,
+                                                              bottom: 11,
+                                                              top: 11,
+                                                              right: 15),
+                                                      hintText:
+                                                          "Select date here..."),
+                                                ),
+                                              ),
+                                            ),
                                           ),
-                                        ),
+                                        ],
                                       ),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
                                     ),
                                   ],
                                 ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
+
                               GradientButton(
-                                onclick: () {
-                                  provider.submitCovidDataFirstTime(context);
+                                onclick: () async {
+                                  bool isSubmit = await provider
+                                      .submitCovidDataFirstTime(context);
+
+                                  if (isSubmit == true) {
+                                    Navigator.pop(context,  {
+                                      "uuid": provider
+                                          .residentFirstTimeUuidModel!.data!,
+                                      "count": provider.covidModel.length
+                                    });
+                                    if(widget.resident_opr==RESIDENT_OPR.update)
+                                    provider.covidModel.clear();
+                                  }
+                                  ;
                                 },
                                 title: "Submit",
                               )
@@ -1041,6 +1145,73 @@ class _CovidScreenState extends State<CovidScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  _getVaccinationStatusWidget(int activecell) {
+
+
+    return Row(
+      children: [
+        SizedBox(
+          width: 18,
+        ),
+        Text(
+          "Vaccination \nType ",
+          style: TextStyle(fontSize: fontSize),
+        ),
+        SizedBox(
+          width: 30,
+          child: Center(
+            child: Text(":"),
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              provider.covidModel[activecell].vaccine_yes_no = "Yes";
+            });
+          },
+          child: Row(
+            children: [
+              Radio(
+                value: "Yes",
+                groupValue: provider.covidModel[activecell].vaccine_yes_no,
+                onChanged: (String? value) {
+                  setState(() {
+                    provider.covidModel[activecell].vaccine_yes_no = value!;
+                  });
+                },
+              ),
+              Text("Yes")
+            ],
+          ),
+        ),
+        SizedBox(
+          width: 30,
+        ),
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              provider.covidModel[activecell].vaccine_yes_no = "No";
+            });
+          },
+          child: Row(
+            children: [
+              Radio(
+                value: "No",
+                groupValue: provider.covidModel[activecell].vaccine_yes_no,
+                onChanged: (String? value) {
+                  setState(() {
+                    provider.covidModel[activecell].vaccine_yes_no = value!;
+                  });
+                },
+              ),
+              Text("No")
+            ],
+          ),
+        )
+      ],
     );
   }
 }

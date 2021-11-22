@@ -1,28 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:ghmc/globals/constants.dart';
 import 'package:ghmc/globals/globals.dart';
-import 'package:ghmc/model/resident/resident_search_response_model.dart';
-import 'package:ghmc/provider/add_resident/add_resident_provider.dart';
-import 'package:ghmc/screens/add_resident/add_resident.dart';
+import 'package:ghmc/provider/covid/covid_provider.dart';
+import 'package:ghmc/widget/covid_screen/covid_screen.dart';
+
 import 'package:provider/provider.dart';
 
-class SearchResident extends StatefulWidget {
-  const SearchResident({Key? key}) : super(key: key);
+import 'circle_user_access_complex.dart';
+
+class SearchComplexResident extends StatefulWidget {
+  const SearchComplexResident({Key? key}) : super(key: key);
 
   @override
-  _SearchResidentState createState() => _SearchResidentState();
+  _SearchComplexResidentState createState() => _SearchComplexResidentState();
 }
 
-class _SearchResidentState extends State<SearchResident> {
+class _SearchComplexResidentState extends State<SearchComplexResident> {
   var _queryController = TextEditingController();
 
-  late final ResidentProvider provider;
+  late final CovidProvider provider;
 
   @override
   void initState() {
     super.initState();
 
-    provider = Provider.of<ResidentProvider>(context, listen: false);
+    provider = Provider.of<CovidProvider>(context, listen: false);
     provider.residentSearchResponseModel = null;
   }
 
@@ -30,13 +32,13 @@ class _SearchResidentState extends State<SearchResident> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ResidentProvider>(builder: (context, value, child) {
+    return Consumer<CovidProvider>(builder: (context, value, child) {
       return SafeArea(
         child: Scaffold(
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(120.0),
             child: AppBar(
-              title: Text("Search Resident"),
+              title: Text("Search Complex Resident"),
               automaticallyImplyLeading: true,
               backgroundColor: main_color.first,
               flexibleSpace: PreferredSize(
@@ -129,7 +131,7 @@ class _SearchResidentState extends State<SearchResident> {
                           Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                  builder: (ctx) => AddResidentScreen(
+                                  builder: (ctx) => CovidScreen(
                                       resident_opr: RESIDENT_OPR.update,
                                       uuid: provider
                                           .residentSearchResponseModel!

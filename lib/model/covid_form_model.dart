@@ -14,6 +14,8 @@
 class CovidSubFormModel {
 
 
+
+
   CovidSubFormModel({
       this.uuid, 
       this.memeberNo, 
@@ -23,6 +25,7 @@ class CovidSubFormModel {
       this.aadhar, 
       this.age,
       this.user_id,
+    this.vaccine_yes_no,
       this.family_member_no,
       this.vaccineType, 
       this.firstDoseYesNo, 
@@ -45,6 +48,7 @@ class CovidSubFormModel {
     firstDostDate = json['first_dost_date'];
     secondDoseYesNo = json['second_dose_yes_no'];
     secondDoseDate = json['second_dose_date'];
+    vaccine_yes_no = json['vaccine_yes_no'];
   }
   String? uuid="";
   String? user_id="";
@@ -60,6 +64,8 @@ class CovidSubFormModel {
   String? firstDostDate="";
   String? secondDoseYesNo="";
   String? secondDoseDate="";
+  String? vaccine_yes_no="No";
+
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -78,6 +84,7 @@ class CovidSubFormModel {
     map['first_dost_date'] = firstDostDate;
     map['second_dose_yes_no'] = secondDoseYesNo;
     map['second_dose_date'] = secondDoseDate;
+    map['vaccine_yes_no'] = vaccine_yes_no;
     return map;
   }
 

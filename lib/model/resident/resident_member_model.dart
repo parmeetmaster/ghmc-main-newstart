@@ -81,6 +81,7 @@ class CovidElement {
     gender = json['gender'];
     mobile = json['mobile'];
     aadhar = json['aadhar'];
+    vaccine_yes_no = json['vaccine_yes_no'];
     vaccineType = json['vaccine_type'];
     createdBy = json['created_by'];
     date = json['date'];
@@ -98,6 +99,7 @@ class CovidElement {
   int? mobile;
   int? aadhar;
   String? vaccineType;
+  String? vaccine_yes_no;
   String? createdBy;
   String? date;
   String? familyMemberNo;
@@ -110,6 +112,7 @@ class CovidElement {
     final map = <String, dynamic>{};
     map['user_id'] = userId;
     map['uuid'] = uuid;
+    map['vaccine_yes_no'] = vaccine_yes_no;
     map['name'] = name;
     map['age'] = age;
     map['gender'] = gender;

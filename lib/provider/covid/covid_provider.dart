@@ -1,5 +1,3 @@
-
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:ghmc/api/api.dart';
@@ -20,6 +18,7 @@ class CovidProvider extends ChangeNotifier {
   CovidFormController covidFormController = new CovidFormController();
   ResidentPreSubmitDetialModel? prefillModel;
   List<CovidSubFormModel> covidModel = [];
+  String vaccinationStatus = "No";
 
   performAddResident(FormData formData, BuildContext context) async {
     try {
@@ -41,7 +40,7 @@ class CovidProvider extends ChangeNotifier {
     ApiResponse response = await ApiBase().baseFunction(() => ApiBase()
         .getInstance()!
         .post("/residential_details",
-        data: FormData.fromMap({'uuid': uuid ?? ""})));
+            data: FormData.fromMap({'uuid': uuid ?? ""})));
     if (response.status == 200) {
       prefillModel =
           ResidentPreSubmitDetialModel.fromJson(response.completeResponse);
@@ -77,27 +76,30 @@ class CovidProvider extends ChangeNotifier {
   }
 
   Future<bool> submitCovidDataFirstTime(BuildContext context) async {
-/*    try {*/
-      List<CovidSubFormModel> covidFamilyArray=this.covidModel;
+
+    bool isAnyError=false;
+
+    try {
+      List<CovidSubFormModel> covidFamilyArray = this.covidModel;
       "This is data size from covid form${covidFamilyArray.length}".printinfo;
 
       int memberindex = 0;
 
       await Future.forEach(covidFamilyArray, (element) async {
-        CovidSubFormModel subelement =copyOf(element as CovidSubFormModel);
+        CovidSubFormModel subelement = copyOf(element as CovidSubFormModel);
 
-        subelement.secondDoseYesNo??="";
-        subelement.firstDoseYesNo??="";
-        subelement.secondDoseDate??="";
-        subelement.firstDoseYesNo??="";
-        subelement.vaccineType??="";
-        subelement.name??="";
-        subelement.age??="";
-        subelement.mobile??="";
-        subelement.aadhar??="";
+        subelement.secondDoseYesNo ??= "";
+        subelement.firstDoseYesNo ??= "";
+        subelement.secondDoseDate ??= "";
+        subelement.firstDoseYesNo ??= "";
+        subelement.vaccineType ??= "";
+        subelement.name ??= "";
+        subelement.age ??= "";
+        subelement.mobile ??= "";
+        subelement.aadhar ??= "";
+        subelement.vaccine_yes_no ??= "No";
 
-        subelement.gender??="";
-
+        subelement.gender ??= "";
 
         subelement.uuid = residentFirstTimeUuidModel!.data!;
         subelement.user_id = Globals.userData!.data!.userId!;
@@ -111,21 +113,28 @@ class CovidProvider extends ChangeNotifier {
         ApiResponse response = await ApiBase().baseFunction(() => ApiBase()
             .getInstance()!
             .post("/family_members",
-            data: FormData.fromMap((subelement.toJson()))));
+                data: FormData.fromMap((subelement.toJson()))));
         if (response.status == 200) {
           "${memberindex} family data added";
         } else {
           "${response.message!} in Member ${memberindex + 1} form"
               .showSnackbar(context);
-          return false;
+
+          isAnyError=true;
         }
         memberindex++;
       });
-/*    } catch (e) {
+
+      if(isAnyError==true){
+        return false;
+      }
+
+
+    } catch (e) {
       e.toString().printerror;
       e.toString().showSnackbar(context);
       return false;
-    }*/
+    }
     residentUpdate();
     return true;
   }
@@ -134,7 +143,7 @@ class CovidProvider extends ChangeNotifier {
     this.residentSearchResponseModel = null;
     ApiResponse response = await ApiBase().baseFunction(() => ApiBase()
         .getInstance()!
-        .post("/residential_search", data: {'search': phno}));
+        .post("/complex_search", data: {'search': phno}));
     if (response.status == 200) {
       residentSearchResponseModel =
           ResidentSearchResponseModel.fromJson(response.completeResponse);
@@ -153,7 +162,7 @@ class CovidProvider extends ChangeNotifier {
       ApiResponse response = await ApiBase().baseFunction(() => ApiBase()
           .getInstance()!
           .post("/residential_family_update",
-          data: {'uuid': residentFirstTimeUuidModel!.data!}));
+              data: {'uuid': residentFirstTimeUuidModel!.data!}));
       if (response.status == 200) {
         residentSearchResponseModel =
             ResidentSearchResponseModel.fromJson(response.completeResponse);
@@ -196,6 +205,7 @@ class CovidProvider extends ChangeNotifier {
               age: element.age?.toString() ?? "",
               family_member_no: element.familyMemberNo,
               vaccineType: element.vaccineType ?? "",
+              vaccine_yes_no: element.vaccine_yes_no??"",
               firstDoseYesNo: element.firstDoseYesNo ?? "",
               firstDostDate: element.firstDostDate ?? "",
               secondDoseYesNo: element.secondDoseYesNo ?? "",
@@ -220,7 +230,7 @@ class CovidProvider extends ChangeNotifier {
 
   CovidSubFormModel copyOf(CovidSubFormModel covidFamilyArray) {
     CovidSubFormModel model =
-    CovidSubFormModel.fromJson(covidFamilyArray.toJson());
+        CovidSubFormModel.fromJson(covidFamilyArray.toJson());
     return model;
   }
 }

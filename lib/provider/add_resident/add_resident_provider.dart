@@ -75,12 +75,16 @@ class ResidentProvider extends ChangeNotifier {
   }
 
   Future<bool> submitCovidDataFirstTime(BuildContext context) async {
+
+    bool isAnyError=false;
     try {
     List<CovidSubFormModel> covidFamilyArray =
         await covidFormController.getCovidFamilyData!();
     "This is data size from covid form${covidFamilyArray.length}".printinfo;
 
     int memberindex = 0;
+    bool isAnyError=false;
+
 
     await Future.forEach(covidFamilyArray, (element) async {
       CovidSubFormModel subelement =copyOf(element as CovidSubFormModel);
@@ -114,15 +118,20 @@ class ResidentProvider extends ChangeNotifier {
       } else {
         "${response.message!} in Member ${memberindex + 1} form"
             .showSnackbar(context);
+        isAnyError=true;
         return false;
       }
       memberindex++;
     });
+    if(isAnyError==true){
+      return false;
+    }
       } catch (e) {
-    e.toString().printerror;
+      e.toString().printerror;
       e.toString().showSnackbar(context);
       return false;
     }
+
     residentUpdate();
     return true;
   }

@@ -34,6 +34,31 @@ abstract class FAppBar {
     );
   }
 
+
+  static getAppBarWithPlusSearch({String title = "",Function? onclick,Function? onSearch}) {
+    return AppBar(
+      actions: [
+        IconButton(onPressed: (){
+          onSearch!();
+        }, icon:Icon(Icons.search)),
+        IconButton(onPressed: (){
+          onclick!();
+        }, icon:Icon(Icons.add)),
+        SizedBox(width: 10,)
+      ],
+      flexibleSpace: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: main_color,
+          ),
+        ),
+      ),
+      title: Text('${title}'),
+    );
+  }
+
+
+
   static getAppBarWithSearch({String title = "",Function? onclick}) {
     return AppBar(
       actions: [

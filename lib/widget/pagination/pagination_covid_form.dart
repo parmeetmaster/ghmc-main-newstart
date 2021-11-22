@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get_rx/src/rx_typedefs/rx_typedefs.dart';
+import 'package:ghmc/globals/globals.dart';
 import 'package:ghmc/model/covid_form_model.dart';
 import 'package:ghmc/provider/add_resident/add_resident_provider.dart';
 import 'package:ghmc/screens/add_resident/add_resident.dart';
@@ -502,80 +503,88 @@ class _CovidFormDataState extends State<CovidFormData> {
                               ),
                             ),
                             //vaccination Type
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.90,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Container(
-                                      width:
-                                          MediaQuery.of(context).size.width * 0.20,
-                                      child: Text(
-                                        "Vaccination Type ",
-                                        style: TextStyle(fontSize: fontSize),
-                                      ),
+                       _getVaccinationStatusWidget(activecell),
+
+                          if( provider
+                              .covidModel[activecell]
+                              .vaccine_yes_no== "Yes")
+                              Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.90,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    width:
+                                    MediaQuery.of(context).size.width * 0.20,
+                                    child: Text(
+                                      "Vaccination Type ",
+                                      style: TextStyle(fontSize: fontSize),
                                     ),
-                                    Text(':'),
-                                    Container(
-                                      width:
-                                          MediaQuery.of(context).size.width * 0.60,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Container(
-                                          decoration: ShapeDecoration(
-                                            shape: RoundedRectangleBorder(
-                                              side: BorderSide(
-                                                width: 1.0,
-                                                style: BorderStyle.solid,
-                                                color: Colors.grey,
-                                              ),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(5.0)),
+                                  ),
+                                  Text(':'),
+                                  Container(
+                                    width:
+                                    MediaQuery.of(context).size.width * 0.60,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        decoration: ShapeDecoration(
+                                          shape: RoundedRectangleBorder(
+                                            side: BorderSide(
+                                              width: 1.0,
+                                              style: BorderStyle.solid,
+                                              color: Colors.grey,
                                             ),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5.0)),
                                           ),
-                                          width: MediaQuery.of(context).size.width *
-                                              0.90,
-                                          child: Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                8.0, 0, 0, 0),
-                                            child: DropdownButton<String>(
-                                              underline: Container(
-                                                color: Colors.transparent,
-                                              ),
-                                              hint: Text('Select Vaccination'),
-                                              isExpanded: true,
-                                              value: provider.covidModel[activecell]
-                                                      .vaccineType
-                                                      ??
-                                                  null,
-                                              icon:
-                                                  const Icon(Icons.arrow_drop_down),
-                                              iconSize: 20,
-                                              elevation: 16,
-                                              style: const TextStyle(
-                                                  color: Colors.black),
-                                              items: this.vaccinationTypes.map<DropdownMenuItem<String>>(
-                                                  (String value) {
-                                                return DropdownMenuItem<String>(
-                                                  value: value,
-                                                  child: Text("${value}"),
-                                                );
-                                              }).toList(),
-                                              onChanged: (newValue) async {
-                                                setState(() {
-                                                  provider.covidModel[activecell]
-                                                          .vaccineType =
-                                                      newValue;
-                                                });
-                                              },
+                                        ),
+                                        width: MediaQuery.of(context).size.width *
+                                            0.90,
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              8.0, 0, 0, 0),
+                                          child: DropdownButton<String>(
+                                            underline: Container(
+                                              color: Colors.transparent,
                                             ),
+                                            hint: Text('Select Vaccination'),
+                                            isExpanded: true,
+                                            value: provider.covidModel[activecell]
+                                                .vaccineType
+                                                ??
+                                                null,
+                                            icon:
+                                            const Icon(Icons.arrow_drop_down),
+                                            iconSize: 20,
+                                            elevation: 16,
+                                            style: const TextStyle(
+                                                color: Colors.black),
+                                            items: this.vaccinationTypes.map<DropdownMenuItem<String>>(
+                                                    (String value) {
+                                                  return DropdownMenuItem<String>(
+                                                    value: value,
+                                                    child: Text("${value}"),
+                                                  );
+                                                }).toList(),
+                                            onChanged: (newValue) async {
+                                              setState(() {
+                                                provider.covidModel[activecell]
+                                                    .vaccineType =
+                                                    newValue;
+                                              });
+                                            },
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
+                            ),
 
                             //First Dose
                             Container(
@@ -628,11 +637,11 @@ class _CovidFormDataState extends State<CovidFormData> {
                                             items: ["Yes", "No"]
                                                 .map<DropdownMenuItem<String>>(
                                                     (String value) {
-                                              return DropdownMenuItem<String>(
-                                                value: value,
-                                                child: Text("${value}"),
-                                              );
-                                            }).toList(),
+                                                  return DropdownMenuItem<String>(
+                                                    value: value,
+                                                    child: Text("${value}"),
+                                                  );
+                                                }).toList(),
                                             onChanged: (newValue) async {
                                               setState(() {
                                                 provider.covidModel[activecell]
@@ -692,10 +701,10 @@ class _CovidFormDataState extends State<CovidFormData> {
                                               setState(() {
                                                 if (value == null) return;
                                                 firstdose.text =
-                                                    "${value.day.toString()}-${value.month.toString()}-${value.year.toString()}";
+                                                "${value.day.toString()}-${value.month.toString()}-${value.year.toString()}";
                                                 provider.covidModel[activecell]
-                                                        .firstDostDate =
-                                                    "${value.day.toString()}-${value.month.toString()}-${value.year.toString()}";
+                                                    .firstDostDate =
+                                                "${value.day.toString()}-${value.month.toString()}-${value.year.toString()}";
                                               });
                                             });
                                           },
@@ -771,11 +780,11 @@ class _CovidFormDataState extends State<CovidFormData> {
                                             items: ["Yes", "No"]
                                                 .map<DropdownMenuItem<String>>(
                                                     (String value) {
-                                              return DropdownMenuItem<String>(
-                                                value: value,
-                                                child: Text("${value}"),
-                                              );
-                                            }).toList(),
+                                                  return DropdownMenuItem<String>(
+                                                    value: value,
+                                                    child: Text("${value}"),
+                                                  );
+                                                }).toList(),
                                             onChanged: (newValue) async {
                                               setState(() {
                                                 provider.covidModel[activecell]
@@ -836,8 +845,8 @@ class _CovidFormDataState extends State<CovidFormData> {
                                                 /*    seconddose.text =
                                               "${value!.day.toString()}-${value.month.toString()}-${value.year.toString()}";*/
                                                 provider.covidModel[activecell]
-                                                        .secondDoseDate =
-                                                    "${value.day.toString()}-${value.month.toString()}-${value.year.toString()}";
+                                                    .secondDoseDate =
+                                                "${value.day.toString()}-${value.month.toString()}-${value.year.toString()}";
                                               });
                                             });
                                           },
@@ -866,6 +875,10 @@ class _CovidFormDataState extends State<CovidFormData> {
                                 ],
                               ),
                             ),
+                          ],)
+
+
+
                           ],
                         )
                       : SizedBox())
@@ -898,6 +911,80 @@ class _CovidFormDataState extends State<CovidFormData> {
                 borderRadius: BorderRadius.all(Radius.circular(5))),
             child: Center(child: Text("${index + 1}"))),
       ),
+    );
+  }
+
+
+  _getVaccinationStatusWidget(int activecell){
+    return Row(
+      children: [
+        SizedBox(width: 5,),
+        Text(
+          "Vaccination \n Status ",
+          style: TextStyle(fontSize: fontSize),
+        ),
+        SizedBox(
+          width: 30,
+          child: Center(child: Text(":"),),
+        ),
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              provider
+                  .covidModel[activecell]
+                  .vaccine_yes_no= "Yes";
+            });
+          },
+          child: Row(
+            children: [
+              Radio(
+                value:"Yes",
+                groupValue: provider
+                    .covidModel[activecell]
+                    .vaccine_yes_no,
+                onChanged: (String? value) {
+                  setState(() {
+                    provider
+                        .covidModel[activecell]
+                        .vaccine_yes_no= value!;
+                  });
+                },
+              ),
+              Text("Yes")
+            ],
+          ),
+        ),
+        SizedBox(
+          width: 30,
+        ),
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              provider
+                  .covidModel[activecell]
+                  .vaccine_yes_no = "No";
+            });
+          },
+          child: Row(
+            children: [
+              Radio(
+                value: "No",
+                groupValue: provider
+                    .covidModel[activecell]
+                    .vaccine_yes_no,
+                onChanged: (String? value) {
+                  setState(() {
+                    provider
+                        .covidModel[activecell]
+                        .vaccine_yes_no= value!;
+                  });
+                },
+              ),
+              Text("No")
+            ],
+          ),
+        )
+      ],
     );
   }
 

@@ -1,6 +1,6 @@
 import 'package:ghmc/model/credentials.dart';
 import 'package:ghmc/model/dashboard/drawer_authority.dart';
-
+enum RESIDENT_OPR { update, insert }
 class Globals {
   static CredentialsModel? userData;
 
