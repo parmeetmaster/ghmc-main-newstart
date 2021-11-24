@@ -70,33 +70,99 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
   var owner_mobile_phno = TextEditingController();
   var owner_aadhaar = TextEditingController();
   Existing_disposal? _selected_disposal;
-  late CommunityHallProvider comprovider =
-      Provider.of<CommunityHallProvider>(context, listen: false);
+  CommunityHallProvider? comprovider;
+
   var wastageQty = TextEditingController();
   var familyMembercount = TextEditingController();
 
   alldrop.Type_of_house? _selected_housetype;
   Map<String, dynamic>? covidResponse;
 
+  var text18above = TextEditingController();
+
+  var text18below = TextEditingController();
+
+  var complex_name = TextEditingController();
+
   @override
   void initState() {
     super.initState();
-    comprovider.loadCommunityItems(context);
+    comprovider = Provider.of<CommunityHallProvider>(context, listen: false);
     provider = Provider.of<ComplexBuildingProvider>(context, listen: false);
+    provider.loadComplexName(widget.id);
+    comprovider!.loadCommunityItems(context);
     provider.loadComplexBuilingDropDownOptions(widget.id);
+
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        resizeToAvoidBottomInset:false,
+        resizeToAvoidBottomInset: false,
         appBar: FAppBar.getCommonAppBar(title: "Complex/Building Add Flat"),
         body: Consumer<ComplexBuildingProvider>(
             builder: (context, snapshot, child) {
-          return provider.complexAddModelDropDown != null
+              complex_name.text = provider.complexName?.data?.first?.name??"";
+          return provider.complexAddModelDropDown != null &&
+                  provider.complexName!= null
               ? ListView(
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.20,
+                            child: Text(
+                              "Complex Name",
+                              style: TextStyle(fontSize: fontSize),
+                            ),
+                          ),
+                          Text(':'),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.64,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1.0,
+                                      style: BorderStyle.solid,
+                                      color: Colors.grey,
+                                    ),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                ),
+                                width: MediaQuery.of(context).size.width * 0.80,
+                                child: AbsorbPointer(
+                                  child: TextFormField(
+                                    controller: complex_name,
+                                    decoration: new InputDecoration(
+                                        border: InputBorder.none,
+                                        hintStyle: hintStyle,
+                                        focusedBorder: InputBorder.none,
+                                        enabledBorder: InputBorder.none,
+                                        errorBorder: InputBorder.none,
+                                        disabledBorder: InputBorder.none,
+                                        contentPadding: EdgeInsets.only(
+                                            left: 15,
+                                            bottom: 11,
+                                            top: 11,
+                                            right: 15),
+                                        hintText: "Type Owner name here..."),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
                     //floors
                     Container(
                       width: MediaQuery.of(context).size.width * 0.80,
@@ -406,7 +472,7 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                                       elevation: 16,
                                       style:
                                           const TextStyle(color: Colors.black),
-                                      items: comprovider
+                                      items: comprovider!
                                           .dropDowns!.data!.typeOfHouse!
                                           .map<
                                                   DropdownMenuItem<
@@ -433,7 +499,69 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                       ),
 
                     //Business name:
-                    if (_selected_category_type != null)
+
+                    if (_selected_category_type != null &&
+                        _selected_category_type!.name == "Business")
+                      if (_selected_category_type != null)
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.80,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.20,
+                                child: Text(
+                                  _selected_category_type!.name == "Business"
+                                      ? "Business Name"
+                                      : "Residential Name",
+                                  style: TextStyle(fontSize: fontSize),
+                                ),
+                              ),
+                              Text(':'),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.64,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
+                                    decoration: ShapeDecoration(
+                                      shape: RoundedRectangleBorder(
+                                        side: BorderSide(
+                                          width: 1.0,
+                                          style: BorderStyle.solid,
+                                          color: Colors.grey,
+                                        ),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(5.0)),
+                                      ),
+                                    ),
+                                    width: MediaQuery.of(context).size.width *
+                                        0.80,
+                                    child: TextFormField(
+                                      controller: Business_name,
+                                      decoration: new InputDecoration(
+                                          border: InputBorder.none,
+                                          focusedBorder: InputBorder.none,
+                                          enabledBorder: InputBorder.none,
+                                          errorBorder: InputBorder.none,
+                                          hintStyle: hintStyle,
+                                          disabledBorder: InputBorder.none,
+                                          contentPadding: EdgeInsets.only(
+                                              left: 15,
+                                              bottom: 11,
+                                              top: 11,
+                                              right: 15),
+                                          hintText: "Type  name here..."),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+//shop flat address :
+
+                    if (_selected_category_type != null &&
+                        _selected_category_type!.name == "Business")
                       Container(
                         width: MediaQuery.of(context).size.width * 0.80,
                         child: Row(
@@ -442,9 +570,7 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                             Container(
                               width: MediaQuery.of(context).size.width * 0.20,
                               child: Text(
-                                _selected_category_type!.name == "Business"
-                                    ? "Business Name"
-                                    : "Residential Name",
+                                "Shop/Flat Address",
                                 style: TextStyle(fontSize: fontSize),
                               ),
                             ),
@@ -468,7 +594,7 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                                   width:
                                       MediaQuery.of(context).size.width * 0.80,
                                   child: TextFormField(
-                                    controller: Business_name,
+                                    controller: shop_flat_address,
                                     decoration: new InputDecoration(
                                         border: InputBorder.none,
                                         focusedBorder: InputBorder.none,
@@ -481,7 +607,7 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                                             bottom: 11,
                                             top: 11,
                                             right: 15),
-                                        hintText: "Type  name here..."),
+                                        hintText: "Type Address here..."),
                                   ),
                                 ),
                               ),
@@ -489,59 +615,7 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                           ],
                         ),
                       ),
-//shop flat address :
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.80,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.20,
-                            child: Text(
-                              "Shop/Flat Address",
-                              style: TextStyle(fontSize: fontSize),
-                            ),
-                          ),
-                          Text(':'),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.64,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                decoration: ShapeDecoration(
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(
-                                      width: 1.0,
-                                      style: BorderStyle.solid,
-                                      color: Colors.grey,
-                                    ),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(5.0)),
-                                  ),
-                                ),
-                                width: MediaQuery.of(context).size.width * 0.80,
-                                child: TextFormField(
-                                  controller: shop_flat_address,
-                                  decoration: new InputDecoration(
-                                      border: InputBorder.none,
-                                      focusedBorder: InputBorder.none,
-                                      enabledBorder: InputBorder.none,
-                                      errorBorder: InputBorder.none,
-                                      hintStyle: hintStyle,
-                                      disabledBorder: InputBorder.none,
-                                      contentPadding: EdgeInsets.only(
-                                          left: 15,
-                                          bottom: 11,
-                                          top: 11,
-                                          right: 15),
-                                      hintText: "Type Address here..."),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+
 //owner name:
                     Container(
                       width: MediaQuery.of(context).size.width * 0.80,
@@ -596,6 +670,8 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                       ),
                     ),
                     //owner mobile number:
+
+                    // 18 plus memebers
                     Container(
                       width: MediaQuery.of(context).size.width * 0.80,
                       child: Row(
@@ -649,127 +725,246 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                         ],
                       ),
                     ),
-                    //owner adhaar number:
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.80,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.20,
-                            child: Text(
-                              "Owner Adhaar",
-                              style: TextStyle(fontSize: fontSize),
+                    if (_selected_category_type != null &&
+                        _selected_category_type!.name != "Business")
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.80,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.20,
+                              child: Text(
+                                "18+ members",
+                                style: TextStyle(fontSize: fontSize),
+                              ),
                             ),
-                          ),
-                          Text(':'),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.64,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                decoration: ShapeDecoration(
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(
-                                      width: 1.0,
-                                      style: BorderStyle.solid,
-                                      color: Colors.grey,
+                            Text(':'),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.64,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  decoration: ShapeDecoration(
+                                    shape: RoundedRectangleBorder(
+                                      side: BorderSide(
+                                        width: 1.0,
+                                        style: BorderStyle.solid,
+                                        color: Colors.grey,
+                                      ),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(5.0)),
                                     ),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(5.0)),
                                   ),
-                                ),
-                                width: MediaQuery.of(context).size.width * 0.80,
-                                child: TextFormField(
-                                  controller: owner_aadhaar,
-                                  decoration: new InputDecoration(
-                                      border: InputBorder.none,
-                                      focusedBorder: InputBorder.none,
-                                      enabledBorder: InputBorder.none,
-                                      errorBorder: InputBorder.none,
-                                      disabledBorder: InputBorder.none,
-                                      contentPadding: EdgeInsets.only(
-                                          left: 15,
-                                          bottom: 11,
-                                          top: 11,
-                                          right: 15),
-                                      hintStyle: hintStyle,
-                                      hintText: "Type Owner Adhhaar number"),
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.80,
+                                  child: TextFormField(
+                                    controller: text18above,
+                                    decoration: new InputDecoration(
+                                        border: InputBorder.none,
+                                        focusedBorder: InputBorder.none,
+                                        enabledBorder: InputBorder.none,
+                                        errorBorder: InputBorder.none,
+                                        hintStyle: hintStyle,
+                                        disabledBorder: InputBorder.none,
+                                        contentPadding: EdgeInsets.only(
+                                            left: 15,
+                                            bottom: 11,
+                                            top: 11,
+                                            right: 15),
+                                        hintText: "Type Address here..."),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
+                    if (_selected_category_type != null &&
+                        _selected_category_type!.name != "Business")
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.80,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.20,
+                              child: Text(
+                                "18 below Members",
+                                style: TextStyle(fontSize: fontSize),
+                              ),
+                            ),
+                            Text(':'),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.64,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  decoration: ShapeDecoration(
+                                    shape: RoundedRectangleBorder(
+                                      side: BorderSide(
+                                        width: 1.0,
+                                        style: BorderStyle.solid,
+                                        color: Colors.grey,
+                                      ),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(5.0)),
+                                    ),
+                                  ),
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.80,
+                                  child: TextFormField(
+                                    controller: text18below,
+                                    decoration: new InputDecoration(
+                                        border: InputBorder.none,
+                                        focusedBorder: InputBorder.none,
+                                        enabledBorder: InputBorder.none,
+                                        errorBorder: InputBorder.none,
+                                        hintStyle: hintStyle,
+                                        disabledBorder: InputBorder.none,
+                                        contentPadding: EdgeInsets.only(
+                                            left: 15,
+                                            bottom: 11,
+                                            top: 11,
+                                            right: 15),
+                                        hintText: "Type Address here..."),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                    //owner adhaar number:
+
+                    if (_selected_category_type != null &&
+                        _selected_category_type!.name == "Business")
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.80,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.20,
+                              child: Text(
+                                "Owner Adhaar",
+                                style: TextStyle(fontSize: fontSize),
+                              ),
+                            ),
+                            Text(':'),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.64,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  decoration: ShapeDecoration(
+                                    shape: RoundedRectangleBorder(
+                                      side: BorderSide(
+                                        width: 1.0,
+                                        style: BorderStyle.solid,
+                                        color: Colors.grey,
+                                      ),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(5.0)),
+                                    ),
+                                  ),
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.80,
+                                  child: TextFormField(
+                                    controller: owner_aadhaar,
+                                    decoration: new InputDecoration(
+                                        border: InputBorder.none,
+                                        focusedBorder: InputBorder.none,
+                                        enabledBorder: InputBorder.none,
+                                        errorBorder: InputBorder.none,
+                                        disabledBorder: InputBorder.none,
+                                        contentPadding: EdgeInsets.only(
+                                            left: 15,
+                                            bottom: 11,
+                                            top: 11,
+                                            right: 15),
+                                        hintStyle: hintStyle,
+                                        hintText: "Type Owner Adhhaar number"),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
 
                     //license number
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.80,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.20,
-                            child: Text(
-                              "License Number",
-                              style: TextStyle(fontSize: fontSize),
+                    if (_selected_category_type != null &&
+                        _selected_category_type!.name == "Business")
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.80,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.20,
+                              child: Text(
+                                "License Number",
+                                style: TextStyle(fontSize: fontSize),
+                              ),
                             ),
-                          ),
-                          Text(':'),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.64,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                decoration: ShapeDecoration(
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(
-                                      width: 1.0,
-                                      style: BorderStyle.solid,
-                                      color: Colors.grey,
+                            Text(':'),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.64,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  decoration: ShapeDecoration(
+                                    shape: RoundedRectangleBorder(
+                                      side: BorderSide(
+                                        width: 1.0,
+                                        style: BorderStyle.solid,
+                                        color: Colors.grey,
+                                      ),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(5.0)),
                                     ),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(5.0)),
                                   ),
-                                ),
-                                width: MediaQuery.of(context).size.width * 0.80,
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                                  child: DropdownButton<Licence>(
-                                    underline: Container(
-                                      color: Colors.transparent,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.80,
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                                    child: DropdownButton<Licence>(
+                                      underline: Container(
+                                        color: Colors.transparent,
+                                      ),
+                                      hint: Text('Selected License'),
+                                      isExpanded: true,
+                                      value: _selected_license,
+                                      icon: const Icon(Icons.arrow_drop_down),
+                                      iconSize: 20,
+                                      elevation: 16,
+                                      style:
+                                          const TextStyle(color: Colors.black),
+                                      items: provider.complexAddModelDropDown!
+                                          .data!.licence!
+                                          .map<DropdownMenuItem<Licence>>(
+                                              (Licence value) {
+                                        return DropdownMenuItem<Licence>(
+                                          value: value,
+                                          child: Text("${value.licence}"),
+                                        );
+                                      }).toList(),
+                                      onChanged: (newValue) async {
+                                        setState(() {
+                                          _selected_license = newValue;
+                                        });
+                                      },
                                     ),
-                                    hint: Text('Selected License'),
-                                    isExpanded: true,
-                                    value: _selected_license,
-                                    icon: const Icon(Icons.arrow_drop_down),
-                                    iconSize: 20,
-                                    elevation: 16,
-                                    style: const TextStyle(color: Colors.black),
-                                    items: provider
-                                        .complexAddModelDropDown!.data!.licence!
-                                        .map<DropdownMenuItem<Licence>>(
-                                            (Licence value) {
-                                      return DropdownMenuItem<Licence>(
-                                        value: value,
-                                        child: Text("${value.licence}"),
-                                      );
-                                    }).toList(),
-                                    onChanged: (newValue) async {
-                                      setState(() {
-                                        _selected_license = newValue;
-                                      });
-                                    },
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
                     //Existing disposal
                     Container(
                       width: MediaQuery.of(context).size.width * 0.80,
@@ -961,134 +1156,92 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                         ],
                       ),
                     ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.80,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.20,
-                            child: Text(
-                              "Enter Property No.",
-                              style: TextStyle(fontSize: fontSize),
-                            ),
-                          ),
-                          Text(':'),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.64,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                decoration: ShapeDecoration(
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(
-                                      width: 1.0,
-                                      style: BorderStyle.solid,
-                                      color: Colors.grey,
-                                    ),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(5.0)),
-                                  ),
-                                ),
-                                width: MediaQuery.of(context).size.width * 0.80,
-                                child: TextFormField(
-                                  controller: property_no,
-                                  decoration: new InputDecoration(
-                                      border: InputBorder.none,
-                                      hintStyle: hintStyle,
-                                      focusedBorder: InputBorder.none,
-                                      enabledBorder: InputBorder.none,
-                                      errorBorder: InputBorder.none,
-                                      disabledBorder: InputBorder.none,
-                                      contentPadding: EdgeInsets.only(
-                                          left: 15,
-                                          bottom: 11,
-                                          top: 11,
-                                          right: 15),
-                                      hintText: "Type Property Number here..."),
-                                ),
+
+                    //Add member
+
+                    if (_selected_category_type != null &&
+                        _selected_category_type!.name != "Business")
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.80,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.20,
+                              child: Text(
+                                "Add Family Member Data",
+                                style: TextStyle(fontSize: fontSize),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    //Add Quantity
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.80,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.20,
-                            child: Text("Add Family Member Data",
-                              style: TextStyle(fontSize: fontSize),
-                            ),
-                          ),
-                          Text(':'),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.64,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                decoration: ShapeDecoration(
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(
-                                      width: 1.0,
-                                      style: BorderStyle.solid,
-                                      color: Colors.grey,
+                            Text(':'),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.64,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  decoration: ShapeDecoration(
+                                    shape: RoundedRectangleBorder(
+                                      side: BorderSide(
+                                        width: 1.0,
+                                        style: BorderStyle.solid,
+                                        color: Colors.grey,
+                                      ),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(5.0)),
                                     ),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(5.0)),
                                   ),
-                                ),
-                                width: MediaQuery.of(context).size.width * 0.80,
-                                child: GestureDetector(
-                                  onTap: () async {
-                                    covidResponse =
-                                        await CovidScreen().push(context);
-                                    if (covidResponse != null) {
-                                      setState(() {
-                                        uuid = covidResponse!["uuid"].toString();
-                                        covidResponse.toString().printwtf;
-                                        this.familyMembercount.text =
-                                            covidResponse!["count"].toString();
-                                      });
-                                    }
-                                  },
-                                  child: Container(
-                                    height: 30,
-                                    decoration:
-                                        BoxDecoration(color: Colors.purple),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8.0),
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            this.familyMembercount.text.isNotEmpty
-                                                ? "${covidResponse!["count"]} Member added"
-                                                : "Add Members",
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          )
-                                        ],
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.80,
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      covidResponse =
+                                          await CovidScreen().push(context);
+                                      if (covidResponse != null) {
+                                        setState(() {
+                                          uuid =
+                                              covidResponse!["uuid"].toString();
+                                          covidResponse.toString().printwtf;
+                                          this.familyMembercount.text =
+                                              covidResponse!["count"]
+                                                  .toString();
+                                        });
+                                      }
+                                    },
+                                    child: Container(
+                                      height: 30,
+                                      decoration:
+                                          BoxDecoration(color: Colors.purple),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8.0),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              this
+                                                      .familyMembercount
+                                                      .text
+                                                      .isNotEmpty
+                                                  ? "${covidResponse!["count"]} Member added"
+                                                  : "Add Members",
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
 
                     // camera container
                     Padding(
@@ -1136,10 +1289,13 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                           return;
                         }
 
-                        if (uuid == null) {
-                          "No member is added pls add least one member"
-                              .showSnackbar(context);
-                          return;
+                        if (_selected_category_type != null &&
+                            _selected_category_type!.name != "Business") {
+                          if (uuid == null) {
+                            "No member is added in covid form please add least one member"
+                                .showSnackbar(context);
+                            return;
+                          }
                         }
 
                         if (this.images!.length > 5) {
@@ -1171,6 +1327,8 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                           'latitude': (this.locationData?.latitude).toString(),
                           'longitude': (this.locationData?.latitude).toString(),
                           'complex_id': widget.id,
+                          'eighteenabove': text18above.text,
+                          'eighteenbelow': text18below.text,
                           'resident_type': this._selected_housetype?.type ?? "",
                           'uuid': this.uuid ?? "",
                           'propertyno': this.property_no.text,
@@ -1192,7 +1350,8 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                         print(res.status);
                         if (res.status == 200) {
                           // new clear
-                       final   provider = Provider.of<CovidProvider>(context, listen: false);
+                          final provider = Provider.of<CovidProvider>(context,
+                              listen: false);
                           provider.covidModel.clear();
                           Navigator.pop(context);
                         }
@@ -1203,5 +1362,11 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                 )
               : Loading();
         }));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    provider.complexName=null;
   }
 }

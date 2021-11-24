@@ -94,6 +94,8 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
 
   int formno = 1;
 
+  var eighteenbelow = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -777,7 +779,7 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                             width:
                             MediaQuery.of(context).size.width * 0.20,
                             child: Text(
-                              "18+ members",
+                              "18 above members",
                               style: TextStyle(fontSize: fontSize),
                             ),
                           ),
@@ -825,6 +827,67 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                         ],
                       ),
                     ),
+                    widget.resident_opr == RESIDENT_OPR.update
+                        ? SizedBox()
+                        : Container(
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width:
+                            MediaQuery.of(context).size.width * 0.20,
+                            child: Text(
+                              "18 below members",
+                              style: TextStyle(fontSize: fontSize),
+                            ),
+                          ),
+                          Text(':'),
+                          Container(
+                            width:
+                            MediaQuery.of(context).size.width * 0.60,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 1.0,
+                                      style: BorderStyle.solid,
+                                      color: Colors.grey,
+                                    ),
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(5.0)),
+                                  ),
+                                ),
+                                width: MediaQuery.of(context).size.width *
+                                    0.80,
+                                child: TextFormField(
+                                  controller: eighteenbelow,
+                                  keyboardType: TextInputType.number,
+                                  decoration: new InputDecoration(
+                                      border: InputBorder.none,
+                                      hintStyle: hintStyle,
+                                      focusedBorder: InputBorder.none,
+                                      enabledBorder: InputBorder.none,
+                                      errorBorder: InputBorder.none,
+                                      disabledBorder: InputBorder.none,
+                                      contentPadding: EdgeInsets.only(
+                                          left: 15,
+                                          bottom: 11,
+                                          top: 11,
+                                          right: 15),
+                                      hintText:
+                                      "Type number of member"),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+
                     widget.resident_opr == RESIDENT_OPR.update
                         ? SizedBox()
                         : Container(
@@ -1391,6 +1454,7 @@ class _AddResidentScreenState extends State<AddResidentScreen> {
                           'owner_name': ownerName.text,
                           'propertyno': propertyNo.text,
                           'eighteenabove': eighteenabove.text,
+                          'eighteenbelow': eighteenbelow.text,
                           'owner_mobile': owner_mobile_phno.text,
                           //   'owner_aadhar': owner_aadhaar.text,
                           'wastage_quantity': wastageQty.text,

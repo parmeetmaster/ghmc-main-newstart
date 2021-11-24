@@ -4,13 +4,14 @@ import 'package:ghmc/api/api.dart';
 import 'package:ghmc/globals/globals.dart';
 import 'package:ghmc/model/complex_building/circle_complex_access_model.dart';
 import 'package:ghmc/model/complex_building/complex_add_model.dart';
+import 'package:ghmc/model/complex_building/complex_name.dart';
 import 'package:ghmc/util/extension.dart';
 import 'package:provider/provider.dart';
 
 class ComplexBuildingProvider extends ChangeNotifier {
   CircleComplexAccessModel? circleComplexAccessModel;
   ComplexAddModel? complexAddModelDropDown;
-
+ComplexName? complexName;
   uploadComplexBuilding(FormData data, BuildContext context) async {
     ApiResponse response = await ApiBase().baseFunction(() =>
         ApiBase().getInstance()!.post("/add_complex_building", data: data));
@@ -41,6 +42,19 @@ class ComplexBuildingProvider extends ChangeNotifier {
   dispose() {
     circleComplexAccessModel = null;
   }
+
+
+  loadComplexName(String id) async {
+    ApiResponse response = await ApiBase().baseFunction(() => ApiBase()
+        .getInstance()!
+        .post("/get_complex_name",
+        data:
+        FormData.fromMap({'complex_id': id})));
+    complexName =
+        ComplexName.fromJson(response.completeResponse);
+    notifyListeners();
+  }
+
 
   loadComplexBuilding() async {
     ApiResponse response = await ApiBase().baseFunction(() => ApiBase()

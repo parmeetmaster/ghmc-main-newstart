@@ -62,6 +62,7 @@ class _ComplexBuildingState extends State<ComplexBuilding> {
                         children: [
                           CardSeperateRow("Complex Name", e.name),
                           CardSeperateRow("Address", e.address),
+                          CardSeperateRow("Property No", e.propertyno),
                           CardSeperateRow("LandMark", e.landmark),
                           CardSeperateRow("Area", e.area),
                           CardSeperateRow("Ward", e.wardName),

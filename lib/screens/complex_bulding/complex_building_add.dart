@@ -527,6 +527,59 @@ class _ComplexBuildingAddState extends State<ComplexBuildingAdd> {
                     ],
                   ),
                 ),
+
+
+                //property no
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.80,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.18,
+                        child: Text(
+                          "Property No",
+                          style: TextStyle(fontSize: fontSize),
+                        ),
+                      ),
+                      Text(':'),
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.60,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            decoration: ShapeDecoration(
+                              shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                  width: 1.0,
+                                  style: BorderStyle.solid,
+                                  color: Colors.grey,
+                                ),
+                                borderRadius:
+                                BorderRadius.all(Radius.circular(5.0)),
+                              ),
+                            ),
+                            width: MediaQuery.of(context).size.width * 0.80,
+                            child: TextFormField(
+                              controller: propertyno,
+                              decoration: new InputDecoration(
+                                  border: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  errorBorder: InputBorder.none,
+                                  disabledBorder: InputBorder.none,
+                                  contentPadding: EdgeInsets.only(
+                                      left: 15, bottom: 11, top: 11, right: 15),
+                                  hintText: "Enter Property no here..."),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+
                 //see basement
                 Container(
                   width: MediaQuery.of(context).size.width * 0.80,
@@ -713,56 +766,8 @@ class _ComplexBuildingAddState extends State<ComplexBuildingAdd> {
                     ],
                   ),
                 ),
-                //property no
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.80,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.18,
-                        child: Text(
-                          "Property No",
-                          style: TextStyle(fontSize: fontSize),
-                        ),
-                      ),
-                      Text(':'),
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.60,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: ShapeDecoration(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                  width: 1.0,
-                                  style: BorderStyle.solid,
-                                  color: Colors.grey,
-                                ),
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(5.0)),
-                              ),
-                            ),
-                            width: MediaQuery.of(context).size.width * 0.80,
-                            child: TextFormField(
-                              controller: propertyno,
-                              decoration: new InputDecoration(
-                                  border: InputBorder.none,
-                                  focusedBorder: InputBorder.none,
-                                  enabledBorder: InputBorder.none,
-                                  errorBorder: InputBorder.none,
-                                  disabledBorder: InputBorder.none,
-                                  contentPadding: EdgeInsets.only(
-                                      left: 15, bottom: 11, top: 11, right: 15),
-                                  hintText: "Enter Property no here..."),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
+
+              /*  Container(
                   width: MediaQuery.of(context).size.width * 0.80,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -809,7 +814,7 @@ class _ComplexBuildingAddState extends State<ComplexBuildingAdd> {
                       ),
                     ],
                   ),
-                ),
+                ),*/
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: MapContainer(

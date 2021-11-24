@@ -69,6 +69,7 @@ class Data {
     groundFloors = json['ground_floors'];
     floors = json['floors'];
     id = json['id'];
+    propertyno = json['propertyno'];
   }
   String? zone;
   String? circle;
@@ -80,6 +81,7 @@ class Data {
   String? groundFloors;
   String? floors;
   String? id;
+  String? propertyno;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -89,6 +91,7 @@ class Data {
     map['area'] = area;
     map['landmark'] = landmark;
     map['name'] = name;
+    map['propertyno'] = propertyno;
     map['address'] = address;
     map['ground_floors'] = groundFloors;
     map['floors'] = floors;
