@@ -61,6 +61,7 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
   Quality_waste? _select_quantity;
   Existing_disposal? _existing_disposal = null;
   TextStyle hintStyle = TextStyle(fontSize: 14);
+  TextStyle hintStyle2 = TextStyle(fontSize: 9);
   var Business_name = TextEditingController();
 
   var shop_flat_address = TextEditingController();
@@ -92,7 +93,6 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
     provider.loadComplexName(widget.id);
     comprovider!.loadCommunityItems(context);
     provider.loadComplexBuilingDropDownOptions(widget.id);
-
   }
 
   @override
@@ -102,9 +102,9 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
         appBar: FAppBar.getCommonAppBar(title: "Complex/Building Add Flat"),
         body: Consumer<ComplexBuildingProvider>(
             builder: (context, snapshot, child) {
-              complex_name.text = provider.complexName?.data?.first?.name??"";
+          complex_name.text = provider.complexName?.data?.first?.name ?? "";
           return provider.complexAddModelDropDown != null &&
-                  provider.complexName!= null
+                  provider.complexName != null
               ? ListView(
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   children: [
@@ -671,7 +671,6 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                     ),
                     //owner mobile number:
 
-                    // 18 plus memebers
                     Container(
                       width: MediaQuery.of(context).size.width * 0.80,
                       child: Row(
@@ -725,62 +724,8 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                         ],
                       ),
                     ),
-                    if (_selected_category_type != null &&
-                        _selected_category_type!.name != "Business")
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.80,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.20,
-                              child: Text(
-                                "18+ members",
-                                style: TextStyle(fontSize: fontSize),
-                              ),
-                            ),
-                            Text(':'),
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.64,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  decoration: ShapeDecoration(
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                        width: 1.0,
-                                        style: BorderStyle.solid,
-                                        color: Colors.grey,
-                                      ),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(5.0)),
-                                    ),
-                                  ),
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.80,
-                                  child: TextFormField(
-                                    controller: text18above,
-                                    decoration: new InputDecoration(
-                                        border: InputBorder.none,
-                                        focusedBorder: InputBorder.none,
-                                        enabledBorder: InputBorder.none,
-                                        errorBorder: InputBorder.none,
-                                        hintStyle: hintStyle,
-                                        disabledBorder: InputBorder.none,
-                                        contentPadding: EdgeInsets.only(
-                                            left: 15,
-                                            bottom: 11,
-                                            top: 11,
-                                            right: 15),
-                                        hintText: "Type Address here..."),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    if (_selected_category_type != null &&
+
+              /*      if (_selected_category_type != null &&
                         _selected_category_type!.name != "Business")
                       Container(
                         width: MediaQuery.of(context).size.width * 0.80,
@@ -834,7 +779,7 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                             ),
                           ],
                         ),
-                      ),
+                      ),*/
 
                     //owner adhaar number:
 
@@ -1159,6 +1104,114 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
 
                     //Add member
 
+                    SizedBox(height: 10,),
+                    if (_selected_category_type != null &&
+                        _selected_category_type!.name != "Business")
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.80,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Align(
+                              alignment:Alignment.topLeft,
+                              child: Text(
+                                "Member Count",
+                                style: TextStyle(fontSize: fontSize+2),
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                /*       Container(
+                                  width: MediaQuery.of(context).size.width * 0.20,
+                                  child: Text(
+                                    "18+ members",
+                                    style: TextStyle(fontSize: fontSize),
+                                  ),
+                                ),
+                                Text(':'),*/
+                                Container(
+                                  width:
+                                  MediaQuery.of(context).size.width * 0.46,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      decoration: ShapeDecoration(
+                                        shape: RoundedRectangleBorder(
+                                          side: BorderSide(
+                                            width: 1.0,
+                                            style: BorderStyle.solid,
+                                            color: Colors.grey,
+                                          ),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(5.0)),
+                                        ),
+                                      ),
+                                      width: MediaQuery.of(context).size.width *
+                                          0.80,
+                                      child: TextFormField(
+                                        controller: text18above,
+                                        decoration: new InputDecoration(
+                                            border: InputBorder.none,
+                                            focusedBorder: InputBorder.none,
+                                            enabledBorder: InputBorder.none,
+                                            errorBorder: InputBorder.none,
+                                            hintStyle: hintStyle2,
+                                            disabledBorder: InputBorder.none,
+                                            contentPadding: EdgeInsets.only(
+                                                left: 15,
+                                                bottom: 11,
+                                                top: 11,
+                                                right: 15),
+                                            hintText: "Members Count (Age 18+)"),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  width:
+                                  MediaQuery.of(context).size.width * 0.46,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      decoration: ShapeDecoration(
+                                        shape: RoundedRectangleBorder(
+                                          side: BorderSide(
+                                            width: 1.0,
+                                            style: BorderStyle.solid,
+                                            color: Colors.grey,
+                                          ),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(5.0)),
+                                        ),
+                                      ),
+                                      width: MediaQuery.of(context).size.width *
+                                          0.80,
+                                      child: TextFormField(
+                                        controller: text18below,
+                                        decoration: new InputDecoration(
+                                            border: InputBorder.none,
+                                            focusedBorder: InputBorder.none,
+                                            enabledBorder: InputBorder.none,
+                                            errorBorder: InputBorder.none,
+                                            hintStyle: hintStyle2,
+                                            disabledBorder: InputBorder.none,
+                                            contentPadding: EdgeInsets.only(
+                                                left: 15,
+                                                bottom: 11,
+                                                top: 11,
+                                                right: 15),
+                                            hintText: "Childrens count(Age 18-)"),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+
                     if (_selected_category_type != null &&
                         _selected_category_type!.name != "Business")
                       Container(
@@ -1367,6 +1420,6 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
   @override
   void dispose() {
     super.dispose();
-    provider.complexName=null;
+    provider.complexName = null;
   }
 }
