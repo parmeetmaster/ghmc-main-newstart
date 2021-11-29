@@ -7,9 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:ghmc/api/api.dart';
 import 'package:ghmc/globals/globals.dart';
 import 'package:ghmc/model/all_drop_down_model.dart';
+import 'package:ghmc/model/common_operation/common_flat_operations_model.dart';
+import 'package:ghmc/model/common_operation/common_operation_commercial_building.dart';
+import 'package:ghmc/model/common_operation/common_operation_community_hall.dart';
 import 'package:ghmc/model/common_operation/common_operation_manhole.dart';
+import 'package:ghmc/model/common_operation/common_operation_open_places.dart';
 import 'package:ghmc/model/common_operation/common_operation_parking.dart';
 import 'package:ghmc/model/common_operation/common_operation_resident.dart';
+import 'package:ghmc/model/common_operation/common_operation_temple.dart';
 import 'package:ghmc/model/common_operation/common_operation_vendor.dart';
 
 import 'package:ghmc/model/culvert/area_model.dart';
@@ -36,18 +41,23 @@ import 'package:ghmc/api/api.dart';
 import 'package:ghmc/model/all_drop_down_model.dart';
 import 'package:ghmc/util/extension.dart';
 
-class CommonScanProvider extends ChangeNotifier{
+class CommonScanProvider extends ChangeNotifier {
   AllDropDownModel? dropDowns;
   CommonOperationResident? commonResidentModel;
   CommonOperationParking? commonParkingModel;
+  CommonFlatOperationsModel? commonFlatOperationsModel;
   CommonOperationVendor? commonVendorModel;
+  CommonOperationOpenPlaces? commonOperationOpenPlaces;
   CommonOperationManhole? commonOperationManholeModel;
+  TempleCommonOperation? templeCommonOperation;
+  CommonOperationCommunityHall? commonOperationCommunityHall;
+  CommonOperationCommercialBuilding? commonOperationCommercialBuilding;
 
-  loadCommunityItems( BuildContext context) async {
-    ApiResponse response = await ApiBase().baseFunction(() =>
-        ApiBase().getInstance()!.get("/alldropdowns"));
+  loadCommunityItems(BuildContext context) async {
+    ApiResponse response = await ApiBase()
+        .baseFunction(() => ApiBase().getInstance()!.get("/alldropdowns"));
     if (response.status == 200) {
-      dropDowns=AllDropDownModel.fromJson(response.completeResponse);
+      dropDowns = AllDropDownModel.fromJson(response.completeResponse);
       notifyListeners();
       return response;
     } else {
@@ -57,79 +67,135 @@ class CommonScanProvider extends ChangeNotifier{
     }
   }
 
-  void loadResidentDisplayData(qrdata)async {
+  void loadResidentDisplayData(qrdata) async {
     ApiResponse response = await ApiBase()
         .baseFunction(() => ApiBase().getInstance()!.post("/scan", data: {
-        "user_id": Globals.userData!.data!.userId,
-         "geo_id": qrdata,
-    }));
-    commonResidentModel=CommonOperationResident.fromJson(response.completeResponse);
+              "user_id": Globals.userData!.data!.userId,
+              "geo_id": qrdata,
+            }));
+    commonResidentModel =
+        CommonOperationResident.fromJson(response.completeResponse);
     notifyListeners();
   }
 
-
-  void loadManholeDisplayData(qrdata)async {
+  void loadManholeDisplayData(qrdata) async {
     ApiResponse response = await ApiBase()
         .baseFunction(() => ApiBase().getInstance()!.post("/scan", data: {
-      "user_id": Globals.userData!.data!.userId,
-      "geo_id": qrdata,
-    }));
-    commonOperationManholeModel=CommonOperationManhole.fromJson(response.completeResponse);
+              "user_id": Globals.userData!.data!.userId,
+              "geo_id": qrdata,
+            }));
+    commonOperationManholeModel =
+        CommonOperationManhole.fromJson(response.completeResponse);
     notifyListeners();
   }
 
-
-  void loadParkingDisplayData(qrdata)async {
+  void loadParkingDisplayData(qrdata) async {
     ApiResponse response = await ApiBase()
         .baseFunction(() => ApiBase().getInstance()!.post("/scan", data: {
-      "user_id": Globals.userData!.data!.userId,
-      "geo_id": qrdata,
-    }));
-    commonParkingModel=CommonOperationParking.fromJson(response.completeResponse);
+              "user_id": Globals.userData!.data!.userId,
+              "geo_id": qrdata,
+            }));
+    commonParkingModel =
+        CommonOperationParking.fromJson(response.completeResponse);
     notifyListeners();
   }
 
-  void loadVendorDisplayData(qrdata)async {
+  void loadFlatsDisplayData(qrdata) async {
     ApiResponse response = await ApiBase()
         .baseFunction(() => ApiBase().getInstance()!.post("/scan", data: {
-      "user_id": Globals.userData!.data!.userId,
-      "geo_id": qrdata,
-    }));
-    commonVendorModel=CommonOperationVendor.fromJson(response.completeResponse);
+              "user_id": Globals.userData!.data!.userId,
+              "geo_id": qrdata,
+            }));
+    commonFlatOperationsModel =
+        CommonFlatOperationsModel.fromJson(response.completeResponse);
     notifyListeners();
   }
 
-  void submitScannedToiletData(FormData formdata, BuildContext context)async {
+  void loadVendorDisplayData(qrdata) async {
     ApiResponse response = await ApiBase()
-        .baseFunction(() => ApiBase().getInstance()!.post("/create_toiletsoperations", data: formdata));
+        .baseFunction(() => ApiBase().getInstance()!.post("/scan", data: {
+              "user_id": Globals.userData!.data!.userId,
+              "geo_id": qrdata,
+            }));
+    commonVendorModel =
+        CommonOperationVendor.fromJson(response.completeResponse);
+    notifyListeners();
+  }
 
-    if(response.status==200){
+  void loadOpenPlaces(qrdata) async {
+    ApiResponse response = await ApiBase()
+        .baseFunction(() => ApiBase().getInstance()!.post("/scan", data: {
+              "user_id": Globals.userData!.data!.userId,
+              "geo_id": qrdata,
+            }));
+    commonOperationOpenPlaces =
+        CommonOperationOpenPlaces.fromJson(response.completeResponse);
+    notifyListeners();
+  }
+
+  void loadTempleDisplayData(qrdata) async {
+    ApiResponse response = await ApiBase()
+        .baseFunction(() => ApiBase().getInstance()!.post("/scan", data: {
+              "user_id": Globals.userData!.data!.userId,
+              "geo_id": qrdata,
+            }));
+    templeCommonOperation =
+        TempleCommonOperation.fromJson(response.completeResponse);
+    notifyListeners();
+  }
+
+  void loadCommunity(qrdata) async {
+    ApiResponse response = await ApiBase()
+        .baseFunction(() => ApiBase().getInstance()!.post("/scan", data: {
+              "user_id": Globals.userData!.data!.userId,
+              "geo_id": qrdata,
+            }));
+    commonOperationCommunityHall =
+        CommonOperationCommunityHall.fromJson(response.completeResponse);
+    notifyListeners();
+  }
+
+  void loadCommericalBuilding(qrdata) async {
+    ApiResponse response = await ApiBase()
+        .baseFunction(() => ApiBase().getInstance()!.post("/scan", data: {
+              "user_id": Globals.userData!.data!.userId,
+              "geo_id": qrdata,
+            }));
+    commonOperationCommercialBuilding =
+        CommonOperationCommercialBuilding.fromJson(response.completeResponse);
+    notifyListeners();
+  }
+
+  void submitScannedToiletData(FormData formdata, BuildContext context) async {
+    ApiResponse response = await ApiBase().baseFunction(() => ApiBase()
+        .getInstance()!
+        .post("/create_toiletsoperations", data: formdata));
+
+    if (response.status == 200) {
       response.message!.showSnackbar(context);
       Navigator.pop(context);
-    }else{
+    } else {
       response.message!.showSnackbar(context);
     }
 
-
     notifyListeners();
-
   }
 
-  void submitScannedResidentData(FormData formdata, BuildContext context)async {
-    ApiResponse response = await ApiBase()
-        .baseFunction(() => ApiBase().getInstance()!.post("/createoperations", data: formdata));
+  void submitScannedResidentData(
+      FormData formdata, BuildContext context) async {
+    MProgressIndicator.show(context);
 
-    if(response.status==200){
+    ApiResponse response = await ApiBase().baseFunction(() =>
+        ApiBase().getInstance()!.post("/createoperations", data: formdata));
+
+    if (response.status == 200) {
       response.message!.showSnackbar(context);
       Navigator.pop(context);
-    }else{
+    } else {
       response.message!.showSnackbar(context);
     }
-
+    MProgressIndicator.hide();
 
     notifyListeners();
-
   }
-
 }
-

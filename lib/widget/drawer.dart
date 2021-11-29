@@ -82,7 +82,7 @@ class _MainDrawerState extends State<MainDrawer> {
                       Text(
                         "${Globals.userData!.data!.firstName} ${Globals.userData!.data!.lastName ?? ""}",
                         style:
-                            TextStyle(color: Color(0xFFAD801D9E), fontSize: 20),
+                        TextStyle(color: Color(0xFFAD801D9E), fontSize: 20),
                       ),
                       Text(
                         "${Globals.userData!.data!.mobileNumber ?? ""}",
@@ -120,8 +120,29 @@ class _MainDrawerState extends State<MainDrawer> {
                   },
                 ),
 
+              ListTile(
+                leading: Icon(
+                  Icons.local_police,
+                  color: Colors.white,
+                  size: 25,
+                ),
+                title: Text(
+                  "Complex Test",
+                  style: TextStyle(
+                      fontSize: drawer_item_text, color: Colors.white),
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CovidScreen(),
+                    ),
+                  );
+                },
+              ),
+
               ///
-          /*    if (Globals.authority!.data!.first.complaints == true)
+              if (Globals.authority!.data!.first.complaints == true)
                 ListTile(
                   leading: Icon(
                     Icons.local_police,
@@ -142,9 +163,9 @@ class _MainDrawerState extends State<MainDrawer> {
                     );
                   },
                 ),
-*/
+
               ///
-       /*       if (Globals.authority!.data!.first.geoTagging == true)
+              if (Globals.authority!.data!.first.geoTagging == true)
                 ListTile(
                   leading: Icon(
                     Icons.location_on_outlined,
@@ -164,12 +185,12 @@ class _MainDrawerState extends State<MainDrawer> {
                       ),
                     );
                   },
-                ),*/
+                ),
               /*  if (Globals.userData!.data!.departmentId == "3" ||
                   Globals.userData!.data!.departmentId == "4")*/
 
               ///
-          /*    if (Globals.authority!.data!.first.dataEntry == true)
+              if (Globals.authority!.data!.first.dataEntry == true)
                 ListTile(
                   leading: Icon(
                     Icons.library_books,
@@ -189,13 +210,13 @@ class _MainDrawerState extends State<MainDrawer> {
                       ),
                     );
                   },
-                ),*/
+                ),
 /*            if (Globals.userData!.data!.departmentId == "10" ||
                   Globals.userData!.data!.departmentId == "11" ||
                   Globals.userData!.data!.departmentId == "1")*/
 
               ///
- /*             if (Globals.authority!.data!.first.addCulvert == true)
+              if (Globals.authority!.data!.first.addCulvert == true)
                 ListTile(
                   leading: Icon(
                     Icons.linear_scale,
@@ -215,10 +236,10 @@ class _MainDrawerState extends State<MainDrawer> {
                       ),
                     );
                   },
-                ),*/
+                ),
 
               ///
-     /*         if (Globals.authority!.data!.first.issueCulvert == true)
+              if (Globals.authority!.data!.first.issueCulvert == true)
                 ListTile(
                   leading: Icon(
                     Icons.home_repair_service,
@@ -261,10 +282,10 @@ class _MainDrawerState extends State<MainDrawer> {
                       ),
                     );
                   },
-                ),*/
+                ),
 
               ///
-      /*        if (Globals.authority!.data!.first.absentVehicles == true)
+              if (Globals.authority!.data!.first.absentVehicles == true)
                 ListTile(
                   leading: Icon(
                     Icons.agriculture_rounded,
@@ -284,10 +305,10 @@ class _MainDrawerState extends State<MainDrawer> {
                       ),
                     );
                   },
-                ),*/
+                ),
 
               ///
-    /*          if (Globals.authority!.data!.first.addGvpbep == true)
+              if (Globals.authority!.data!.first.addGvpbep == true)
                 ListTile(
                   leading: Icon(
                     Icons.directions_car_rounded,
@@ -307,28 +328,28 @@ class _MainDrawerState extends State<MainDrawer> {
                       ),
                     );
                   },
-                ),*/
+                ),
 
-                /*   ListTile(
-                  leading: Icon(
-                    Icons.group_work,
-                    color: Colors.white,
-                    size: 25,
-                  ),
-                  title: Text(
-                    "Commercial Establishment/ Community hall",
-                    style: TextStyle(
-                        fontSize: drawer_item_text, color: Colors.white),
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CommunityHallScreen(),
-                      ),
-                    );
-                  },
-                ),*/
+              ListTile(
+                leading: Icon(
+                  Icons.group_work,
+                  color: Colors.white,
+                  size: 25,
+                ),
+                title: Text(
+                  "Commercial Establishment/ Community hall",
+                  style: TextStyle(
+                      fontSize: drawer_item_text, color: Colors.white),
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CommunityHallScreen(),
+                    ),
+                  );
+                },
+              ),
               ListTile(
                 leading: Icon(
                   Icons.perm_contact_cal_rounded,
@@ -349,7 +370,7 @@ class _MainDrawerState extends State<MainDrawer> {
                   );
                 },
               ),
-         /*     ListTile(
+              ListTile(
                 leading: Icon(
                   Icons.streetview,
                   color: Colors.white,
@@ -388,8 +409,8 @@ class _MainDrawerState extends State<MainDrawer> {
                     ),
                   );
                 },
-              ),*/
-        /*      ListTile(
+              ),
+      /*        ListTile(
                 leading: Icon(
                   Icons.park,
                   color: Colors.white,
@@ -408,7 +429,7 @@ class _MainDrawerState extends State<MainDrawer> {
                     ),
                   );
                 },
-              ),
+              ),*/
               ListTile(
                 leading: Icon(
                   Icons.wash,
@@ -428,8 +449,8 @@ class _MainDrawerState extends State<MainDrawer> {
                     ),
                   );
                 },
-              ),*/
-          /*    ListTile(
+              ),
+              ListTile(
                 leading: Icon(
                   Icons.wb_sunny,
                   color: Colors.white,
@@ -468,31 +489,31 @@ class _MainDrawerState extends State<MainDrawer> {
                     ),
                   );
                 },
-              ),*/
+              ),
 
-                ListTile(
-                  leading: Icon(
-                    Icons.apartment,
-                    color: Colors.white,
-                    size: 25,
-                  ),
-                  title: Text(
-                    "Complex Building",
-                    style: TextStyle(
-                        fontSize: drawer_item_text, color: Colors.white),
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ComplexBuilding(),
-                      ),
-                    );
-                  },
+              ListTile(
+                leading: Icon(
+                  Icons.apartment,
+                  color: Colors.white,
+                  size: 25,
                 ),
+                title: Text(
+                  "Complex Building",
+                  style: TextStyle(
+                      fontSize: drawer_item_text, color: Colors.white),
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ComplexBuilding(),
+                    ),
+                  );
+                },
+              ),
 
 
-              /*ListTile(
+              ListTile(
                 leading: Icon(
                   Icons.vpn_key,
                   color: Colors.white,
@@ -511,7 +532,7 @@ class _MainDrawerState extends State<MainDrawer> {
                     ),
                   );
                 },
-              ),*/
+              ),
               // ListTile(
               //   leading: Icon(
               //     Icons.notifications_active_rounded,

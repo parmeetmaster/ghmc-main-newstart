@@ -14,7 +14,7 @@ class Globals {
   }
 
   static checkAppOnTest(){
-    return false;
+    return true;
   }
 
   void getuser() {}

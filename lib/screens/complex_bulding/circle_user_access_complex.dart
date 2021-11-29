@@ -850,7 +850,7 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                             Container(
                               width: MediaQuery.of(context).size.width * 0.20,
                               child: Text(
-                                "License Number",
+                                "License Exist",
                                 style: TextStyle(fontSize: fontSize),
                               ),
                             ),
@@ -880,7 +880,7 @@ class _CicrclueUserAccessComplexState extends State<CicrclueUserAccessComplex> {
                                       underline: Container(
                                         color: Colors.transparent,
                                       ),
-                                      hint: Text('Selected License'),
+                                      hint: Text('Select License'),
                                       isExpanded: true,
                                       value: _selected_license,
                                       icon: const Icon(Icons.arrow_drop_down),

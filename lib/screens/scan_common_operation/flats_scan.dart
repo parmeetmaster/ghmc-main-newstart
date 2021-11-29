@@ -18,18 +18,18 @@ import 'package:image_grid/grid_image.dart';
 import 'package:provider/provider.dart';
 import 'package:ghmc/util/utils.dart';
 
-class OpenPlaceScreen extends StatefulWidget {
+class FlatsScreen extends StatefulWidget {
   final qrdata;
   final OperationModel operationData;
 
-  const OpenPlaceScreen({Key? key, this.qrdata, required this.operationData})
+  const FlatsScreen({Key? key, this.qrdata, required this.operationData})
       : super(key: key);
 
   @override
-  _OpenPlaceScreenState createState() => _OpenPlaceScreenState();
+  _FlatsScreenState createState() => _FlatsScreenState();
 }
 
-class _OpenPlaceScreenState extends State<OpenPlaceScreen> {
+class _FlatsScreenState extends State<FlatsScreen> {
   bool? choice = null;
   late CommonScanProvider provider =
       Provider.of<CommonScanProvider>(context, listen: false);
@@ -49,54 +49,46 @@ class _OpenPlaceScreenState extends State<OpenPlaceScreen> {
     super.initState();
     provider.loadCommunityItems(context);
     provider = Provider.of<CommonScanProvider>(context, listen: false);
-    provider.loadOpenPlaces(widget.qrdata);
+    provider.loadFlatsDisplayData(widget.qrdata);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: FAppBar.getCommonAppBar(title: "Open Place"),
+      appBar: FAppBar.getCommonAppBar(title: "Flat Scan Screen"),
       body: Consumer<CommonScanProvider>(builder: (context, value, child) {
         return provider.dropDowns != null &&
-                provider.commonOperationOpenPlaces != null
+                provider.commonFlatOperationsModel != null
             ? ListView(
                 padding: EdgeInsets.all(10),
                 children: [
                   CardSeperateRow(
-                    "Open Place Name",
-                    provider.commonOperationOpenPlaces!.data!.openPlaceName,
+                    "Name",
+                    provider.commonFlatOperationsModel!.data!.name,
                     fontsize: 16,
                   ),
                   SizedBox(
                     height: 5,
                   ),
                   CardSeperateRow(
-                    "Address",
-                    provider.commonOperationOpenPlaces!.data!.address,
+                    "Category Type",
+                    provider.commonFlatOperationsModel!.data!.category,
                     fontsize: 16,
                   ),
-                  SizedBox(
+            /*      SizedBox(
                     height: 5,
                   ),
                   CardSeperateRow(
-                    "Floor",
-                    provider.commonOperationOpenPlaces?.data?.floor??"",
+                    "Complex Name",
+                    provider.commonFlatOperationsModel!.data!.category!,
                     fontsize: 16,
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  CardSeperateRow(
-                    "Incharge Name",
-                    provider.commonOperationOpenPlaces!.data!.inchargeName,
-                    fontsize: 16,
-                  ),
+                  ),*/
                   SizedBox(
                     height: 5,
                   ),
                   CardSeperateRow(
                     "Landmark",
-                    provider.commonOperationOpenPlaces!.data!.landmark,
+                    provider.commonFlatOperationsModel!.data!.landmark,
                     fontsize: 16,
                   ),
                   SizedBox(
@@ -104,7 +96,7 @@ class _OpenPlaceScreenState extends State<OpenPlaceScreen> {
                   ),
                   CardSeperateRow(
                     "Area",
-                    provider.commonOperationOpenPlaces!.data!.area,
+                    provider.commonFlatOperationsModel!.data!.area,
                     fontsize: 16,
                   ),
                   SizedBox(
@@ -112,7 +104,7 @@ class _OpenPlaceScreenState extends State<OpenPlaceScreen> {
                   ),
                   CardSeperateRow(
                     "Ward",
-                    provider.commonOperationOpenPlaces!.data!.wardName,
+                    provider.commonFlatOperationsModel!.data!.wardName,
                     fontsize: 16,
                   ),
                   SizedBox(
@@ -120,7 +112,7 @@ class _OpenPlaceScreenState extends State<OpenPlaceScreen> {
                   ),
                   CardSeperateRow(
                     "Circle",
-                    provider.commonOperationOpenPlaces!.data!.circle,
+                    provider.commonFlatOperationsModel!.data!.circle,
                     fontsize: 16,
                   ),
                   SizedBox(
@@ -128,7 +120,7 @@ class _OpenPlaceScreenState extends State<OpenPlaceScreen> {
                   ),
                   CardSeperateRow(
                     "Zone",
-                    provider.commonOperationOpenPlaces!.data!.zone,
+                    provider.commonFlatOperationsModel!.data!.zone,
                     fontsize: 16,
                   ),
                   SizedBox(
@@ -143,15 +135,13 @@ class _OpenPlaceScreenState extends State<OpenPlaceScreen> {
                     child: GradientButton(
                       onclick: () async {
                         FormData formdata = FormData.fromMap({
-                          'db_type': provider
-                              .commonOperationOpenPlaces?.data?.dbType,
+                          'db_type': provider.commonFlatOperationsModel?.data?.dbType,
                           'user_id': Globals.userData?.data?.userId ?? "",
-                          'collection_id': provider
-                                  .commonOperationOpenPlaces?.data?.colId ??
-                              "",
+                          'collection_id':
+                              provider.commonFlatOperationsModel?.data?.colId ?? "",
                           'wt_type': _weight,
                           'picked_denied':
-                              choice == null || choice == false ? 0 : 1,
+                              choice == null?"": choice == false ? 0 : 1,
                           'approx_weight': qty_no.text,
                           'reason': reason.text,
                           'reason_type': _selectedToiletReason?.name ?? "",
@@ -175,6 +165,7 @@ class _OpenPlaceScreenState extends State<OpenPlaceScreen> {
       }),
     );
   }
+
 
   _getPickedGarbage() {
     return Container(
@@ -210,127 +201,125 @@ class _OpenPlaceScreenState extends State<OpenPlaceScreen> {
             ],
           ),
           if (choice == true)
-            SizedBox(
-              height: 10,
-            ),
+          SizedBox(
+            height: 10,
+          ),
           if (choice == true)
-            Container(
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.30,
-                    child: Text(
-                      "Approx Quantity \n(kg/tons) ",
-                      style: TextStyle(fontSize: 16),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.30,
+                  child: Text(
+                    "Approx Quantity \n(kg/tons) ",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+                Text(":", style: TextStyle(fontSize: 22)),
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.55,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      decoration: ShapeDecoration(
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(
+                            width: 1.0,
+                            style: BorderStyle.solid,
+                            color: Colors.grey,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                        ),
+                      ),
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: TextFormField(
+                        controller: qty_no,
+                        keyboardType: TextInputType.number,
+                        decoration: new InputDecoration(
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+                            contentPadding: EdgeInsets.only(
+                                left: 15, bottom: 11, top: 11, right: 15),
+                            hintStyle: TextStyle(fontSize: 16),
+                            hintText: "Type Quantity"),
+                      ),
                     ),
                   ),
-                  Text(":", style: TextStyle(fontSize: 22)),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.55,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        decoration: ShapeDecoration(
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                              width: 1.0,
-                              style: BorderStyle.solid,
-                              color: Colors.grey,
-                            ),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(5.0)),
+                ),
+              ],
+            ),
+          ),
+          if (choice == true)
+          Container(
+            width: MediaQuery.of(context).size.width,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.30,
+                  child: Text(
+                    "Select Weight ",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+                Text(":", style: TextStyle(fontSize: 22)),
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.55,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      decoration: ShapeDecoration(
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(
+                            width: 1.0,
+                            style: BorderStyle.solid,
+                            color: Colors.grey,
                           ),
+                          borderRadius: BorderRadius.all(Radius.circular(5.0)),
                         ),
-                        width: MediaQuery.of(context).size.width * 0.80,
-                        child: TextFormField(
-                          controller: qty_no,
-                          keyboardType: TextInputType.number,
-                          decoration: new InputDecoration(
-                              border: InputBorder.none,
-                              focusedBorder: InputBorder.none,
-                              enabledBorder: InputBorder.none,
-                              errorBorder: InputBorder.none,
-                              disabledBorder: InputBorder.none,
-                              contentPadding: EdgeInsets.only(
-                                  left: 15, bottom: 11, top: 11, right: 15),
-                              hintStyle: TextStyle(fontSize: 16),
-                              hintText: "Type Quantity"),
+                      ),
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                        child: DropdownButton<String>(
+                          underline: Container(
+                            color: Colors.transparent,
+                          ),
+                          hint: Text('Select Weight'),
+                          isExpanded: true,
+                          value: _weight,
+                          icon: const Icon(Icons.arrow_drop_down),
+                          iconSize: 20,
+                          elevation: 16,
+                          style: const TextStyle(color: Colors.black),
+                          items: ["killos", "tons"]
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(
+                                "${value}",
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (newValue) async {
+                            setState(() {
+                              _weight = newValue!;
+                            });
+                          },
                         ),
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          if (choice == true)
-            Container(
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.30,
-                    child: Text(
-                      "Select Weight ",
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
-                  Text(":", style: TextStyle(fontSize: 22)),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.55,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        decoration: ShapeDecoration(
-                          shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                              width: 1.0,
-                              style: BorderStyle.solid,
-                              color: Colors.grey,
-                            ),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(5.0)),
-                          ),
-                        ),
-                        width: MediaQuery.of(context).size.width * 0.80,
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                          child: DropdownButton<String>(
-                            underline: Container(
-                              color: Colors.transparent,
-                            ),
-                            hint: Text('Select Weight'),
-                            isExpanded: true,
-                            value: _weight,
-                            icon: const Icon(Icons.arrow_drop_down),
-                            iconSize: 20,
-                            elevation: 16,
-                            style: const TextStyle(color: Colors.black),
-                            items: ["killos", "tons"]
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(
-                                  "${value}",
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                              );
-                            }).toList(),
-                            onChanged: (newValue) async {
-                              setState(() {
-                                _weight = newValue!;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          ),
           if (choice == false)
             Container(
               width: MediaQuery.of(context).size.width,
@@ -384,34 +373,34 @@ class _OpenPlaceScreenState extends State<OpenPlaceScreen> {
               ),
             ),
           if (choice == true)
-            SizedBox(
-              height: 20,
-            ),
+          SizedBox(
+            height: 20,
+          ),
           if (choice == true)
-            GridImage(
-              bottomsheetTitle: "Please Take Live Picture",
-              images: this.images,
-              title: "Select Images",
-              context: context,
-              onlyCamera: true,
-              onchange: (List<File> files) async {
-                MProgressIndicator.show(context);
-                try {
-                  List<File>? tempimages = [];
-                  await Future.forEach(files, (e) async {
-                    print(e);
-                    File? file = await FileSupport().compressImage(e as File);
-                    tempimages.add(file!);
-                  });
-                  this.images.clear();
-                  "${tempimages.length} are compress".toString().printwtf;
-                  this.images.addAll(tempimages);
-                } catch (e) {
-                  MProgressIndicator.hide();
-                }
+          GridImage(
+            bottomsheetTitle: "Please Take Live Picture",
+            images: this.images,
+            title: "Select Images",
+            context: context,
+            onlyCamera: true,
+            onchange: (List<File> files) async {
+              MProgressIndicator.show(context);
+              try {
+                List<File>? tempimages = [];
+                await Future.forEach(files, (e) async {
+                  print(e);
+                  File? file = await FileSupport().compressImage(e as File);
+                  tempimages.add(file!);
+                });
+                this.images.clear();
+                "${tempimages.length} are compress".toString().printwtf;
+                this.images.addAll(tempimages);
+              } catch (e) {
                 MProgressIndicator.hide();
-              },
-            ),
+              }
+              MProgressIndicator.hide();
+            },
+          ),
         ],
       ),
     );
