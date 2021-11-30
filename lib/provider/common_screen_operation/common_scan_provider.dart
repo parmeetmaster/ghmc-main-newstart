@@ -15,6 +15,7 @@ import 'package:ghmc/model/common_operation/common_operation_open_places.dart';
 import 'package:ghmc/model/common_operation/common_operation_parking.dart';
 import 'package:ghmc/model/common_operation/common_operation_resident.dart';
 import 'package:ghmc/model/common_operation/common_operation_temple.dart';
+import 'package:ghmc/model/common_operation/common_operation_vehicle.dart';
 import 'package:ghmc/model/common_operation/common_operation_vendor.dart';
 
 import 'package:ghmc/model/culvert/area_model.dart';
@@ -52,7 +53,7 @@ class CommonScanProvider extends ChangeNotifier {
   TempleCommonOperation? templeCommonOperation;
   CommonOperationCommunityHall? commonOperationCommunityHall;
   CommonOperationCommercialBuilding? commonOperationCommercialBuilding;
-
+  CommonOperationVehicle? commonOperationVehicle;
   loadCommunityItems(BuildContext context) async {
     ApiResponse response = await ApiBase()
         .baseFunction(() => ApiBase().getInstance()!.get("/alldropdowns"));
@@ -119,6 +120,17 @@ class CommonScanProvider extends ChangeNotifier {
             }));
     commonVendorModel =
         CommonOperationVendor.fromJson(response.completeResponse);
+    notifyListeners();
+  }
+
+  void loadVehicleDisplayData(qrdata) async {
+    ApiResponse response = await ApiBase()
+        .baseFunction(() => ApiBase().getInstance()!.post("/scan", data: {
+      "user_id": Globals.userData!.data!.userId,
+      "geo_id": qrdata,
+    }));
+    commonOperationVehicle =
+        CommonOperationVehicle.fromJson(response.completeResponse);
     notifyListeners();
   }
 

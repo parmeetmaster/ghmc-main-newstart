@@ -318,7 +318,7 @@ class _DashBoardScreenState extends State<DashBoardScreen>
     Globals.userData!.data!.userId!.printwtf;
     print(Globals.userData!.data!.departmentId);
     ApiResponse? model;
-    if(Globals.userData!.data!.departmentId =="60f75d6885af0530888ff185")
+    if(Globals.userData!.data!.departmentName=="SFA")
     {
       print("hello : $qrdata");
       model = await DashBoardProvider.getReference(context).getDriverData(
@@ -341,7 +341,7 @@ class _DashBoardScreenState extends State<DashBoardScreen>
           .getCulvertData(widget.credentialsModel!.data!.userId!, qrdata);
     }
     print(" here is data${model!.status}");
-    print(" here is data${Globals.userData!.data!.departmentId }");
+    print(" here is data${Globals.userData!.data!.departmentId}");
     if (model.status != 200) {
       Navigator.push(
         context,

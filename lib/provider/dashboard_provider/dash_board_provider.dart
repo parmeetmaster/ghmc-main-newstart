@@ -24,9 +24,11 @@ import 'package:ghmc/screens/scan_common_operation/open_places.dart';
 import 'package:ghmc/screens/scan_common_operation/parking_scan.dart';
 import 'package:ghmc/screens/scan_common_operation/resident_scan.dart';
 import 'package:ghmc/screens/scan_common_operation/temple_scan.dart';
+import 'package:ghmc/screens/scan_common_operation/vehicle_scan.dart';
 import 'package:ghmc/screens/scan_common_operation/vendor_scan.dart';
 import 'package:ghmc/screens/success/success.dart';
 import 'package:ghmc/screens/toilet/toilet_scanner_screen.dart';
+import 'package:ghmc/screens/transfer/transfer_station.dart';
 import 'package:ghmc/util/location.dart';
 import 'package:ghmc/util/m_progress_indicator.dart';
 import 'package:ghmc/widget/buttons/gradeint_button.dart';
@@ -726,7 +728,17 @@ class DashBoardProvider extends ChangeNotifier {
          return true;
          case "COMMERCIAL1":CommercialScanBuilding(qrdata:qrdata,operationData:model).push(context!);
          return true;
+         case "VEH":
+           {
+             VehicleScanScreen(qrdata:qrdata,operationData:model).push(context!);
+           /*  TransferStation(
+               model: QrDataModel.fromJson(model.completeResponse ?? ""),
+               scanid: qrdata,
+             ).push(context);*/
 
+           }
+
+         return true;
 
 
 
