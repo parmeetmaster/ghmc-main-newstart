@@ -318,7 +318,7 @@ class _DashBoardScreenState extends State<DashBoardScreen>
     Globals.userData!.data!.userId!.printwtf;
     print(Globals.userData!.data!.departmentId);
     ApiResponse? model;
-    if(Globals.userData!.data!.departmentName=="SFA")
+    if(Globals.userData!.data!.departmentName=="SFA" || Globals.userData!.data!.departmentName=="Admin" )
     {
       print("hello : $qrdata");
       model = await DashBoardProvider.getReference(context).getDriverData(
@@ -327,14 +327,14 @@ class _DashBoardScreenState extends State<DashBoardScreen>
         latitude: current_Latitude,
         longitude: current_Longitude,
       );
-    } else if (Globals.userData!.data!.departmentId == "4")
+    } else if (Globals.userData!.data!.departmentName=="transfer station manager" )
     {
       //see if user is transfer manager
       model = await DashBoardProvider.getReference(context)
           .getTransferStationManager(
               widget.credentialsModel!.data!.userId!, qrdata);
     }
-    else if (Globals.userData!.data!.departmentId != "4")
+    else if (Globals.userData!.data!.departmentId != "transfer station manager")
     {
       //see if user is culert eligible
       model = await DashBoardProvider.getReference(context)
@@ -357,11 +357,11 @@ class _DashBoardScreenState extends State<DashBoardScreen>
     }
 
     // check user for attendence
-    if (Globals.getUserData()!.data!.departmentId == "60f75d6885af0530888ff185" ||
-        Globals.userData!.data!.departmentId == "1")
+    if (Globals.getUserData()!.data!.departmentName == "Admin" ||
+        Globals.userData!.data!.departmentName == "SFA")
     {
       justDialog(model);
-    } else if (Globals.getUserData()!.data!.departmentId == "4")
+    } else if (Globals.getUserData()!.data!.departmentName == "transfer station manager")
     {
       showTransferScreen(model, qrdata);
     }

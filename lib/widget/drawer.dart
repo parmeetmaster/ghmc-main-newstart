@@ -120,7 +120,7 @@ class _MainDrawerState extends State<MainDrawer> {
                   },
                 ),
 
-              ListTile(
+         /*     ListTile(
                 leading: Icon(
                   Icons.local_police,
                   color: Colors.white,
@@ -140,6 +140,7 @@ class _MainDrawerState extends State<MainDrawer> {
                   );
                 },
               ),
+*/
 
               ///
               if (Globals.authority!.data!.first.complaints == true)

@@ -728,17 +728,21 @@ class DashBoardProvider extends ChangeNotifier {
          return true;
          case "COMMERCIAL1":CommercialScanBuilding(qrdata:qrdata,operationData:model).push(context!);
          return true;
+/*
          case "VEH":
            {
              VehicleScanScreen(qrdata:qrdata,operationData:model).push(context!);
-           /*  TransferStation(
+           */
+/*  TransferStation(
                model: QrDataModel.fromJson(model.completeResponse ?? ""),
                scanid: qrdata,
-             ).push(context);*/
+             ).push(context);*//*
+
 
            }
 
          return true;
+*/
 
 
 
